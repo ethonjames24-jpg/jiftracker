@@ -88,3 +88,9 @@ User choices:
 - Replaced remaining literal timeout with named time-unit constants and preserved named summary-card animation timing.
 - Adjusted backend value cleanup to avoid the reported literal identity-comparison pattern.
 - Re-verified JavaScript lint, Python lint, backend tests, production build, and live dashboard screenshot.
+
+## Implemented — 2026-05-31 Standalone Source Package
+- Created independent React/Vite source package at `/app/jif-budget-tracker-source`.
+- Added package-lock, README, setup/build/deployment instructions, local logo asset, and public CSV Google Sheets connection docs.
+- Verified `npm install`, `npm run dev`, live data loading, and `npm run build`.
+- Created downloadable ZIP at `/app/jamaica-in-focus-budget-tracker-source.zip`.

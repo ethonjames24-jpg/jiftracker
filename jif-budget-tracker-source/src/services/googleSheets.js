@@ -1,0 +1,181 @@
+import { SHEET_ID, SHEET_TABS } from "../config.js";
+
+const FALLBACK_DISPLAY_ORDER = 999;
+const CSV_BASE_URL = "https://docs.google.com/spreadsheets/d";
+
+const csvUrlForTab = (tabName) => `${CSV_BASE_URL}/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tabName)}`;
+
+const cleanValue = (value) => (value === null || value === undefined ? "" : String(value).trim());
+
+const toInt = (value, fallback = 0) => {
+  const parsed = Number.parseInt(String(value || "").replaceAll(",", ""), 10);
+  return Number.isNaN(parsed) ? fallback : parsed;
+};
+
+const isTruthy = (value) => ["true", "1", "yes", "y", "on"].includes(cleanValue(value).toLowerCase());
+
+const parseCsv = (text) => {
+  const rows = [];
+  let row = [];
+  let field = "";
+  let inQuotes = false;
+
+  for (let index = 0; index < text.length; index += 1) {
+    const character = text[index];
+    const nextCharacter = text[index + 1];
+
+    if (character === '"' && inQuotes && nextCharacter === '"') {
+      field += '"';
+      index += 1;
+    } else if (character === '"') {
+      inQuotes = !inQuotes;
+    } else if (character === "," && !inQuotes) {
+      row.push(field);
+      field = "";
+    } else if ((character === "\n" || character === "\r") && !inQuotes) {
+      if (character === "\r" && nextCharacter === "\n") index += 1;
+      row.push(field);
+      rows.push(row);
+      row = [];
+      field = "";
+    } else {
+      field += character;
+    }
+  }
+
+  if (field || row.length) {
+    row.push(field);
+    rows.push(row);
+  }
+
+  return rows;
+};
+
+const rowsToObjects = (rows) => {
+  if (!rows.length) return [];
+  const headers = rows[0].map((header, index) => cleanValue(header) || `unused_${index}`);
+
+  return rows.slice(1).map((row) => {
+    const record = {};
+    headers.forEach((header, index) => {
+      if (!header.startsWith("unused_")) record[header] = cleanValue(row[index]);
+    });
+    return record;
+  }).filter((record) => Object.values(record).some(Boolean));
+};
+
+const fetchSheetTab = async (tabName) => {
+  const response = await fetch(csvUrlForTab(tabName));
+  if (!response.ok) throw new Error(`Could not load Google Sheet tab: ${tabName}`);
+  return rowsToObjects(parseCsv(await response.text()));
+};
+
+const firstPresent = (row, keys) => keys.find((key) => row[key]) ? row[keys.find((key) => row[key])] : "";
+
+const displayMonthLabel = (value) => cleanValue(value).replaceAll("-", " ");
+
+const normaliseArchiveRow = (row) => ({
+  month_label: displayMonthLabel(firstPresent(row, ["month_label", "Month", "month"])),
+  month_sort: row.month_sort || "",
+  tracker_state: firstPresent(row, ["tracker_state", "Tracker Status"]),
+  status: firstPresent(row, ["status_headline", "Status"]),
+  note: firstPresent(row, ["short_note", "Note"]),
+});
+
+const isMonthAnchor = (row) => Boolean(row.month_label) || toInt(row.display_order, FALLBACK_DISPLAY_ORDER) === 1;
+
+const nextMonthContext = (row, context) => {
+  if (!isMonthAnchor(row)) return context;
+  return {
+    month_label: row.month_label || context.month_label || row.month_sort || "",
+    month_sort: row.month_sort || context.month_sort,
+  };
+};
+
+const validTrackerRows = (rows) => {
+  const validRows = [];
+  let context = { month_label: "", month_sort: "" };
+
+  rows.forEach((sourceRow) => {
+    if (!sourceRow.kpi_label) return;
+    context = nextMonthContext(sourceRow, context);
+    const trackerRow = {
+      ...sourceRow,
+      month_label: sourceRow.month_label || context.month_label,
+      month_sort: context.month_sort || sourceRow.month_sort || "",
+    };
+    if (trackerRow.month_sort) validRows.push(trackerRow);
+  });
+
+  return validRows;
+};
+
+const buildMonthGroups = (rows) => {
+  const grouped = rows.reduce((accumulator, row) => {
+    const key = row.month_label || row.month_sort;
+    accumulator[key] = accumulator[key] || [];
+    accumulator[key].push(row);
+    return accumulator;
+  }, {});
+
+  return Object.entries(grouped)
+    .map(([label, groupRows]) => {
+      const firstOrderRow = groupRows.find((row) => toInt(row.display_order) === 1) || groupRows[0];
+      return { month_label: label, month_sort: firstOrderRow.month_sort || groupRows[0].month_sort, rows: groupRows };
+    })
+    .sort((a, b) => a.month_sort.localeCompare(b.month_sort));
+};
+
+const dedupeAndSortKpis = (rows) => {
+  const deduped = new Map();
+  rows.forEach((row) => {
+    const key = cleanValue(row.kpi_label).toLowerCase();
+    if (key && !deduped.has(key)) deduped.set(key, row);
+  });
+  return Array.from(deduped.values()).sort((a, b) => toInt(a.display_order, FALLBACK_DISPLAY_ORDER) - toInt(b.display_order, FALLBACK_DISPLAY_ORDER));
+};
+
+const calculateCounts = (kpis, firstRow) => ({
+  kpis_tracked: Math.max(toInt(firstRow.kpi_count, 0), kpis.length),
+  on_track: kpis.filter((row) => isTruthy(row.is_on_track) || row.status === "On Track").length,
+  watch: kpis.filter((row) => isTruthy(row.is_watch) || row.status === "Watch").length,
+  under_pressure: kpis.filter((row) => isTruthy(row.is_under_pressure) || row.status === "Under Pressure").length,
+});
+
+const selectMonthGroup = (groups, requestedMonth) => groups.find((group) => group.month_sort === requestedMonth) || groups[groups.length - 1];
+
+export const fetchTrackerData = async (requestedMonth = "") => {
+  const [trackerRows, archiveRows] = await Promise.all([
+    fetchSheetTab(SHEET_TABS.tracker),
+    fetchSheetTab(SHEET_TABS.archive),
+  ]);
+
+  const validRows = validTrackerRows(trackerRows);
+  if (!validRows.length) throw new Error("No tracker rows were found in DS_MonthlyTracker");
+
+  const monthGroups = buildMonthGroups(validRows);
+  const selectedGroup = selectMonthGroup(monthGroups, requestedMonth);
+  const kpis = dedupeAndSortKpis(selectedGroup.rows);
+  const first = kpis[0];
+  const counts = calculateCounts(kpis, first);
+
+  return {
+    spreadsheet_id: SHEET_ID,
+    last_loaded_at: new Date().toISOString(),
+    available_months: [...monthGroups].reverse().map((group) => ({ month_sort: group.month_sort, month_label: group.month_label })),
+    current_month: {
+      month_label: selectedGroup.month_label || first.month_label || selectedGroup.month_sort,
+      month_sort: selectedGroup.month_sort,
+      tracker_state: first.tracker_state || "",
+      status_headline: first.status_headline || "",
+      what_changed: first.what_changed || "",
+      monthly_note: first.monthly_note || "",
+      monthly_outturn_source: first.monthly_outturn_source || "",
+      budget_baseline_source: first.budget_baseline_source || "",
+      supporting_fiscal_context: first.supporting_fiscal_context || "",
+      counts,
+    },
+    kpis,
+    archive: archiveRows.map(normaliseArchiveRow),
+  };
+};
