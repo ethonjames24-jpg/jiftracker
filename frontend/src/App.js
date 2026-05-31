@@ -18,7 +18,7 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const loadTracker = useCallback(async (monthSort = selectedMonth) => {
+  const loadTracker = useCallback(async (monthSort = "") => {
     setLoading(true);
     setError("");
     try {
@@ -30,16 +30,16 @@ const Home = () => {
     } finally {
       setLoading(false);
     }
-  }, [selectedMonth]);
+  }, []);
 
   useEffect(() => {
     loadTracker("");
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [loadTracker]);
 
-  const handleMonthChange = (monthSort) => {
+  const handleMonthChange = useCallback((monthSort) => {
     setSelectedMonth(monthSort);
     loadTracker(monthSort);
-  };
+  }, [loadTracker]);
 
   if (loading && !data) return <LoadingState />;
   if (error && !data) return <ErrorState message={error} onRetry={() => loadTracker("")} />;

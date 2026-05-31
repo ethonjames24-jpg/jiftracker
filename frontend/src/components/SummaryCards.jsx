@@ -1,6 +1,8 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { AlertTriangle, Eye, Gauge, ShieldCheck } from "lucide-react";
 
+const CARD_ANIMATION_STAGGER_MS = 70;
+
 export const SummaryCards = ({ counts }) => {
   const items = [
     { label: "On Track", value: counts?.on_track || 0, icon: ShieldCheck, color: "#0b6b3a", testId: "summary-on-track" },
@@ -20,7 +22,7 @@ export const SummaryCards = ({ counts }) => {
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {items.map(({ label, value, icon: Icon, color, testId }, index) => (
-            <Card key={label} data-testid={`${testId}-card`} className="animate-rise rounded-[8px] border-2 border-black bg-[#fffdf3] shadow-[5px_5px_0_#111] transition-transform hover:-translate-y-1" style={{ animationDelay: `${index * 70}ms` }}>
+            <Card key={label} data-testid={`${testId}-card`} className="animate-rise rounded-[8px] border-2 border-black bg-[#fffdf3] shadow-[5px_5px_0_#111] transition-transform hover:-translate-y-1" style={{ animationDelay: `${index * CARD_ANIMATION_STAGGER_MS}ms` }}>
               <CardContent className="p-5">
                 <div className="mb-6 flex items-center justify-between">
                   <p data-testid={`${testId}-label`} className="text-sm font-black uppercase tracking-[0.12em] text-zinc-700">{label}</p>

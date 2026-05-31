@@ -1,6 +1,15 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { StatusBadge } from "@/components/StatusBadge";
-import { AlertTriangle, CalendarDays, ClipboardList, Newspaper } from "lucide-react";
+import { AlertTriangle, CalendarDays, Newspaper } from "lucide-react";
+
+const metricToneClasses = {
+  green: "text-emerald-700",
+  amber: "text-amber-700",
+  red: "text-red-700",
+  black: "text-black",
+};
+
+const getMetricToneClass = (tone) => metricToneClasses[tone] || metricToneClasses.black;
 
 export const Overview = ({ currentMonth }) => {
   const counts = currentMonth?.counts || {};
@@ -52,7 +61,7 @@ export const Overview = ({ currentMonth }) => {
 const Metric = ({ label, value = 0, testId, tone = "black" }) => (
   <div className="min-h-[118px] p-4" data-testid={`${testId}-card`}>
     <p data-testid={`${testId}-label`} className="text-xs font-black uppercase tracking-[0.12em] text-zinc-600">{label}</p>
-    <p data-testid={testId} className={`mt-3 font-display text-5xl font-black ${tone === "green" ? "text-emerald-700" : tone === "amber" ? "text-amber-700" : tone === "red" ? "text-red-700" : "text-black"}`}>{value}</p>
+    <p data-testid={testId} className={`mt-3 font-display text-5xl font-black ${getMetricToneClass(tone)}`}>{value}</p>
   </div>
 );
 

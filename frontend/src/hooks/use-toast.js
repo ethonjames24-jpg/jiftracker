@@ -135,15 +135,19 @@ function toast({
 function useToast() {
   const [state, setState] = React.useState(memoryState)
 
-  React.useEffect(() => {
+  const subscribeToToasts = React.useCallback(() => {
     listeners.push(setState)
     return () => {
-      const index = listeners.indexOf(setState)
-      if (index > -1) {
-        listeners.splice(index, 1)
+      const listenerIndex = listeners.indexOf(setState)
+      if (listenerIndex > -1) {
+        listeners.splice(listenerIndex, 1)
       }
     };
-  }, [state])
+  }, [])
+
+  React.useEffect(() => {
+    return subscribeToToasts()
+  }, [subscribeToToasts])
 
   return {
     ...state,

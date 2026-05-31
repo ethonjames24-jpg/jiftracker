@@ -68,3 +68,9 @@ User choices:
 - Review dashboard wording and source labels with Jamaica In Focus editorial team.
 - Add charts after more live months are added to the workbook.
 - Consider adding public share cards for individual monthly tracker updates.
+
+## Implemented — 2026-05-31 Code Review Fixes
+- Refactored backend tracker transformation into smaller helpers for validation, grouping, KPI sorting, counts, archive normalization, and payload construction.
+- Hardened CSV row handling to avoid stale/undefined row references and handle sparse repeated month fields safely.
+- Fixed React hook dependencies in App and toast hook, removed nested ternary styling logic, and replaced magic timing values with named constants.
+- Re-verified live API values, backend tests, frontend lint, production build, and dashboard screenshot.
