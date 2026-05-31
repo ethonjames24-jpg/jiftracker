@@ -53,6 +53,10 @@ def _to_int(value: Any, default: int = 0) -> int:
         return default
 
 
+def _display_month_label(value: str) -> str:
+    return _clean_value(value).replace("-", " ")
+
+
 def _fetch_csv_tab(tab_name: str) -> List[Dict[str, str]]:
     url = SHEET_BASE_URL.format(sheet_id=SPREADSHEET_ID, tab=tab_name)
     response = requests.get(url, timeout=20)
@@ -89,8 +93,9 @@ async def fetch_sheet_tab(tab_name: str) -> List[Dict[str, str]]:
 
 
 def _normalise_archive_row(row: Dict[str, str]) -> Dict[str, str]:
+    raw_month = row.get("month_label") or row.get("Month") or row.get("month") or ""
     return {
-        "month_label": row.get("month_label") or row.get("Month") or row.get("month") or "",
+        "month_label": _display_month_label(raw_month),
         "month_sort": row.get("month_sort") or "",
         "tracker_state": row.get("tracker_state") or row.get("Tracker Status") or "",
         "status": row.get("status_headline") or row.get("Status") or "",
