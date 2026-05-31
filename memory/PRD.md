@@ -74,3 +74,10 @@ User choices:
 - Hardened CSV row handling to avoid stale/undefined row references and handle sparse repeated month fields safely.
 - Fixed React hook dependencies in App and toast hook, removed nested ternary styling logic, and replaced magic timing values with named constants.
 - Re-verified live API values, backend tests, frontend lint, production build, and dashboard screenshot.
+
+## Implemented — 2026-05-31 Additional Code Review Cleanup
+- Moved tracker data loading into a dedicated React hook to reduce App component complexity and keep hook dependencies explicit.
+- Simplified toast reducer responsibilities into focused helper functions and removed the extra subscription callback closure.
+- Further decomposed backend tracker row validation into month-context helper functions.
+- Added type hints to tracker API tests.
+- Re-verified Python lint, JavaScript lint, backend tests, production build, and live dashboard screenshot.

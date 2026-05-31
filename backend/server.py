@@ -108,23 +108,41 @@ def _first_present(row: Dict[str, str], keys: List[str]) -> str:
     return next((row.get(key, "") for key in keys if row.get(key)), "")
 
 
+def _has_kpi_label(source_row: Dict[str, str]) -> bool:
+    return bool(source_row.get("kpi_label"))
+
+
+def _is_month_anchor(source_row: Dict[str, str]) -> bool:
+    display_order = _to_int(source_row.get("display_order"), FALLBACK_DISPLAY_ORDER)
+    return bool(source_row.get("month_label")) or display_order == 1
+
+
+def _next_month_context(source_row: Dict[str, str], current_label: str, current_sort: str) -> Dict[str, str]:
+    if not _is_month_anchor(source_row):
+        return {"month_label": current_label, "month_sort": current_sort}
+
+    next_label = source_row.get("month_label") or current_label or source_row.get("month_sort", "")
+    next_sort = source_row.get("month_sort") or current_sort
+    return {"month_label": next_label, "month_sort": next_sort}
+
+
+def _row_with_month_context(source_row: Dict[str, str], month_context: Dict[str, str]) -> Dict[str, str]:
+    tracker_row = dict(source_row)
+    tracker_row["month_label"] = tracker_row.get("month_label") or month_context["month_label"]
+    tracker_row["month_sort"] = month_context["month_sort"] or tracker_row.get("month_sort", "")
+    return tracker_row
+
+
 def _valid_tracker_rows(monthly_rows: List[Dict[str, str]]) -> List[Dict[str, str]]:
     valid_rows: List[Dict[str, str]] = []
-    active_month_label = ""
-    active_month_sort = ""
+    month_context = {"month_label": "", "month_sort": ""}
 
     for source_row in monthly_rows:
-        if not source_row.get("kpi_label"):
+        if not _has_kpi_label(source_row):
             continue
 
-        display_order = _to_int(source_row.get("display_order"), FALLBACK_DISPLAY_ORDER)
-        if source_row.get("month_label") or display_order == 1:
-            active_month_label = source_row.get("month_label") or active_month_label or source_row.get("month_sort", "")
-            active_month_sort = source_row.get("month_sort") or active_month_sort
-
-        tracker_row = dict(source_row)
-        tracker_row["month_label"] = tracker_row.get("month_label") or active_month_label
-        tracker_row["month_sort"] = active_month_sort or tracker_row.get("month_sort", "")
+        month_context = _next_month_context(source_row, month_context["month_label"], month_context["month_sort"])
+        tracker_row = _row_with_month_context(source_row, month_context)
 
         if tracker_row.get("month_sort"):
             valid_rows.append(tracker_row)

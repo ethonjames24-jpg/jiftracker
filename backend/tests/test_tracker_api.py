@@ -1,8 +1,9 @@
 import pytest
+import requests
 
 
 # Tracker API: health and data-shape checks for live Google Sheet integration
-def test_tracker_endpoint_returns_live_payload(api_client, base_url):
+def test_tracker_endpoint_returns_live_payload(api_client: requests.Session, base_url: str) -> None:
     response = api_client.get(f"{base_url}/api/tracker", timeout=30)
     assert response.status_code == 200
 
@@ -15,7 +16,7 @@ def test_tracker_endpoint_returns_live_payload(api_client, base_url):
 
 
 # Tracker API: default month and KPI count expectations for Apr 2026
-def test_tracker_default_month_counts_match_expected(api_client, base_url):
+def test_tracker_default_month_counts_match_expected(api_client: requests.Session, base_url: str) -> None:
     response = api_client.get(f"{base_url}/api/tracker", timeout=30)
     assert response.status_code == 200
 
@@ -27,7 +28,7 @@ def test_tracker_default_month_counts_match_expected(api_client, base_url):
 
 
 # Tracker API: KPI ordering and status mapping checks
-def test_tracker_kpi_rows_sorted_and_statuses_correct(api_client, base_url):
+def test_tracker_kpi_rows_sorted_and_statuses_correct(api_client: requests.Session, base_url: str) -> None:
     response = api_client.get(f"{base_url}/api/tracker", timeout=30)
     assert response.status_code == 200
 
@@ -50,7 +51,7 @@ def test_tracker_kpi_rows_sorted_and_statuses_correct(api_client, base_url):
 
 
 # Tracker API: month filtering behaves and keeps expected April data
-def test_tracker_month_query_param_for_april(api_client, base_url):
+def test_tracker_month_query_param_for_april(api_client: requests.Session, base_url: str) -> None:
     response = api_client.get(f"{base_url}/api/tracker", params={"month": "2026-04"}, timeout=30)
     assert response.status_code == 200
 
@@ -61,7 +62,7 @@ def test_tracker_month_query_param_for_april(api_client, base_url):
 
 
 # Tracker API: archive section contains April 2026 and Under Pressure status
-def test_tracker_archive_contains_april_entry(api_client, base_url):
+def test_tracker_archive_contains_april_entry(api_client: requests.Session, base_url: str) -> None:
     response = api_client.get(f"{base_url}/api/tracker", timeout=30)
     assert response.status_code == 200
 
@@ -72,7 +73,7 @@ def test_tracker_archive_contains_april_entry(api_client, base_url):
 
 
 # Tracker API: invalid month should gracefully fall back (not fail)
-def test_tracker_invalid_month_fallback(api_client, base_url):
+def test_tracker_invalid_month_fallback(api_client: requests.Session, base_url: str) -> None:
     response = api_client.get(f"{base_url}/api/tracker", params={"month": "1900-01"}, timeout=30)
     assert response.status_code == 200
 
