@@ -4,7 +4,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "@/index.css";
 import App from "@/App";
 
-const QUERY_STALE_TIME_MS = 60000;
+const SECONDS_PER_MINUTE = 60;
+const MILLISECONDS_PER_SECOND = 1000;
+const QUERY_STALE_TIME_MS = SECONDS_PER_MINUTE * MILLISECONDS_PER_SECOND;
 
 const queryClient = new QueryClient({
   defaultOptions: {

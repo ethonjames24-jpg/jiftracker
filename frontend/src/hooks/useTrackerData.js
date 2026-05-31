@@ -3,40 +3,40 @@ import { fetchTracker } from "@/services/trackerApi";
 
 const DEFAULT_TRACKER_ERROR = "Live tracker data is unavailable.";
 
-const getTrackerErrorMessage = (requestError) => {
-  return requestError?.response?.data?.detail || requestError?.message || DEFAULT_TRACKER_ERROR;
-};
-
-const getTrackerMonthSort = (tracker) => tracker?.current_month?.month_sort || "";
-
-export const useTrackerData = () => {
+export const useTrackerData = (trackerFetcher = fetchTracker) => {
   const [data, setData] = useState(null);
   const [selectedMonth, setSelectedMonth] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const getTrackerMonthSort = useCallback((tracker) => tracker?.current_month?.month_sort || "", []);
+
+  const getTrackerErrorMessage = useCallback((requestError) => {
+    return requestError?.response?.data?.detail || requestError?.message || DEFAULT_TRACKER_ERROR;
+  }, []);
+
   const applyTrackerData = useCallback((tracker) => {
     setData(tracker);
     setSelectedMonth(getTrackerMonthSort(tracker));
-  }, [setData, setSelectedMonth]);
+  }, [getTrackerMonthSort, setData, setSelectedMonth]);
 
   const applyTrackerError = useCallback((requestError) => {
     setError(getTrackerErrorMessage(requestError));
-  }, [setError]);
+  }, [getTrackerErrorMessage, setError]);
 
   const loadTracker = useCallback(async (monthSort = "") => {
     setLoading(true);
     setError("");
 
     try {
-      const tracker = await fetchTracker(monthSort);
+      const tracker = await trackerFetcher(monthSort);
       applyTrackerData(tracker);
     } catch (requestError) {
       applyTrackerError(requestError);
     } finally {
       setLoading(false);
     }
-  }, [applyTrackerData, applyTrackerError, setError, setLoading]);
+  }, [applyTrackerData, applyTrackerError, setError, setLoading, trackerFetcher]);
 
   const handleMonthChange = useCallback((monthSort) => {
     setSelectedMonth(monthSort);

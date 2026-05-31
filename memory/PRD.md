@@ -81,3 +81,10 @@ User choices:
 - Further decomposed backend tracker row validation into month-context helper functions.
 - Added type hints to tracker API tests.
 - Re-verified Python lint, JavaScript lint, backend tests, production build, and live dashboard screenshot.
+
+## Implemented — 2026-05-31 Final Code Review Cleanup
+- Converted tracker helper functions into hook-scoped callbacks so dependency arrays are explicit and warning-free.
+- Removed production console warning from CRACO optional visual-edit fallback.
+- Replaced remaining literal timeout with named time-unit constants and preserved named summary-card animation timing.
+- Adjusted backend value cleanup to avoid the reported literal identity-comparison pattern.
+- Re-verified JavaScript lint, Python lint, backend tests, production build, and live dashboard screenshot.

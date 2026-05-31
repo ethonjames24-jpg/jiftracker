@@ -40,7 +40,7 @@ def _clean_key(key: Optional[str], fallback_index: int) -> str:
 
 
 def _clean_value(value: Any) -> str:
-    return str(value).strip() if value is not None else ""
+    return "" if value in (None,) else str(value).strip()
 
 
 def _truthy(value: Any) -> bool:
