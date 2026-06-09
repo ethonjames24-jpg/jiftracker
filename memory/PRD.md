@@ -94,3 +94,11 @@ User choices:
 - Added package-lock, README, setup/build/deployment instructions, local logo asset, and public CSV Google Sheets connection docs.
 - Verified `npm install`, `npm run dev`, live data loading, and `npm run build`.
 - Created downloadable ZIP at `/app/jamaica-in-focus-budget-tracker-source.zip`.
+
+## Implemented — 2026-06-09 Webhook Subscription Architecture
+- Added a single public subscription form to the standalone Vite package with email, required consent checkbox, privacy notice, and NOTIFY ME button.
+- Added compact CTA above footer and mobile sticky GET MONTHLY UPDATES scroll button.
+- Submissions go only to `VITE_TRACKER_SUBSCRIBE_WEBHOOK_URL`; no private subscriber workbook URL, ID, credentials, or records are included.
+- Added controlled configuration warning when webhook URL is missing.
+- Documented Cloudflare Pages Preview and Production environment variable setup.
+- Verified production build and scanned source for private workbook identifiers/columns.

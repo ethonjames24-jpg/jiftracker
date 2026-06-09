@@ -6,6 +6,7 @@ import { KpiTable } from "./components/KpiTable.jsx";
 import { SourceSection } from "./components/SourceSection.jsx";
 import { ArchiveSection } from "./components/ArchiveSection.jsx";
 import { MethodologySection } from "./components/MethodologySection.jsx";
+import { CompactSubscribeCta, MobileSubscribeButton, SubscriptionSection } from "./components/SubscriptionSection.jsx";
 import { ErrorState, LoadingState } from "./components/States.jsx";
 import { useTrackerData } from "./hooks/useTrackerData.js";
 
@@ -37,12 +38,15 @@ export default function App() {
       {error && <NonBlockingError message={error} />}
       <main data-testid="dashboard-main-content">
         <Overview currentMonth={data.current_month} />
+        <SubscriptionSection />
         <SummaryCards counts={data.current_month?.counts} />
         <KpiTable kpis={data.kpis || []} monthLabel={data.current_month?.month_label} />
         <SourceSection currentMonth={data.current_month} />
         <ArchiveSection archive={data.archive || []} />
         <MethodologySection />
+        <CompactSubscribeCta />
       </main>
+      <MobileSubscribeButton />
       <Footer />
     </div>
   );
