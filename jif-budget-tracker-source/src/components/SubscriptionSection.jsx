@@ -80,8 +80,8 @@ export const SubscriptionSection = ({ monthSort }) => {
             Receive one email when a new monthly budget update is published. No daily newsletter. No spam.
           </p>
           <div data-testid="subscribe-privacy-principles" className="subscribe-principles">
-            <div><MailCheck size={20} aria-hidden="true" />New monthly update only</div>
-            <div><ShieldCheck size={20} aria-hidden="true" />Your email stays private</div>
+            <div><MailCheck size={20} aria-hidden="true" />Monthly updates only</div>
+            <div><ShieldCheck size={20} aria-hidden="true" />Unsubscribe anytime</div>
           </div>
         </div>
 
@@ -130,7 +130,7 @@ export const SubscriptionSection = ({ monthSort }) => {
           </button>
 
           <p id="subscribe-privacy-notice" data-testid="subscribe-privacy-notice" className="privacy-notice">
-            Privacy notice: this form sends your email and consent only to the configured subscription webhook. It does not read subscriber records, does not connect to the private subscriber workbook, and does not store subscriber information in your browser.
+            Privacy notice: Your email will be used only to send Jamaica In Focus Budget Tracker updates. We will not sell or share your information, and you can unsubscribe at any time.
           </p>
 
           {!isConfigured && !message && (

@@ -115,3 +115,9 @@ User choices:
 - Changed subscription trust label from “Webhook-only submission” to “Your email stays private”.
 - No form logic, webhook contract, layout, environment variables, or other source files were intentionally changed.
 - Verified `npm run build` passed.
+
+## Implemented — 2026-06-09 Subscription Privacy Copy Update
+- Updated subscription privacy notice to approved final text.
+- Updated trust labels to “Monthly updates only” and “Unsubscribe anytime”.
+- Preserved icons, layout, form fields, honeypot, webhook payload, response handling, environment-variable logic, and tracker feed.
+- Verified `npm run build` passed.
