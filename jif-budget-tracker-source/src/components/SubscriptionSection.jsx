@@ -81,7 +81,7 @@ export const SubscriptionSection = ({ monthSort }) => {
           </p>
           <div data-testid="subscribe-privacy-principles" className="subscribe-principles">
             <div><MailCheck size={20} aria-hidden="true" />New monthly update only</div>
-            <div><ShieldCheck size={20} aria-hidden="true" />Webhook-only submission</div>
+            <div><ShieldCheck size={20} aria-hidden="true" />Your email stays private</div>
           </div>
         </div>
 

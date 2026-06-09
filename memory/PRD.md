@@ -110,3 +110,8 @@ User choices:
 - Added hidden company honeypot field excluded from keyboard navigation.
 - Updated webhook response handling to parse response body before falling back to server_error, including non-2xx responses.
 - Verified `.env.example` exists, `.gitignore` does not exclude it, `npm run build` passed, and contract/privacy checks passed.
+
+## Implemented — 2026-06-09 Subscription Trust Label Copy Update
+- Changed subscription trust label from “Webhook-only submission” to “Your email stays private”.
+- No form logic, webhook contract, layout, environment variables, or other source files were intentionally changed.
+- Verified `npm run build` passed.
