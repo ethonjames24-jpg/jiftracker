@@ -102,3 +102,11 @@ User choices:
 - Added controlled configuration warning when webhook URL is missing.
 - Documented Cloudflare Pages Preview and Production environment variable setup.
 - Verified production build and scanned source for private workbook identifiers/columns.
+
+## Implemented — 2026-06-09 Subscription Webhook Contract Patch
+- Updated standalone subscription service to send `Content-Type: text/plain;charset=UTF-8` with a JSON-stringified body.
+- Updated webhook payload to include email, source `jif_budget_tracker`, selected month_sort, consent, honeypot company, page_url, and submitted_at.
+- Removed browser-side `consent_at`; n8n remains authoritative for consent timestamp.
+- Added hidden company honeypot field excluded from keyboard navigation.
+- Updated webhook response handling to parse response body before falling back to server_error, including non-2xx responses.
+- Verified `.env.example` exists, `.gitignore` does not exclude it, `npm run build` passed, and contract/privacy checks passed.

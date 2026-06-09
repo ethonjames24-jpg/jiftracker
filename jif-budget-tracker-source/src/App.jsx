@@ -38,7 +38,7 @@ export default function App() {
       {error && <NonBlockingError message={error} />}
       <main data-testid="dashboard-main-content">
         <Overview currentMonth={data.current_month} />
-        <SubscriptionSection />
+        <SubscriptionSection monthSort={data.current_month?.month_sort || selectedMonth} />
         <SummaryCards counts={data.current_month?.counts} />
         <KpiTable kpis={data.kpis || []} monthLabel={data.current_month?.month_label} />
         <SourceSection currentMonth={data.current_month} />

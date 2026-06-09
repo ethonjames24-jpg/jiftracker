@@ -37,9 +37,10 @@ export const CompactSubscribeCta = () => (
   </section>
 );
 
-export const SubscriptionSection = () => {
+export const SubscriptionSection = ({ monthSort }) => {
   const [email, setEmail] = useState("");
   const [consent, setConsent] = useState(false);
+  const [company, setCompany] = useState("");
   const [status, setStatus] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -56,14 +57,15 @@ export const SubscriptionSection = () => {
     }
 
     setIsSubmitting(true);
-    const result = await submitSubscription({ email: email.trim(), consent });
+    const result = await submitSubscription({ email, monthSort, consent, company });
     setStatus(result.status);
     if (result.status === "pending_confirmation" || result.status === "already_subscribed") {
       setEmail("");
       setConsent(false);
+      setCompany("");
     }
     setIsSubmitting(false);
-  }, [consent, email, validateForm]);
+  }, [company, consent, email, monthSort, validateForm]);
 
   const isConfigured = isSubscribeWebhookConfigured();
   const message = status ? statusMessages[status] : "";
@@ -96,6 +98,20 @@ export const SubscriptionSection = () => {
             aria-describedby="subscribe-privacy-notice subscribe-status-message"
             required
           />
+
+          <label className="honeypot-field" htmlFor="subscriber-company" aria-hidden="true">
+            Company
+            <input
+              id="subscriber-company"
+              data-testid="subscriber-company-honeypot"
+              type="text"
+              name="company"
+              value={company}
+              tabIndex={-1}
+              autoComplete="off"
+              onChange={(event) => setCompany(event.target.value)}
+            />
+          </label>
 
           <label className="consent-row" data-testid="subscriber-consent-label">
             <input

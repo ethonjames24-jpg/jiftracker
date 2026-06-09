@@ -126,11 +126,16 @@ The browser sends this payload to the configured n8n webhook:
 ```json
 {
   "email": "reader@example.com",
+  "source": "jif_budget_tracker",
+  "month_sort": "2026-04",
   "consent": true,
-  "source": "jamaica_in_focus_budget_tracker_public_site",
-  "consent_at": "ISO timestamp"
+  "company": "",
+  "page_url": "https://example.com/current-page",
+  "submitted_at": "ISO timestamp"
 }
 ```
+
+Implementation note: the request uses `Content-Type: text/plain;charset=UTF-8` while still sending `JSON.stringify(...)` in the body. This avoids an unnecessary browser CORS preflight against the self-hosted n8n webhook. The browser does not send `consent_at`; the n8n workflow creates the authoritative consent timestamp.
 
 The n8n workflow is responsible for validation and subscriber storage. The public website must only receive one of these controlled statuses from the webhook:
 

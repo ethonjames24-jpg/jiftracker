@@ -7,17 +7,21 @@ const VALID_WEBHOOK_STATUSES = new Set([
   "server_error",
 ]);
 
-const SUBSCRIPTION_SOURCE = "jamaica_in_focus_budget_tracker_public_site";
+const SUBSCRIPTION_SOURCE = "jif_budget_tracker";
 
 export const isSubscribeWebhookConfigured = () => Boolean(TRACKER_SUBSCRIBE_WEBHOOK_URL);
 
 const parseWebhookResponse = async (response) => {
-  const contentType = response.headers.get("content-type") || "";
-  if (contentType.includes("application/json")) {
-    return response.json();
+  const responseText = await response.text();
+  if (!responseText.trim()) {
+    throw new Error("Empty webhook response");
   }
-  const text = await response.text();
-  return { status: text.trim() };
+
+  try {
+    return JSON.parse(responseText);
+  } catch {
+    return { status: responseText.trim() };
+  }
 };
 
 const normaliseWebhookStatus = (payload) => {
@@ -25,30 +29,31 @@ const normaliseWebhookStatus = (payload) => {
   return VALID_WEBHOOK_STATUSES.has(status) ? status : "server_error";
 };
 
-export const submitSubscription = async ({ email, consent }) => {
+export const submitSubscription = async ({ email, monthSort, consent, company }) => {
   if (!isSubscribeWebhookConfigured()) {
     return { status: "configuration_error" };
   }
 
-  if (!email || !consent) {
+  const normalizedEmail = email.trim().toLowerCase();
+
+  if (!normalizedEmail || !consent) {
     return { status: "validation_error" };
   }
 
   try {
     const response = await fetch(TRACKER_SUBSCRIBE_WEBHOOK_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "text/plain;charset=UTF-8" },
       body: JSON.stringify({
-        email,
-        consent,
+        email: normalizedEmail,
         source: SUBSCRIPTION_SOURCE,
-        consent_at: new Date().toISOString(),
+        month_sort: monthSort || "",
+        consent,
+        company: company || "",
+        page_url: window.location.href,
+        submitted_at: new Date().toISOString(),
       }),
     });
-
-    if (!response.ok) {
-      return { status: "server_error" };
-    }
 
     const payload = await parseWebhookResponse(response);
     return { status: normaliseWebhookStatus(payload) };
