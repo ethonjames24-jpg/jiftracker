@@ -1,5 +1,5 @@
 import { LOGO_URL } from "./config.js";
-import { Header } from "./components/Header.jsx";
+import { BackToTopButton, Header } from "./components/Header.jsx";
 import { Overview } from "./components/Overview.jsx";
 import { SummaryCards } from "./components/SummaryCards.jsx";
 import { KpiTable } from "./components/KpiTable.jsx";
@@ -34,6 +34,8 @@ export default function App() {
 
   return (
     <div className="app" data-testid="dashboard-app">
+      <div id="page-top" className="page-top-sentinel" aria-hidden="true" />
+      <div id="back-to-top-sentinel" className="back-to-top-sentinel" aria-hidden="true" />
       <Header months={data.available_months || []} selectedMonth={selectedMonth} onMonthChange={handleMonthChange} />
       {error && <NonBlockingError message={error} />}
       <main data-testid="dashboard-main-content">
@@ -46,6 +48,7 @@ export default function App() {
         <MethodologySection />
         <CompactSubscribeCta />
       </main>
+      <BackToTopButton />
       <MobileSubscribeButton />
       <Footer />
     </div>
