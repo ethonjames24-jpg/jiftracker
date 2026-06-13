@@ -94,3 +94,30 @@ User choices:
 - Added package-lock, README, setup/build/deployment instructions, local logo asset, and public CSV Google Sheets connection docs.
 - Verified `npm install`, `npm run dev`, live data loading, and `npm run build`.
 - Created downloadable ZIP at `/app/jamaica-in-focus-budget-tracker-source.zip`.
+
+## Implemented — 2026-06-09 Webhook Subscription Architecture
+- Added a single public subscription form to the standalone Vite package with email, required consent checkbox, privacy notice, and NOTIFY ME button.
+- Added compact CTA above footer and mobile sticky GET MONTHLY UPDATES scroll button.
+- Submissions go only to `VITE_TRACKER_SUBSCRIBE_WEBHOOK_URL`; no private subscriber workbook URL, ID, credentials, or records are included.
+- Added controlled configuration warning when webhook URL is missing.
+- Documented Cloudflare Pages Preview and Production environment variable setup.
+- Verified production build and scanned source for private workbook identifiers/columns.
+
+## Implemented — 2026-06-09 Subscription Webhook Contract Patch
+- Updated standalone subscription service to send `Content-Type: text/plain;charset=UTF-8` with a JSON-stringified body.
+- Updated webhook payload to include email, source `jif_budget_tracker`, selected month_sort, consent, honeypot company, page_url, and submitted_at.
+- Removed browser-side `consent_at`; n8n remains authoritative for consent timestamp.
+- Added hidden company honeypot field excluded from keyboard navigation.
+- Updated webhook response handling to parse response body before falling back to server_error, including non-2xx responses.
+- Verified `.env.example` exists, `.gitignore` does not exclude it, `npm run build` passed, and contract/privacy checks passed.
+
+## Implemented — 2026-06-09 Subscription Trust Label Copy Update
+- Changed subscription trust label from “Webhook-only submission” to “Your email stays private”.
+- No form logic, webhook contract, layout, environment variables, or other source files were intentionally changed.
+- Verified `npm run build` passed.
+
+## Implemented — 2026-06-09 Subscription Privacy Copy Update
+- Updated subscription privacy notice to approved final text.
+- Updated trust labels to “Monthly updates only” and “Unsubscribe anytime”.
+- Preserved icons, layout, form fields, honeypot, webhook payload, response handling, environment-variable logic, and tracker feed.
+- Verified `npm run build` passed.

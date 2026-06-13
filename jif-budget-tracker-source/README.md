@@ -12,6 +12,7 @@ A standalone React/Vite dashboard for the **Jamaica In Focus Budget Performance 
 - Production build instructions
 - Deployment instructions for Cloudflare Pages, Netlify, and Vercel
 - Google Sheets connection explanation
+- Webhook-only subscription form documentation
 
 ## Recommended deployment target
 
@@ -72,9 +73,12 @@ Variables:
 ```bash
 VITE_GOOGLE_SHEET_ID=13npg-j5jjMzE115EOkkBdq7Rav1L5-RUPl1rza5e_v0
 VITE_LOGO_URL=/jif-logo.png
+VITE_TRACKER_SUBSCRIBE_WEBHOOK_URL=
 ```
 
-Both variables are public. No private credentials are required for the default setup. The logo is bundled locally at `public/jif-logo.png`, so the dashboard does not depend on the original upload URL.
+`VITE_GOOGLE_SHEET_ID` and `VITE_LOGO_URL` are public. `VITE_TRACKER_SUBSCRIBE_WEBHOOK_URL` is the public n8n webhook endpoint that receives subscription requests. No private Google Sheets credentials are required for the default setup. The logo is bundled locally at `public/jif-logo.png`, so the dashboard does not depend on the original upload URL.
+
+If `VITE_TRACKER_SUBSCRIBE_WEBHOOK_URL` is blank, the subscription form shows a controlled configuration message and does not submit anywhere.
 
 ## How the Google Sheets connection works
 
@@ -100,6 +104,54 @@ Anyone with the link → Viewer
 ```
 
 No write access is used. The dashboard does not edit, delete, append, or modify Google Sheet rows.
+
+## Subscription form architecture
+
+The site includes one subscription form with:
+
+- Email address field
+- Required consent checkbox
+- `NOTIFY ME` button
+- Small privacy notice
+- Mobile `GET MONTHLY UPDATES` button that scrolls to the form
+
+Subscriber submissions are sent only to:
+
+```text
+VITE_TRACKER_SUBSCRIBE_WEBHOOK_URL
+```
+
+The browser sends this payload to the configured n8n webhook:
+
+```json
+{
+  "email": "reader@example.com",
+  "source": "jif_budget_tracker",
+  "month_sort": "2026-04",
+  "consent": true,
+  "company": "",
+  "page_url": "https://example.com/current-page",
+  "submitted_at": "ISO timestamp"
+}
+```
+
+Implementation note: the request uses `Content-Type: text/plain;charset=UTF-8` while still sending `JSON.stringify(...)` in the body. This avoids an unnecessary browser CORS preflight against the self-hosted n8n webhook. The browser does not send `consent_at`; the n8n workflow creates the authoritative consent timestamp.
+
+The n8n workflow is responsible for validation and subscriber storage. The public website must only receive one of these controlled statuses from the webhook:
+
+- `pending_confirmation`
+- `already_subscribed`
+- `validation_error`
+- `server_error`
+
+Privacy and security rules enforced by this frontend:
+
+- The public website does not read the private subscriber workbook.
+- The public website does not write to the private subscriber workbook.
+- The private workbook URL and spreadsheet ID are not included in the source code.
+- Google Sheets credentials are not included.
+- Subscriber records are never requested or displayed.
+- Subscriber information is not stored in `localStorage` or `sessionStorage`.
 
 ## Data behavior
 
@@ -129,7 +181,15 @@ Node version: 18 or newer
 ```text
 VITE_GOOGLE_SHEET_ID
 VITE_LOGO_URL
+VITE_TRACKER_SUBSCRIBE_WEBHOOK_URL
 ```
+
+For Cloudflare Pages, configure `VITE_TRACKER_SUBSCRIBE_WEBHOOK_URL` separately in both:
+
+- **Settings → Environment variables → Production**
+- **Settings → Environment variables → Preview**
+
+Use the production n8n webhook in Production and, if desired, a separate test n8n webhook in Preview. Do not put private Google Sheets credentials in Cloudflare Pages environment variables for this frontend.
 
 6. Deploy.
 
@@ -144,7 +204,7 @@ Build command: npm run build
 Publish directory: dist
 ```
 
-4. Add environment variables in **Site configuration → Environment variables** if needed.
+4. Add environment variables in **Site configuration → Environment variables** if needed, including `VITE_TRACKER_SUBSCRIBE_WEBHOOK_URL`.
 5. Deploy.
 
 ## Vercel deployment
@@ -159,7 +219,7 @@ Build command: npm run build
 Output directory: dist
 ```
 
-5. Add environment variables if needed.
+5. Add environment variables if needed, including `VITE_TRACKER_SUBSCRIBE_WEBHOOK_URL`.
 6. Deploy.
 
 ## If Google Sheets API access is required later
@@ -207,11 +267,13 @@ If the public CSV method is disabled or blocked, use a backend proxy with either
 │   │   ├── SourceSection.jsx
 │   │   ├── States.jsx
 │   │   ├── StatusBadge.jsx
+│   │   ├── SubscriptionSection.jsx
 │   │   └── SummaryCards.jsx
 │   ├── hooks
 │   │   └── useTrackerData.js
 │   └── services
-│       └── googleSheets.js
+│       ├── googleSheets.js
+│       └── subscribe.js
 └── README.md
 ```
 
@@ -219,5 +281,6 @@ If the public CSV method is disabled or blocked, use a backend proxy with either
 
 - This is a public, read-only dashboard.
 - No private credentials are included.
+- The private subscriber workbook is intentionally not referenced anywhere in the frontend package.
 - No Emergent-only hosting features are required.
 - The dashboard can be deployed as a normal static site.
