@@ -121,3 +121,10 @@ User choices:
 - Updated trust labels to “Monthly updates only” and “Unsubscribe anytime”.
 - Preserved icons, layout, form fields, honeypot, webhook payload, response handling, environment-variable logic, and tracker feed.
 - Verified `npm run build` passed.
+
+## Implemented — 2026-06-13 Sticky Section Navigation
+- Improved the top section navigation while preserving the single-page scrolling layout and existing tracker/subscription functionality.
+- Added sticky section navigation below the main header, smooth hash navigation, accessible active-section state, mobile horizontal nav behavior, and Back to top control.
+- Used Intersection Observer for active section and Back to top visibility; respected reduced-motion preferences.
+- Verified desktop section clicks, direct hash URL, browser Back/Forward, Back to top, mobile widths 320/375/390/430, no horizontal overflow, tracker rows, and subscription configuration flow.
+- `npm run build` passed locally. No production deployment or merge was performed.
