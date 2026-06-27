@@ -45,7 +45,7 @@ export default function App() {
         <KpiTable kpis={data.kpis || []} monthLabel={data.current_month?.month_label} />
         <SourceSection currentMonth={data.current_month} />
         <ArchiveSection archive={data.archive || []} />
-        <MethodologySection />
+        <MethodologySection currentMonth={data.current_month} />
         <CompactSubscribeCta />
       </main>
       <BackToTopButton />
