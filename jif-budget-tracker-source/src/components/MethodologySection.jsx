@@ -1,3 +1,5 @@
+import { DataQualityNote } from "./DataQualityNote.jsx";
+
 const indicators = ["Tax Revenue", "Non-Tax Revenue", "Total Revenue & Grants", "Primary Balance", "Fiscal Balance", "Compensation of Employees", "Capital Expenditure", "Interest"];
 
 const categories = [
@@ -8,7 +10,7 @@ const categories = [
 
 const slug = (value) => value.toLowerCase().replaceAll("&", "and").replaceAll(" ", "-");
 
-export const MethodologySection = () => (
+export const MethodologySection = ({ currentMonth }) => (
   <section id="methodology" className="section-band methodology-section" data-testid="methodology-section">
     <div className="methodology-grid">
       <div>
@@ -24,6 +26,7 @@ export const MethodologySection = () => (
             {indicators.map((item) => <span key={item} data-testid={`indicator-${slug(item)}`}>{item}</span>)}
           </div>
         </article>
+        <DataQualityNote currentMonth={currentMonth} />
         <article data-testid="status-categories-card" className="method-card">
           <h3 data-testid="status-categories-heading">Status categories</h3>
           {categories.map((item) => (

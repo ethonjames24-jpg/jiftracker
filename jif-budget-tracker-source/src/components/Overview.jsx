@@ -1,5 +1,8 @@
-import { AlertTriangle, CalendarDays, Newspaper } from "lucide-react";
+import { AlertTriangle, CalendarDays } from "lucide-react";
+import { LatestUpdateStatus } from "./LatestUpdateStatus.jsx";
+import { PublicSummaryCard } from "./PublicSummaryCard.jsx";
 import { StatusBadge } from "./StatusBadge.jsx";
+import { WhatChangedCard } from "./WhatChangedCard.jsx";
 
 const toneClasses = {
   green: "metric-green",
@@ -52,9 +55,13 @@ export const Overview = ({ currentMonth }) => {
           </div>
         </article>
       </div>
+      <div className="overview-update-row">
+        <LatestUpdateStatus currentMonth={currentMonth} />
+      </div>
       <div className="info-grid">
-        <InfoCard icon={Newspaper} title="What changed" value={currentMonth?.what_changed} testId="what-changed-card" />
+        <WhatChangedCard currentMonth={currentMonth} />
         <InfoCard icon={AlertTriangle} title="Monthly note" value={currentMonth?.monthly_note} testId="monthly-note-card" />
+        <PublicSummaryCard summary={currentMonth?.approved_email_summary} />
       </div>
     </section>
   );

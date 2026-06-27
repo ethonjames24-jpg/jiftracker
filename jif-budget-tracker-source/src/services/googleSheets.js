@@ -70,9 +70,20 @@ const fetchSheetTab = async (tabName) => {
   return rowsToObjects(parseCsv(await response.text()));
 };
 
-const firstPresent = (row, keys) => keys.find((key) => row[key]) ? row[keys.find((key) => row[key])] : "";
+const firstPresent = (row, keys) => {
+  const firstKey = keys.find((key) => cleanValue(row[key]));
+  return firstKey ? cleanValue(row[firstKey]) : "";
+};
 
 const displayMonthLabel = (value) => cleanValue(value).replaceAll("-", " ");
+
+const deriveYear = (row) => {
+  const explicitYear = firstPresent(row, ["year", "Year", "fiscal_year", "Fiscal Year"]);
+  if (explicitYear) return explicitYear;
+  const monthSort = cleanValue(row.month_sort);
+  const yearMatch = monthSort.match(/^(\d{4})/);
+  return yearMatch ? yearMatch[1] : "";
+};
 
 const normaliseArchiveRow = (row) => ({
   month_label: displayMonthLabel(firstPresent(row, ["month_label", "Month", "month"])),
@@ -80,6 +91,8 @@ const normaliseArchiveRow = (row) => ({
   tracker_state: firstPresent(row, ["tracker_state", "Tracker Status"]),
   status: firstPresent(row, ["status_headline", "Status"]),
   note: firstPresent(row, ["short_note", "Note"]),
+  year: deriveYear(row),
+  fiscal_year: firstPresent(row, ["fiscal_year", "Fiscal Year"]),
 });
 
 const isMonthAnchor = (row) => Boolean(row.month_label) || toInt(row.display_order, FALLBACK_DISPLAY_ORDER) === 1;
@@ -169,6 +182,25 @@ export const fetchTrackerData = async (requestedMonth = "") => {
       tracker_state: first.tracker_state || "",
       status_headline: first.status_headline || "",
       what_changed: first.what_changed || "",
+      what_changed_headline: first.what_changed_headline || "",
+      what_changed_bullets: first.what_changed_bullets || "",
+      what_changed_source_note: first.what_changed_source_note || "",
+      approved_email_summary: first.approved_email_summary || "",
+      latest_update_status: first.latest_update_status || first.status_headline || "",
+      latest_update_label: first.latest_update_label || first.month_label || selectedGroup.month_label || "",
+      latest_update_at: first.latest_update_at || "",
+      latest_update_note: first.latest_update_note || first.monthly_note || "",
+      data_freshness_state: first.data_freshness_state || first.tracker_state || "",
+      data_quality_status: first.data_quality_status || "",
+      data_quality_public_note: first.data_quality_public_note || "",
+      next_review_window: first.next_review_window || "",
+      receipts_pack_url: first.receipts_pack_url || "",
+      receipts_pack_label: first.receipts_pack_label || "",
+      receipts_pack_updated_at: first.receipts_pack_updated_at || "",
+      source_document_1_url: first.source_document_1_url || "",
+      source_document_1_label: first.source_document_1_label || "",
+      source_document_2_url: first.source_document_2_url || "",
+      source_document_2_label: first.source_document_2_label || "",
       monthly_note: first.monthly_note || "",
       monthly_outturn_source: first.monthly_outturn_source || "",
       budget_baseline_source: first.budget_baseline_source || "",
