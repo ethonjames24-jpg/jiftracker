@@ -70,6 +70,15 @@ const fetchSheetTab = async (tabName) => {
   return rowsToObjects(parseCsv(await response.text()));
 };
 
+const fetchOptionalSheetTab = async (tabName) => {
+  try {
+    return await fetchSheetTab(tabName);
+  } catch (error) {
+    console.warn(`Optional Google Sheet tab could not be loaded: ${tabName}`, error);
+    return [];
+  }
+};
+
 const firstPresent = (row, keys) => {
   const firstKey = keys.find((key) => cleanValue(row[key]));
   return firstKey ? cleanValue(row[firstKey]) : "";
@@ -157,10 +166,15 @@ const calculateCounts = (kpis, firstRow) => ({
 
 const selectMonthGroup = (groups, requestedMonth) => groups.find((group) => group.month_sort === requestedMonth) || groups[groups.length - 1];
 
+const findMonthlyExtras = (rows, monthSort) => rows.find((row) => cleanValue(row.month_sort) === cleanValue(monthSort)) || {};
+
+const preferExtras = (extras, row, keys, fallback = "") => cleanValue(extras[keys[0]]) || firstPresent(row, keys) || fallback;
+
 export const fetchTrackerData = async (requestedMonth = "") => {
-  const [trackerRows, archiveRows] = await Promise.all([
+  const [trackerRows, archiveRows, monthlyExtrasRows] = await Promise.all([
     fetchSheetTab(SHEET_TABS.tracker),
     fetchSheetTab(SHEET_TABS.archive),
+    fetchOptionalSheetTab(SHEET_TABS.monthlyExtras),
   ]);
 
   const validRows = validTrackerRows(trackerRows);
@@ -171,6 +185,7 @@ export const fetchTrackerData = async (requestedMonth = "") => {
   const kpis = dedupeAndSortKpis(selectedGroup.rows);
   const first = kpis[0];
   const counts = calculateCounts(kpis, first);
+  const extras = findMonthlyExtras(monthlyExtrasRows, selectedGroup.month_sort);
 
   return {
     spreadsheet_id: SHEET_ID,
@@ -182,25 +197,25 @@ export const fetchTrackerData = async (requestedMonth = "") => {
       tracker_state: first.tracker_state || "",
       status_headline: first.status_headline || "",
       what_changed: first.what_changed || "",
-      what_changed_headline: first.what_changed_headline || "",
-      what_changed_bullets: first.what_changed_bullets || "",
-      what_changed_source_note: first.what_changed_source_note || "",
-      approved_email_summary: first.approved_email_summary || "",
-      latest_update_status: first.latest_update_status || first.status_headline || "",
-      latest_update_label: first.latest_update_label || first.month_label || selectedGroup.month_label || "",
-      latest_update_at: first.latest_update_at || "",
-      latest_update_note: first.latest_update_note || first.monthly_note || "",
-      data_freshness_state: first.data_freshness_state || first.tracker_state || "",
-      data_quality_status: first.data_quality_status || "",
-      data_quality_public_note: first.data_quality_public_note || "",
-      next_review_window: first.next_review_window || "",
-      receipts_pack_url: first.receipts_pack_url || "",
-      receipts_pack_label: first.receipts_pack_label || "",
-      receipts_pack_updated_at: first.receipts_pack_updated_at || "",
-      source_document_1_url: first.source_document_1_url || "",
-      source_document_1_label: first.source_document_1_label || "",
-      source_document_2_url: first.source_document_2_url || "",
-      source_document_2_label: first.source_document_2_label || "",
+      what_changed_headline: preferExtras(extras, first, ["what_changed_headline"]),
+      what_changed_bullets: preferExtras(extras, first, ["what_changed_bullets"]),
+      what_changed_source_note: preferExtras(extras, first, ["what_changed_source_note"]),
+      approved_email_summary: preferExtras(extras, first, ["approved_email_summary"]),
+      latest_update_status: preferExtras(extras, first, ["latest_update_status", "status_headline"]),
+      latest_update_label: preferExtras(extras, first, ["latest_update_label", "month_label"], selectedGroup.month_label || ""),
+      latest_update_at: preferExtras(extras, first, ["latest_update_at"]),
+      latest_update_note: preferExtras(extras, first, ["latest_update_note", "monthly_note"]),
+      data_freshness_state: preferExtras(extras, first, ["data_freshness_state", "tracker_state"]),
+      data_quality_status: preferExtras(extras, first, ["data_quality_status"]),
+      data_quality_public_note: preferExtras(extras, first, ["data_quality_public_note"]),
+      next_review_window: preferExtras(extras, first, ["next_review_window"]),
+      receipts_pack_url: preferExtras(extras, first, ["receipts_pack_url"]),
+      receipts_pack_label: preferExtras(extras, first, ["receipts_pack_label"]),
+      receipts_pack_updated_at: preferExtras(extras, first, ["receipts_pack_updated_at"]),
+      source_document_1_url: preferExtras(extras, first, ["source_document_1_url", "source_doc_url"]),
+      source_document_1_label: preferExtras(extras, first, ["source_document_1_label", "source_doc_title"]),
+      source_document_2_url: preferExtras(extras, first, ["source_document_2_url", "budget_source_url"]),
+      source_document_2_label: preferExtras(extras, first, ["source_document_2_label", "budget_source_title"]),
       monthly_note: first.monthly_note || "",
       monthly_outturn_source: first.monthly_outturn_source || "",
       budget_baseline_source: first.budget_baseline_source || "",

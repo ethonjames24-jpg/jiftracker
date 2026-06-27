@@ -7,4 +7,5 @@ export const TRACKER_SUBSCRIBE_WEBHOOK_URL = import.meta.env.VITE_TRACKER_SUBSCR
 export const SHEET_TABS = {
   tracker: "DS_MonthlyTracker",
   archive: "archive",
+  monthlyExtras: "DS_PublicMonthlyExtras",
 };
