@@ -203,11 +203,14 @@ tbody tr:nth-child(even) { background: var(--paper); }
 .what-changed-bullets { margin: 14px 0; padding-left: 22px; line-height: 1.7; font-weight: 800; }
 .what-changed-bullets li::marker { color: var(--green); }
 .source-note, .public-link-meta { color: #555; font-size: .88rem; font-weight: 800; line-height: 1.55; }
-.public-summary-card { background: var(--paper); }
+.public-summary-card { background: white; }
 .public-receipts-card { border-color: var(--green); }
 .public-link-list { display: grid; gap: 10px; margin-top: 10px; }
 .public-link-list p { margin: 0; }
 .public-link-list a { color: var(--green); font-weight: 900; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.source-link-button { width: fit-content; display: inline-flex; align-items: center; gap: 8px; margin-top: 12px; border: var(--border); border-radius: 7px; background: var(--gold); color: var(--black); padding: 10px 13px; font-weight: 900; text-decoration: none; box-shadow: 3px 3px 0 var(--black); transition: transform .18s ease, background-color .18s ease; }
+.source-link-button:hover { transform: translateY(-2px); background: #ffe26a; }
+.source-link-button:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; }
 .public-link-meta { display: block; margin-top: 3px; }
 .data-quality-card { background: #fffdf3; }
 
