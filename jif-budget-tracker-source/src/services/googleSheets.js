@@ -345,6 +345,8 @@ export const fetchTrackerData = async (requestedMonth = "") => {
       data_freshness_state: preferExtras(extras, first, ["data_freshness_state", "tracker_state"]),
       data_quality_status: preferExtras(extras, first, ["data_quality_status"]),
       data_quality_public_note: preferExtras(extras, first, ["data_quality_public_note"]),
+      source_note: preferExtras(extras, first, ["source_note", "what_changed_source_note"]),
+      public_link_meta: preferExtras(extras, first, ["public_link_meta"]),
       next_review_window: preferExtras(extras, first, ["next_review_window"]),
       receipts_pack_url: preferExtras(extras, first, ["receipts_pack_url"]),
       receipts_pack_label: preferExtras(extras, first, ["receipts_pack_label"]),
