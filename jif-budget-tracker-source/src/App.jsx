@@ -7,6 +7,7 @@ import { SourceSection } from "./components/SourceSection.jsx";
 import { ArchiveSection } from "./components/ArchiveSection.jsx";
 import { MethodologySection } from "./components/MethodologySection.jsx";
 import { CompactSubscribeCta, MobileSubscribeButton, SubscriptionSection } from "./components/SubscriptionSection.jsx";
+import { AdminChecklist, isAdminChecklistRoute } from "./components/AdminChecklist.jsx";
 import { CaptureView, getCaptureMode } from "./components/CaptureViews.jsx";
 import { ErrorState, LoadingState } from "./components/States.jsx";
 import { useTrackerData } from "./hooks/useTrackerData.js";
@@ -30,10 +31,12 @@ const NonBlockingError = ({ message }) => (
 export default function App() {
   const { data, selectedMonth, loading, error, loadTracker, handleMonthChange } = useTrackerData();
   const captureMode = getCaptureMode();
+  const showAdminChecklist = isAdminChecklistRoute();
 
   if (loading && !data) return <LoadingState />;
   if (error && !data) return <ErrorState message={error} onRetry={() => loadTracker("")} />;
   if (captureMode) return <CaptureView mode={captureMode} data={data} />;
+  if (showAdminChecklist) return <AdminChecklist data={data} />;
 
   return (
     <div className="app" data-testid="dashboard-app">
