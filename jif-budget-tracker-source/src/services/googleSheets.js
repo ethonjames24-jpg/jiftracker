@@ -172,6 +172,108 @@ const preferExtras = (extras, row, keys, fallback = "") => firstPresent(extras, 
 
 const normaliseStatus = (value) => cleanValue(value).toLowerCase();
 
+const statusRank = (status) => {
+  const normalised = normaliseStatus(status);
+  if (normalised === "under pressure") return 0;
+  if (normalised === "watch") return 1;
+  if (normalised === "on track") return 2;
+  return null;
+};
+
+const normaliseKpiLabel = (value) => cleanValue(value).toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+
+const monthSummary = (group) => {
+  if (!group?.rows?.length) return null;
+  const kpis = dedupeAndSortKpis(group.rows);
+  const first = kpis[0] || group.rows[0] || {};
+
+  return {
+    month_label: group.month_label || first.month_label || group.month_sort,
+    month_sort: group.month_sort,
+    status_headline: first.status_headline || "",
+    tracker_state: first.tracker_state || "",
+    counts: calculateCounts(kpis, first),
+    kpis,
+  };
+};
+
+const formatDelta = (delta) => {
+  if (delta > 0) return `+${delta}`;
+  return String(delta);
+};
+
+const buildKpiMovements = (selectedKpis, previousKpis) => {
+  const previousByLabel = new Map();
+  previousKpis.forEach((kpi) => {
+    const key = normaliseKpiLabel(kpi.kpi_label);
+    if (key && !previousByLabel.has(key)) previousByLabel.set(key, kpi);
+  });
+
+  const movements = { improved: [], worsened: [], unchanged: [] };
+  let comparableCount = 0;
+
+  selectedKpis.forEach((currentKpi) => {
+    const key = normaliseKpiLabel(currentKpi.kpi_label);
+    const previousKpi = key ? previousByLabel.get(key) : null;
+    const currentRank = statusRank(currentKpi.status);
+    const previousRank = statusRank(previousKpi?.status);
+
+    if (!previousKpi || currentRank === null || previousRank === null) return;
+
+    comparableCount += 1;
+    const item = {
+      label: cleanValue(currentKpi.kpi_label),
+      current_status: cleanValue(currentKpi.status),
+      previous_status: cleanValue(previousKpi.status),
+    };
+
+    if (currentRank > previousRank) movements.improved.push(item);
+    else if (currentRank < previousRank) movements.worsened.push(item);
+    else movements.unchanged.push(item);
+  });
+
+  const requiredComparableCount = Math.max(1, Math.ceil(Math.min(selectedKpis.length, previousKpis.length) * 0.6));
+  const isReliable = comparableCount >= requiredComparableCount;
+
+  return {
+    ...movements,
+    comparable_count: comparableCount,
+    is_reliable: isReliable,
+    note: isReliable ? "" : "KPI-by-KPI status comparison is not shown because indicator names differ between months.",
+  };
+};
+
+const buildMonthComparison = (monthGroups, selectedGroup) => {
+  const selectedIndex = monthGroups.findIndex((group) => group.month_sort === selectedGroup.month_sort);
+  const previousGroup = selectedIndex > 0 ? monthGroups[selectedIndex - 1] : null;
+
+  if (!previousGroup) {
+    return {
+      has_previous_month: false,
+      message: "No previous tracker month is available yet for comparison.",
+    };
+  }
+
+  const selectedMonth = monthSummary(selectedGroup);
+  const previousMonth = monthSummary(previousGroup);
+  const underPressureDelta = (selectedMonth.counts.under_pressure || 0) - (previousMonth.counts.under_pressure || 0);
+  const summaryText = underPressureDelta > 0
+    ? "More KPIs under pressure"
+    : underPressureDelta < 0
+      ? "Fewer KPIs under pressure"
+      : "No major status movement";
+
+  return {
+    has_previous_month: true,
+    selected_month: selectedMonth,
+    previous_month: previousMonth,
+    summary_text: summaryText,
+    under_pressure_delta: underPressureDelta,
+    under_pressure_delta_text: `${formatDelta(underPressureDelta)} Under Pressure KPIs compared with ${previousMonth.month_label}.`,
+    movements: buildKpiMovements(selectedMonth.kpis, previousMonth.kpis),
+  };
+};
+
 const sentenceJoin = (items) => {
   const cleanItems = items.map(cleanValue).filter(Boolean);
   if (cleanItems.length <= 1) return cleanItems[0] || "";
@@ -258,6 +360,7 @@ export const fetchTrackerData = async (requestedMonth = "") => {
       counts,
     },
     kpis,
+    month_comparison: buildMonthComparison(monthGroups, selectedGroup),
     archive: archiveRows.map(normaliseArchiveRow),
   };
 };
