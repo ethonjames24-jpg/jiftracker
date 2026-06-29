@@ -13,8 +13,8 @@ export const ErrorState = ({ message, onRetry }) => (
   <main className="state-screen" data-testid="error-state">
     <div className="state-card error-card">
       <AlertTriangle size={42} aria-hidden="true" />
-      <h1 data-testid="error-state-heading">Tracker data could not load</h1>
-      <p data-testid="error-state-message">{message || "The dashboard could not read the public Google Sheet right now."}</p>
+      <h1 data-testid="error-state-heading">We could not load the tracker right now</h1>
+      <p data-testid="error-state-message">{message || "We could not load the tracker right now. Please try again later."}</p>
       <button data-testid="retry-load-button" type="button" onClick={onRetry}>Try again</button>
     </div>
   </main>

@@ -393,3 +393,16 @@ tbody tr:nth-child(even) { background: var(--paper); }
   .comparison-card, .comparison-empty-card { padding: 18px; }
   .comparison-count-tile strong { font-size: 2.4rem; }
 }
+.public-warning-panel { max-width: 1180px; margin: 24px auto 0; padding: 0 20px; display: grid; gap: 12px; }
+.public-warning-card { display: flex; align-items: center; gap: 11px; border: var(--border); border-color: var(--amber); border-radius: 8px; background: #fef3c7; color: #78350f; box-shadow: 4px 4px 0 var(--black); padding: 13px 15px; font-weight: 900; line-height: 1.45; }
+.public-warning-card p { margin: 0; }
+.source-warning { display: flex; align-items: flex-start; gap: 10px; margin: 0 0 14px; border: 2px solid var(--amber); border-radius: 8px; background: #fef3c7; color: #78350f; padding: 12px; font-weight: 900; line-height: 1.45; }
+.source-warning p { margin: 0; }
+.admin-warning-list { grid-column: 1 / -1; border: var(--border); border-color: var(--amber); border-radius: 8px; background: #fff7ed; box-shadow: 7px 7px 0 var(--black); overflow: hidden; }
+.admin-warning-list .admin-card-header { min-height: auto; background: #fef3c7; }
+.admin-warning-icon { color: var(--amber); flex: 0 0 auto; }
+.admin-warning-list ul { margin: 0; padding: 18px 24px 20px 42px; display: grid; gap: 10px; font-weight: 900; line-height: 1.45; }
+@media (max-width: 540px) {
+  .public-warning-panel { padding-left: 16px; padding-right: 16px; }
+  .public-warning-card { align-items: flex-start; }
+}

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { fetchTrackerData } from "../services/googleSheets.js";
 
-const DEFAULT_TRACKER_ERROR = "Live tracker data is unavailable.";
+const DEFAULT_TRACKER_ERROR = "We could not load the tracker right now. Please try again later.";
 
 const monthFromUrl = () => new URLSearchParams(window.location.search).get("month") || "";
 
@@ -14,7 +14,7 @@ export const useTrackerData = (trackerFetcher = fetchTrackerData) => {
   const getTrackerMonthSort = useCallback((tracker) => tracker?.current_month?.month_sort || "", []);
 
   const getTrackerErrorMessage = useCallback((requestError) => {
-    return requestError?.message || DEFAULT_TRACKER_ERROR;
+    return DEFAULT_TRACKER_ERROR;
   }, []);
 
   const applyTrackerData = useCallback((tracker) => {
