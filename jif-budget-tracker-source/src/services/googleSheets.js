@@ -168,7 +168,42 @@ const selectMonthGroup = (groups, requestedMonth) => groups.find((group) => grou
 
 const findMonthlyExtras = (rows, monthSort) => rows.find((row) => cleanValue(row.month_sort) === cleanValue(monthSort)) || {};
 
-const preferExtras = (extras, row, keys, fallback = "") => cleanValue(extras[keys[0]]) || firstPresent(row, keys) || fallback;
+const preferExtras = (extras, row, keys, fallback = "") => firstPresent(extras, keys) || firstPresent(row, keys) || fallback;
+
+const normaliseStatus = (value) => cleanValue(value).toLowerCase();
+
+const sentenceJoin = (items) => {
+  const cleanItems = items.map(cleanValue).filter(Boolean);
+  if (cleanItems.length <= 1) return cleanItems[0] || "";
+  if (cleanItems.length === 2) return `${cleanItems[0]} and ${cleanItems[1]}`;
+  return `${cleanItems.slice(0, -1).join(", ")}, and ${cleanItems.at(-1)}`;
+};
+
+const findKpiLabels = (kpis, status, patterns) => kpis
+  .filter((kpi) => normaliseStatus(kpi.status) === normaliseStatus(status))
+  .map((kpi) => cleanValue(kpi.kpi_label))
+  .filter((label) => patterns.some((pattern) => pattern.test(label)));
+
+const buildGeneratedWhatChanged = (selectedGroup, first, counts, kpis) => {
+  const month = selectedGroup.month_label || first.month_label || selectedGroup.month_sort || "This month";
+  const headlineState = first.tracker_state || first.status_headline;
+  const bullets = [];
+
+  if (headlineState) bullets.push(`${month} opened ${headlineState}.`);
+
+  const tracked = counts.kpis_tracked || kpis.length;
+  const pressure = counts.under_pressure || 0;
+  const onTrack = counts.on_track || 0;
+  if (tracked) bullets.push(`${pressure} of ${tracked} KPIs were Under Pressure, while ${onTrack} were On Track.`);
+
+  const pressureAreas = findKpiLabels(kpis, "Under Pressure", [/revenue/i, /fiscal/i, /balance/i]);
+  if (pressureAreas.length) bullets.push(`${sentenceJoin(pressureAreas)} ${pressureAreas.length === 1 ? "was" : "were"} the main pressure ${pressureAreas.length === 1 ? "area" : "areas"}.`);
+
+  const baselineAreas = findKpiLabels(kpis, "On Track", [/compensation/i, /employees/i, /interest/i]);
+  if (baselineAreas.length) bullets.push(`${sentenceJoin(baselineAreas)} ${baselineAreas.length === 1 ? "was" : "were"} closer to baseline.`);
+
+  return bullets.join("|");
+};
 
 export const fetchTrackerData = async (requestedMonth = "") => {
   const [trackerRows, archiveRows, monthlyExtrasRows] = await Promise.all([
@@ -196,11 +231,11 @@ export const fetchTrackerData = async (requestedMonth = "") => {
       month_sort: selectedGroup.month_sort,
       tracker_state: first.tracker_state || "",
       status_headline: first.status_headline || "",
-      what_changed: first.what_changed || "",
-      what_changed_headline: preferExtras(extras, first, ["what_changed_headline"]),
-      what_changed_bullets: preferExtras(extras, first, ["what_changed_bullets"]),
-      what_changed_source_note: preferExtras(extras, first, ["what_changed_source_note"]),
-      approved_email_summary: preferExtras(extras, first, ["approved_email_summary"]),
+      what_changed: preferExtras(extras, first, ["what_changed", "what_changed_used", "public_summary", "public_summary_used", "monthly_note", "approved_tracker_summary", "source_note"]),
+      what_changed_headline: preferExtras(extras, first, ["what_changed_headline", "public_summary_headline", "approved_tracker_summary_headline"]),
+      what_changed_bullets: preferExtras(extras, first, ["what_changed_bullets", "what_changed_used", "public_summary", "public_summary_used", "approved_tracker_summary"], buildGeneratedWhatChanged(selectedGroup, first, counts, kpis)),
+      what_changed_source_note: preferExtras(extras, first, ["what_changed_source_note", "source_note"]),
+      approved_email_summary: preferExtras(extras, first, ["approved_email_summary", "public_summary", "public_summary_used", "approved_tracker_summary"]),
       latest_update_status: preferExtras(extras, first, ["latest_update_status", "status_headline"]),
       latest_update_label: preferExtras(extras, first, ["latest_update_label", "month_label"], selectedGroup.month_label || ""),
       latest_update_at: preferExtras(extras, first, ["latest_update_at"]),

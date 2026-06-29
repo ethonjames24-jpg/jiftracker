@@ -194,6 +194,10 @@ tbody tr:nth-child(even) { background: var(--paper); }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
 }
 .overview-update-row { max-width: 1180px; margin: 0 auto; padding: 0 20px 24px; }
+.overview-insights-grid { display: grid; grid-template-columns: minmax(0, .95fr) minmax(320px, 1.05fr); gap: 24px; align-items: stretch; }
+.overview-insights-grid > * { min-width: 0; }
+.overview-section .what-changed-card { background: #fffdf3; border-width: 3px; box-shadow: 7px 7px 0 var(--green); }
+.overview-section .what-changed-card .info-card-title-row { border-bottom: 3px solid var(--black); margin: -24px -24px 18px; padding: 18px 24px; background: var(--gold); }
 .latest-update-card { border: var(--border); border-radius: 8px; background: white; box-shadow: 7px 7px 0 var(--black); padding: 22px; }
 .latest-update-heading-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; }
 .latest-update-heading-row h2 { margin: 4px 0 0; font-family: "Archivo", sans-serif; font-size: 1.25rem; text-transform: uppercase; letter-spacing: .08em; }
@@ -222,6 +226,7 @@ tbody tr:nth-child(even) { background: var(--paper); }
 
 @media (max-width: 900px) {
   .archive-filters { grid-template-columns: repeat(2, 1fr); }
+  .overview-insights-grid { grid-template-columns: 1fr; }
   .latest-update-heading-row { flex-direction: column; }
 }
 
@@ -229,6 +234,7 @@ tbody tr:nth-child(even) { background: var(--paper); }
   .overview-update-row { padding-left: 16px; padding-right: 16px; }
   .archive-filters { grid-template-columns: 1fr; }
   .latest-update-card { padding: 18px; }
+  .overview-section .what-changed-card .info-card-title-row { margin: -24px -24px 18px; }
 }
 
 .capture-page { min-height: 100vh; background: var(--paper); color: var(--black); overflow: hidden; padding: clamp(22px, 4vw, 54px); position: relative; }
