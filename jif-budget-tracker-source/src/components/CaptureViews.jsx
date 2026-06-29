@@ -1,4 +1,4 @@
-import { CalendarDays, FileCheck2, Gauge, Landmark, Link2, ScrollText, ShieldCheck } from "lucide-react";
+import { CalendarDays, FileCheck2, Gauge, Landmark, Link2, ScrollText } from "lucide-react";
 import { LOGO_URL } from "../config.js";
 import { LatestUpdateStatus } from "./LatestUpdateStatus.jsx";
 import { PublicSummaryCard } from "./PublicSummaryCard.jsx";
@@ -98,6 +98,7 @@ export const HeroCaptureView = ({ currentMonth }) => (
         </div>
       </aside>
     </main>
+    <p className="capture-hero-footer">Receipts checked. Public finance tracked.</p>
   </div>
 );
 
