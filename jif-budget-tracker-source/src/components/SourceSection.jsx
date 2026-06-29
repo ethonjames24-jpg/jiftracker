@@ -1,4 +1,5 @@
-import { ExternalLink, Link2, ScrollText } from "lucide-react";
+import { AlertTriangle, ExternalLink, Link2, ScrollText } from "lucide-react";
+import { PUBLIC_WARNING_MESSAGES, hasSourceLinkWarnings, isPublicHttpUrl as isSafeHttpUrl } from "../utils/dataQuality.js";
 
 const BLOCKED_PUBLIC_URL_TERMS = ["n8n", "subscriber", "subscription"];
 
@@ -11,11 +12,11 @@ const isPublicHttpUrl = (value) => {
 
   try {
     const parsed = new URL(url);
-    const isHttpUrl = parsed.protocol === "https:" || parsed.protocol === "http:";
+    const hasHttpProtocol = parsed.protocol === "https:" || parsed.protocol === "http:";
     const normalizedUrl = parsed.href.toLowerCase();
     const exposesPrivateWorkflow = BLOCKED_PUBLIC_URL_TERMS.some((term) => normalizedUrl.includes(term));
 
-    return isHttpUrl && !exposesPrivateWorkflow;
+    return hasHttpProtocol && isSafeHttpUrl(url) && !exposesPrivateWorkflow;
   } catch {
     return false;
   }
@@ -67,6 +68,7 @@ const SourceLink = ({ link }) => (
 
 const PublicReceiptsPack = ({ currentMonth, monthlyOutturn, budgetBaseline }) => {
   const receiptsPack = receiptsPackDetailForMonth(currentMonth);
+  const showSourceWarning = hasSourceLinkWarnings(currentMonth);
   const notes = [
     currentMonth?.source_note || currentMonth?.what_changed_source_note,
     currentMonth?.data_quality_status,
@@ -86,6 +88,12 @@ const PublicReceiptsPack = ({ currentMonth, monthlyOutturn, budgetBaseline }) =>
       <p data-testid="public-receipts-pack-explainer" className="public-receipts-pack-explainer">
         Jamaica In Focus links the tracker back to official public documents wherever available.
       </p>
+      {showSourceWarning && (
+        <div className="source-warning" data-testid="source-links-warning" role="status">
+          <AlertTriangle size={18} aria-hidden="true" />
+          <p>{PUBLIC_WARNING_MESSAGES.missingSourceLinks}</p>
+        </div>
+      )}
       <div className="receipts-pack-list">
         <div className="receipts-pack-row" data-testid="receipts-pack-monthly-outturn-row">
           <p className="source-label">Monthly outturn document</p>

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { AlertTriangle, CheckCircle2, CircleDashed, ClipboardCheck, FileText, ShieldAlert } from "lucide-react";
+import { buildAdminWarnings } from "../utils/dataQuality.js";
 
 const ready = (isReady) => (isReady ? "Ready" : "Missing");
 const hasValue = (value) => String(value || "").trim().length > 0;
@@ -113,6 +114,26 @@ const ComputedSection = ({ section }) => (
   </section>
 );
 
+
+const AdminWarningList = ({ warnings }) => {
+  if (!warnings.length) return null;
+
+  return (
+    <section className="admin-warning-list" data-testid="admin-data-warning-list" aria-label="Admin data warnings">
+      <div className="admin-card-header">
+        <AlertTriangle size={22} className="admin-warning-icon" aria-hidden="true" />
+        <div>
+          <h2>Data warnings to review</h2>
+          <p>These notices help editors spot missing or stale tracker inputs before publishing.</p>
+        </div>
+      </div>
+      <ul>
+        {warnings.map((warning) => <li key={warning}>{warning}</li>)}
+      </ul>
+    </section>
+  );
+};
+
 const ManualSection = ({ section, checkedItems, onToggle }) => (
   <section className="admin-checklist-card admin-manual-card" aria-labelledby={`admin-${section.title.replace(/\s+/g, "-").toLowerCase()}`}>
     <div className="admin-card-header">
@@ -145,6 +166,7 @@ export const AdminChecklist = ({ data }) => {
   const [checkedItems, setCheckedItems] = useState({});
   const currentMonth = data.current_month || {};
   const sections = checklistSections(data);
+  const adminWarnings = buildAdminWarnings(data);
   const monthLabel = currentMonth.month_label || currentMonth.month_sort || "Month pending";
 
   const toggleItem = (label) => setCheckedItems((items) => ({ ...items, [label]: !items[label] }));
@@ -169,6 +191,7 @@ export const AdminChecklist = ({ data }) => {
       </div>
 
       <main className="admin-checklist-grid" aria-label="Monthly admin checklist">
+        <AdminWarningList warnings={adminWarnings} />
         {sections.map((section) => <ComputedSection key={section.title} section={section} />)}
         {manualSections.map((section) => (
           <ManualSection key={section.title} section={section} checkedItems={checkedItems} onToggle={toggleItem} />

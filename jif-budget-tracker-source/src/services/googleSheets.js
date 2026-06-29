@@ -170,7 +170,9 @@ const calculateCounts = (kpis, firstRow) => ({
   under_pressure: kpis.filter((row) => isTruthy(row.is_under_pressure) || row.status === "Under Pressure").length,
 });
 
-const selectMonthGroup = (groups, requestedMonth) => groups.find((group) => group.month_sort === requestedMonth) || groups[groups.length - 1];
+const findRequestedMonthGroup = (groups, requestedMonth) => groups.find((group) => group.month_sort === requestedMonth);
+
+const selectMonthGroup = (groups, requestedMonth) => findRequestedMonthGroup(groups, requestedMonth) || groups[groups.length - 1];
 
 const findMonthlyExtras = (rows, monthSort) => rows.find((row) => cleanValue(row.month_sort) === cleanValue(monthSort)) || {};
 
@@ -324,7 +326,8 @@ export const fetchTrackerData = async (requestedMonth = "") => {
   if (!validRows.length) throw new Error("No tracker rows were found in DS_MonthlyTracker");
 
   const monthGroups = buildMonthGroups(validRows);
-  const selectedGroup = selectMonthGroup(monthGroups, requestedMonth);
+  const requestedGroup = requestedMonth ? findRequestedMonthGroup(monthGroups, requestedMonth) : null;
+  const selectedGroup = requestedGroup || selectMonthGroup(monthGroups, requestedMonth);
   const kpis = dedupeAndSortKpis(selectedGroup.rows);
   const first = kpis[0];
   const counts = calculateCounts(kpis, first);
@@ -335,6 +338,8 @@ export const fetchTrackerData = async (requestedMonth = "") => {
     spreadsheet_id: SHEET_ID,
     last_loaded_at: new Date().toISOString(),
     available_months: [...monthGroups].reverse().map((group) => ({ month_sort: group.month_sort, month_label: group.month_label })),
+    requested_month: requestedMonth,
+    requested_month_missing: Boolean(requestedMonth && !requestedGroup),
     current_month: {
       month_label: selectedGroup.month_label || first.month_label || selectedGroup.month_sort,
       month_sort: selectedGroup.month_sort,
