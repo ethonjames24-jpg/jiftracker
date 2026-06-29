@@ -1,4 +1,4 @@
-import { ExternalLink, FileCheck2, Landmark, Link2, ScrollText } from "lucide-react";
+import { ExternalLink, Link2, ScrollText } from "lucide-react";
 
 const BLOCKED_PUBLIC_URL_TERMS = ["n8n", "subscriber", "subscription"];
 
@@ -115,7 +115,7 @@ const PublicReceiptsPack = ({ currentMonth, monthlyOutturn, budgetBaseline }) =>
 
 export const SourceSection = ({ currentMonth }) => {
   const monthlyOutturn = sourceDetailFor({
-    label: "Monthly Outturn Source",
+    label: "Monthly outturn document",
     value: currentMonth?.monthly_outturn_source || currentMonth?.source_document_1_label || currentMonth?.source_doc_title,
     url: currentMonth?.source_document_1_url || currentMonth?.source_doc_url,
     fallbackLabel: "Central Government Operations Table — April 2026",
@@ -123,16 +123,14 @@ export const SourceSection = ({ currentMonth }) => {
     testId: "source-document-1-link",
   });
   const budgetBaseline = sourceDetailFor({
-    label: "Budget Baseline Source",
+    label: "Budget / baseline document",
     value: currentMonth?.budget_baseline_source || currentMonth?.source_document_2_label || currentMonth?.budget_source_title,
     url: currentMonth?.source_document_2_url || currentMonth?.budget_source_url,
     fallbackLabel: "2026–2027 Estimates of Expenditure",
     cta: "Open budget source",
     testId: "source-document-2-link",
   });
-  const sources = [
-    { ...monthlyOutturn, icon: FileCheck2, testId: "monthly-outturn-source" },
-    { ...budgetBaseline, icon: Landmark, testId: "budget-baseline-source" },
+  const sourceContext = [
     { label: "Supporting Fiscal Context", value: currentMonth?.supporting_fiscal_context, icon: ScrollText, testId: "supporting-fiscal-context" },
   ];
 
@@ -146,13 +144,12 @@ export const SourceSection = ({ currentMonth }) => {
         </div>
         <div className="source-card-stack">
           <PublicReceiptsPack currentMonth={currentMonth} monthlyOutturn={monthlyOutturn} budgetBaseline={budgetBaseline} />
-          {sources.map(({ label, value, icon: Icon, testId, link }) => (
+          {sourceContext.map(({ label, value, icon: Icon, testId }) => (
             <article key={label} data-testid={`${testId}-card`} className="source-card">
               <Icon size={25} className="green-icon" aria-hidden="true" />
               <div>
                 <p data-testid={`${testId}-label`} className="source-label">{label}</p>
                 <p data-testid={testId}>{value || "Not reported in the sheet for this month."}</p>
-                {link && <SourceLink link={link} />}
               </div>
             </article>
           ))}
