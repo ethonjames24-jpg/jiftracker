@@ -94,15 +94,21 @@ const deriveYear = (row) => {
   return yearMatch ? yearMatch[1] : "";
 };
 
-const normaliseArchiveRow = (row) => ({
-  month_label: displayMonthLabel(firstPresent(row, ["month_label", "Month", "month"])),
-  month_sort: row.month_sort || "",
-  tracker_state: firstPresent(row, ["tracker_state", "Tracker Status"]),
-  status: firstPresent(row, ["status_headline", "Status"]),
-  note: firstPresent(row, ["short_note", "Note"]),
-  year: deriveYear(row),
-  fiscal_year: firstPresent(row, ["fiscal_year", "Fiscal Year"]),
-});
+const normaliseArchiveRow = (row, monthLookup = new Map()) => {
+  const monthSort = row.month_sort || "";
+  const month = monthLookup.get(monthSort) || {};
+
+  return {
+    month_label: displayMonthLabel(firstPresent(row, ["month_label", "Month", "month"]) || month.month_label || monthSort),
+    month_sort: monthSort,
+    tracker_state: firstPresent(row, ["tracker_state", "Tracker Status"]) || month.tracker_state || "",
+    status: firstPresent(row, ["status_headline", "Status"]) || month.status_headline || "",
+    note: firstPresent(row, ["short_note", "Note"]),
+    year: deriveYear(row),
+    fiscal_year: firstPresent(row, ["fiscal_year", "Fiscal Year"]),
+    counts: month.counts || {},
+  };
+};
 
 const isMonthAnchor = (row) => Boolean(row.month_label) || toInt(row.display_order, FALLBACK_DISPLAY_ORDER) === 1;
 
@@ -323,6 +329,7 @@ export const fetchTrackerData = async (requestedMonth = "") => {
   const first = kpis[0];
   const counts = calculateCounts(kpis, first);
   const extras = findMonthlyExtras(monthlyExtrasRows, selectedGroup.month_sort);
+  const archiveMonthLookup = new Map(monthGroups.map((group) => [group.month_sort, monthSummary(group)]));
 
   return {
     spreadsheet_id: SHEET_ID,
@@ -363,6 +370,6 @@ export const fetchTrackerData = async (requestedMonth = "") => {
     },
     kpis,
     month_comparison: buildMonthComparison(monthGroups, selectedGroup),
-    archive: archiveRows.map(normaliseArchiveRow),
+    archive: archiveRows.map((row) => normaliseArchiveRow(row, archiveMonthLookup)),
   };
 };
