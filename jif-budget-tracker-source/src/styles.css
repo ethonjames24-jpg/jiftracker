@@ -302,3 +302,39 @@ tbody tr:nth-child(even) { background: var(--paper); }
   .capture-metric-grid, .capture-current-summary .capture-metric-grid, .capture-kpi-metrics { grid-template-columns: repeat(2, 1fr); }
   .capture-sources-layout .source-grid { padding: 22px; }
 }
+.admin-checklist-page { min-height: 100vh; background: var(--paper); color: var(--black); padding: clamp(18px, 4vw, 46px); }
+.admin-checklist-hero { max-width: 1180px; margin: 0 auto 24px; display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 24px; align-items: end; border: 4px solid var(--black); background: var(--gold); box-shadow: 8px 8px 0 var(--black); padding: clamp(22px, 4vw, 36px); }
+.admin-checklist-hero h1 { max-width: 860px; margin: 8px 0 14px; font-size: clamp(2.7rem, 6vw, 5.2rem); text-transform: uppercase; }
+.admin-checklist-subtitle { max-width: 760px; margin: 0; font-weight: 900; line-height: 1.55; }
+.admin-month-panel { border: var(--border); background: var(--black); color: white; box-shadow: 4px 4px 0 white; padding: 16px; text-align: right; }
+.admin-month-panel span { display: block; color: var(--gold); font-size: .76rem; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; }
+.admin-month-panel strong { display: block; margin-top: 5px; font-size: 1.35rem; text-transform: uppercase; }
+.admin-warning { max-width: 1180px; margin: 0 auto 24px; display: flex; gap: 12px; align-items: center; border: var(--border); border-color: var(--red); border-radius: 8px; background: #fee2e2; color: #7f1d1d; box-shadow: 5px 5px 0 var(--black); padding: 16px 18px; line-height: 1.45; }
+.admin-checklist-grid { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+.admin-checklist-card { border: var(--border); border-radius: 8px; background: white; box-shadow: 7px 7px 0 var(--black); overflow: hidden; }
+.admin-card-header { min-height: 132px; display: flex; gap: 12px; align-items: flex-start; border-bottom: var(--border); background: #fffdf3; padding: 20px; }
+.admin-card-header h2 { margin: 0 0 7px; font-family: "Archivo", sans-serif; font-size: 1.05rem; letter-spacing: .1em; text-transform: uppercase; }
+.admin-card-header p { margin: 0; font-weight: 800; line-height: 1.55; color: #444; }
+.admin-checklist-items { display: grid; }
+.admin-checklist-item { min-height: 62px; display: flex; align-items: center; justify-content: space-between; gap: 16px; border-bottom: 2px solid rgba(16,16,16,.14); padding: 15px 18px; font-weight: 900; }
+.admin-checklist-item:last-child { border-bottom: none; }
+.admin-manual-card { background: #fffdf3; }
+.admin-manual-item { cursor: pointer; }
+.admin-checkbox-label { display: inline-flex; align-items: center; gap: 11px; }
+.admin-checkbox-label input { width: 20px; height: 20px; accent-color: var(--green); }
+.admin-status-pill { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px; border: 2px solid; border-radius: 999px; padding: 6px 10px; font-size: .78rem; font-weight: 900; text-transform: uppercase; letter-spacing: .08em; }
+.admin-status-ready { background: #d1fae5; border-color: #047857; color: #064e3b; }
+.admin-status-missing { background: #fee2e2; border-color: #b91c1c; color: #7f1d1d; }
+.admin-status-manual-check { background: #fef3c7; border-color: #b45309; color: #78350f; }
+
+@media (max-width: 900px) {
+  .admin-checklist-hero, .admin-checklist-grid { grid-template-columns: 1fr; }
+  .admin-month-panel { text-align: left; }
+  .admin-card-header { min-height: auto; }
+}
+
+@media (max-width: 540px) {
+  .admin-checklist-page { padding: 16px; }
+  .admin-checklist-item { align-items: flex-start; flex-direction: column; }
+  .admin-status-pill { width: fit-content; }
+}
