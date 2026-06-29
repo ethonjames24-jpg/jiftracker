@@ -6,6 +6,7 @@ import { KpiTable } from "./components/KpiTable.jsx";
 import { SourceSection } from "./components/SourceSection.jsx";
 import { ArchiveSection } from "./components/ArchiveSection.jsx";
 import { MethodologySection } from "./components/MethodologySection.jsx";
+import { MonthComparison } from "./components/MonthComparison.jsx";
 import { CompactSubscribeCta, MobileSubscribeButton, SubscriptionSection } from "./components/SubscriptionSection.jsx";
 import { AdminChecklist, isAdminChecklistRoute } from "./components/AdminChecklist.jsx";
 import { CaptureView, getCaptureMode } from "./components/CaptureViews.jsx";
@@ -46,6 +47,7 @@ export default function App() {
       {error && <NonBlockingError message={error} />}
       <main data-testid="dashboard-main-content">
         <Overview currentMonth={data.current_month} />
+        <MonthComparison comparison={data.month_comparison} />
         <SubscriptionSection monthSort={data.current_month?.month_sort || selectedMonth} />
         <SummaryCards counts={data.current_month?.counts} />
         <KpiTable kpis={data.kpis || []} monthLabel={data.current_month?.month_label} />

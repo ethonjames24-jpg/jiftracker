@@ -338,3 +338,40 @@ tbody tr:nth-child(even) { background: var(--paper); }
   .admin-checklist-item { align-items: flex-start; flex-direction: column; }
   .admin-status-pill { width: fit-content; }
 }
+
+.month-comparison-section { background: var(--paper); }
+.month-comparison-section .section-inner { padding-top: 42px; padding-bottom: 46px; }
+.comparison-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; align-items: stretch; }
+.comparison-card, .comparison-empty-card { border: var(--border); border-radius: 8px; background: white; box-shadow: 7px 7px 0 var(--black); padding: 22px; }
+.comparison-month-card { background: #fffdf3; }
+.comparison-summary-card { border-width: 3px; box-shadow: 7px 7px 0 var(--green); }
+.comparison-card-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; margin-bottom: 18px; }
+.comparison-card-heading h3 { margin: 0; font-size: 1.4rem; line-height: 1.1; text-transform: uppercase; }
+.comparison-count-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border: var(--border); background: white; }
+.comparison-count-tile { min-height: 92px; padding: 14px; border-right: var(--border); border-bottom: var(--border); }
+.comparison-count-tile:nth-child(2n) { border-right: none; }
+.comparison-count-tile:nth-last-child(-n+2) { border-bottom: none; }
+.comparison-count-tile span { display: block; color: #555; font-size: .74rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
+.comparison-count-tile strong { display: block; margin-top: 8px; font-family: "Newsreader", serif; font-size: 2.8rem; line-height: 1; }
+.comparison-summary-line { margin: 0 0 10px; font-size: 1.35rem; font-weight: 900; line-height: 1.25; }
+.comparison-detail, .comparison-safe-note { margin: 0 0 18px; color: #444; font-weight: 800; line-height: 1.55; }
+.comparison-safe-note { border: 2px solid var(--black); border-radius: 7px; background: var(--paper); padding: 12px; }
+.movement-grid { display: grid; gap: 12px; }
+.movement-list { border: 2px solid var(--black); border-radius: 7px; background: #fffdf3; padding: 12px; }
+.movement-list h4 { display: flex; align-items: center; gap: 7px; margin: 0 0 8px; font-size: .84rem; text-transform: uppercase; letter-spacing: .1em; }
+.movement-list ul { margin: 0; padding-left: 20px; font-weight: 800; line-height: 1.55; }
+.movement-improved h4 { color: var(--green); }
+.movement-worsened h4 { color: var(--red); }
+.movement-unchanged h4 { color: #555; }
+.comparison-empty-card { display: flex; align-items: center; gap: 14px; background: #fffdf3; font-weight: 900; line-height: 1.55; }
+.comparison-empty-card p { margin: 0; }
+
+@media (max-width: 900px) {
+  .comparison-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 540px) {
+  .month-comparison-section .section-inner { padding-left: 16px; padding-right: 16px; }
+  .comparison-card, .comparison-empty-card { padding: 18px; }
+  .comparison-count-tile strong { font-size: 2.4rem; }
+}
