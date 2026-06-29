@@ -43,8 +43,8 @@ export default function App() {
         <SubscriptionSection monthSort={data.current_month?.month_sort || selectedMonth} />
         <SummaryCards counts={data.current_month?.counts} />
         <KpiTable kpis={data.kpis || []} monthLabel={data.current_month?.month_label} />
-        <SourceSection currentMonth={data.current_month} />
         <ArchiveSection archive={data.archive || []} />
+        <SourceSection currentMonth={data.current_month} />
         <MethodologySection currentMonth={data.current_month} />
         <CompactSubscribeCta />
       </main>

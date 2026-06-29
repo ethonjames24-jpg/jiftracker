@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ArrowUp, BarChart3, FileText, ShieldCheck } from "lucide-react";
+import { ArrowUp, BarChart3, FileText, Link2, ShieldCheck } from "lucide-react";
 import { LOGO_URL } from "../config.js";
 
 const links = [
   { href: "#overview", label: "Overview", icon: BarChart3, testId: "nav-overview-link" },
   { href: "#archive", label: "Archive", icon: FileText, testId: "nav-archive-link" },
+  { href: "#source-documents", label: "Source Documents", icon: Link2, testId: "nav-source-documents-link" },
   { href: "#methodology", label: "Methodology", icon: ShieldCheck, testId: "nav-methodology-link" },
 ];
 
