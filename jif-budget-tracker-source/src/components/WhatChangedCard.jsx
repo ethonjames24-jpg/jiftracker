@@ -1,6 +1,6 @@
 import { Newspaper } from "lucide-react";
 
-const bulletItems = (value) => String(value || "").split("|").map((item) => item.trim()).filter(Boolean);
+const bulletItems = (value) => String(value || "").split(/\||\n/).map((item) => item.trim()).filter(Boolean);
 
 export const WhatChangedCard = ({ currentMonth }) => {
   const bullets = bulletItems(currentMonth?.what_changed_bullets);
@@ -10,7 +10,7 @@ export const WhatChangedCard = ({ currentMonth }) => {
     <article data-testid="what-changed-card" className="info-card what-changed-card">
       <div className="info-card-title-row">
         <Newspaper size={22} className="green-icon" aria-hidden="true" />
-        <h2 data-testid="what-changed-card-title">What changed this month</h2>
+        <h2 data-testid="what-changed-card-title">What Changed This Month</h2>
       </div>
       {hasEnhancedContent ? (
         <>

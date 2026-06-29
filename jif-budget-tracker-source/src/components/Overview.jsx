@@ -55,11 +55,11 @@ export const Overview = ({ currentMonth }) => {
           </div>
         </article>
       </div>
-      <div className="overview-update-row">
+      <div className="overview-update-row overview-insights-grid">
         <LatestUpdateStatus currentMonth={currentMonth} />
+        <WhatChangedCard currentMonth={currentMonth} />
       </div>
       <div className="info-grid">
-        <WhatChangedCard currentMonth={currentMonth} />
         <InfoCard icon={AlertTriangle} title="Monthly note" value={currentMonth?.monthly_note} testId="monthly-note-card" />
         <PublicSummaryCard summary={currentMonth?.approved_email_summary} />
       </div>
