@@ -3,6 +3,8 @@ import { fetchTrackerData } from "../services/googleSheets.js";
 
 const DEFAULT_TRACKER_ERROR = "Live tracker data is unavailable.";
 
+const monthFromUrl = () => new URLSearchParams(window.location.search).get("month") || "";
+
 export const useTrackerData = (trackerFetcher = fetchTrackerData) => {
   const [data, setData] = useState(null);
   const [selectedMonth, setSelectedMonth] = useState("");
@@ -39,12 +41,18 @@ export const useTrackerData = (trackerFetcher = fetchTrackerData) => {
   }, [applyTrackerData, applyTrackerError, trackerFetcher]);
 
   const handleMonthChange = useCallback((monthSort) => {
+    const params = new URLSearchParams(window.location.search);
+    if (monthSort) params.set("month", monthSort);
+    else params.delete("month");
+    const nextUrl = `${window.location.pathname}?${params.toString()}${window.location.hash}`;
+
+    window.history.replaceState({}, "", nextUrl);
     setSelectedMonth(monthSort);
     loadTracker(monthSort);
   }, [loadTracker]);
 
   useEffect(() => {
-    loadTracker("");
+    loadTracker(monthFromUrl());
   }, [loadTracker]);
 
   return { data, selectedMonth, loading, error, loadTracker, handleMonthChange };
