@@ -31,7 +31,7 @@ const InfoCard = ({ icon: Icon, title, value, testId }) => (
 export const Overview = ({ currentMonth }) => {
   const counts = currentMonth?.counts || {};
   return (
-    <section id="overview" className="section-band overview-section" data-testid="overview-section">
+    <section id="overview" className="section-band overview-section" data-testid="overview-section" data-screenshot-target="tracker-hero">
       <div className="overview-grid">
         <div className="overview-copy animate-rise">
           <div className="tracker-pill" data-testid="tracker-state-pill">
@@ -45,7 +45,7 @@ export const Overview = ({ currentMonth }) => {
             <StatusBadge status={currentMonth?.status_headline} testId="overall-status-badge" />
           </div>
         </div>
-        <article data-testid="overview-scorecard" className="scorecard animate-rise">
+        <article data-testid="overview-scorecard" className="scorecard animate-rise" data-screenshot-target="kpi-overview">
           <div className="scorecard-header"><p data-testid="scorecard-label">Current month overview</p></div>
           <div className="metrics-grid">
             <Metric label="KPIs Tracked" value={counts.kpis_tracked} testId="kpis-tracked-count" />

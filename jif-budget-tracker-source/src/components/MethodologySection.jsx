@@ -11,7 +11,7 @@ const categories = [
 const slug = (value) => value.toLowerCase().replaceAll("&", "and").replaceAll(" ", "-");
 
 export const MethodologySection = ({ currentMonth }) => (
-  <section id="methodology" className="section-band methodology-section" data-testid="methodology-section">
+  <section id="methodology" className="section-band methodology-section" data-testid="methodology-section" data-screenshot-target="methodology">
     <div className="methodology-grid">
       <div>
         <p data-testid="methodology-eyebrow" className="eyebrow">Methodology</p>

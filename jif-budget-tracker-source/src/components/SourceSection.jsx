@@ -52,7 +52,7 @@ export const SourceSection = ({ currentMonth }) => {
       link: publicLinkFor({
         label: currentMonth?.source_document_1_label || currentMonth?.source_doc_title,
         url: currentMonth?.source_document_1_url || currentMonth?.source_doc_url,
-        fallbackLabel: "Source document 1",
+        fallbackLabel: "Central Government Operations Table — April 2026",
         cta: "Open source document",
         testId: "source-document-1-link",
       }),
@@ -65,7 +65,7 @@ export const SourceSection = ({ currentMonth }) => {
       link: publicLinkFor({
         label: currentMonth?.source_document_2_label || currentMonth?.budget_source_title,
         url: currentMonth?.source_document_2_url || currentMonth?.budget_source_url,
-        fallbackLabel: "Source document 2",
+        fallbackLabel: "2026–2027 Estimates of Expenditure",
         cta: "Open budget source",
         testId: "source-document-2-link",
       }),
@@ -75,12 +75,12 @@ export const SourceSection = ({ currentMonth }) => {
   const publicLinks = receiptLinksForMonth(currentMonth);
 
   return (
-    <section className="section-band source-section" data-testid="source-documents-section">
+    <section id="source-documents" className="section-band source-section" data-testid="source-documents-section" data-screenshot-target="source-documents" aria-labelledby="source-documents-heading">
       <div className="source-grid">
         <div>
           <p data-testid="sources-eyebrow" className="eyebrow">Source documents</p>
-          <h2 data-testid="sources-heading">Official documents, public-interest readout</h2>
-          <p data-testid="source-basis-text" className="source-basis">Source basis: Central Government Operations Table, budget documents, fiscal policy documents, revenue estimates, and related official Ministry of Finance publications.</p>
+          <h2 id="source-documents-heading" data-testid="sources-heading">Official source documents</h2>
+          <p data-testid="source-basis-text" className="source-basis">Source basis: Central Government Operations Table — April 2026; 2026–2027 Estimates of Expenditure; budget documents; fiscal policy documents; revenue estimates; and related official Ministry of Finance publications.</p>
         </div>
         <div className="source-card-stack">
           {sources.map(({ label, value, icon: Icon, testId, link }) => (
