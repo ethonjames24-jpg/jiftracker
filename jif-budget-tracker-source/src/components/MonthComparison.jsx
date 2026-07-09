@@ -1,6 +1,27 @@
 import { ArrowDownRight, ArrowRight, ArrowUpRight, GitCompareArrows } from "lucide-react";
 import { StatusBadge } from "./StatusBadge.jsx";
 
+const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+const formatComparisonMonthLabel = (month) => {
+  const label = month?.month_label || month?.month_sort || "";
+  const canonicalMatch = typeof label === "string" ? label.match(/^(\d{4})-(\d{2})$/) : null;
+
+  if (!canonicalMatch) return label || "Month pending";
+
+  const [, year, monthNumber] = canonicalMatch;
+  const monthIndex = Number(monthNumber) - 1;
+
+  if (monthIndex < 0 || monthIndex >= MONTH_NAMES.length) return label;
+
+  return `${MONTH_NAMES[monthIndex]} ${year}`;
+};
+
+const formatDelta = (value = 0) => {
+  if (value > 0) return `+${value}`;
+  return String(value);
+};
+
 const countItems = (counts = {}) => [
   { key: "kpis_tracked", label: "KPIs", value: counts.kpis_tracked || 0 },
   { key: "on_track", label: "On Track", value: counts.on_track || 0, className: "metric-green" },
@@ -12,7 +33,7 @@ const ComparisonMonthCard = ({ eyebrow, month }) => (
   <article className="comparison-card comparison-month-card" data-testid={`comparison-${eyebrow.toLowerCase()}-card`}>
     <p className="eyebrow">{eyebrow} month</p>
     <div className="comparison-card-heading">
-      <h3>{month?.month_label || "Month pending"}</h3>
+      <h3>{formatComparisonMonthLabel(month)}</h3>
       <StatusBadge status={month?.status_headline} testId={`comparison-${eyebrow.toLowerCase()}-status`} />
     </div>
     <div className="comparison-count-grid">
@@ -70,6 +91,9 @@ export const MonthComparison = ({ comparison }) => {
     );
   }
 
+  const previousMonthLabel = formatComparisonMonthLabel(comparison.previous_month);
+  const pressureDetailText = `${formatDelta(comparison.under_pressure_delta)} Under Pressure KPIs compared with ${previousMonthLabel}.`;
+
   const hasMovements = comparison.movements?.is_reliable && (
     comparison.movements.improved.length || comparison.movements.worsened.length || comparison.movements.unchanged.length
   );
@@ -88,7 +112,7 @@ export const MonthComparison = ({ comparison }) => {
               <GitCompareArrows size={24} className="green-icon" aria-hidden="true" />
             </div>
             <p className="comparison-summary-line" data-testid="comparison-summary-line">{comparison.summary_text}</p>
-            <p className="comparison-detail" data-testid="comparison-pressure-detail">{comparison.under_pressure_delta_text}</p>
+            <p className="comparison-detail" data-testid="comparison-pressure-detail">{pressureDetailText}</p>
             {hasMovements ? (
               <div className="movement-grid">
                 <MovementList title={movementLabels.improved} type="improved" items={comparison.movements.improved} />
