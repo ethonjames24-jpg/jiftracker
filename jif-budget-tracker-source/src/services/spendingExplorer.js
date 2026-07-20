@@ -122,6 +122,7 @@ const requiredStringsPresent = (row, fields) => fields.every((field) => cleanVal
 
 export const normalizeEvery100Rows = (rows) => {
   const warnings = [];
+  let excludedRowCount = 0;
   const validRows = rows.flatMap((row) => {
     if (!RELEASED_ROW_STATUSES.has(cleanValue(row.data_status).toUpperCase())) return [];
 
@@ -139,12 +140,16 @@ export const normalizeEvery100Rows = (rows) => {
     const numbersValid = Object.values(numeric).every((value) => value !== null);
 
     if (!stringsValid || !numbersValid) {
-      warnings.push(`Excluded malformed DS_Every100 row ${cleanValue(row.record_id) || "without an ID"}.`);
+      excludedRowCount += 1;
       return [];
     }
 
     return [{ ...row, ...numeric }];
   });
+
+  if (excludedRowCount > 0) {
+    warnings.push("Some summary figures could not be displayed because required details were incomplete.");
+  }
 
   return {
     rows: validRows.sort((a, b) => a.display_order - b.display_order),
@@ -154,6 +159,7 @@ export const normalizeEvery100Rows = (rows) => {
 
 export const normalizeSpendingRows = (rows) => {
   const warnings = [];
+  let excludedRowCount = 0;
   const validRows = rows.flatMap((row) => {
     if (!RELEASED_ROW_STATUSES.has(cleanValue(row.data_status).toUpperCase())) return [];
 
@@ -172,12 +178,16 @@ export const normalizeSpendingRows = (rows) => {
     const numbersValid = Object.values(numeric).every((value) => value !== null);
 
     if (!stringsValid || !numbersValid) {
-      warnings.push(`Excluded malformed DS_SpendingExplorer row ${cleanValue(row.record_id) || "without an ID"}.`);
+      excludedRowCount += 1;
       return [];
     }
 
     return [{ ...row, ...numeric }];
   });
+
+  if (excludedRowCount > 0) {
+    warnings.push("Some spending records could not be displayed because required details were incomplete.");
+  }
 
   return { rows: validRows, warnings };
 };

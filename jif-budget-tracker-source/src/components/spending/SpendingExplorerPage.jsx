@@ -242,10 +242,10 @@ const SourceSection = ({ sources }) => (
   <section id="spending-sources" className="spending-explorer-section spending-explorer-sources">
     <div className="spending-explorer-section-heading">
       <div>
-        <p className="spending-explorer-kicker">Official source basis</p>
-        <h2>Receipts behind the Explorer</h2>
+        <p className="spending-explorer-kicker">Official source</p>
+        <h2>Source for this Explorer</h2>
       </div>
-      <p>Only approved public source metadata is shown here. The frontend never reads staging, fact, checksum or internal review fields.</p>
+      <p>These figures come from Jamaica’s official Estimates of Expenditure As Passed.</p>
     </div>
     <div className="spending-explorer-source-grid">
       {sources.map((source) => (
@@ -281,7 +281,7 @@ export const SpendingExplorerPage = () => {
   const resetFilters = () => setFilters(EMPTY_EXPLORER_FILTERS);
 
   if (loading && !data) {
-    return <ExplorerState type="loading" title="Checking the release gate" message="Loading the frozen v1 controls before any public spending rows are requested." />;
+    return <ExplorerState type="loading" title="Loading the Explorer" message="Loading the approved government spending figures." />;
   }
   if (error && !data) {
     return <ExplorerState type="error" title="Explorer temporarily unavailable" message={error} onRetry={loadExplorer} />;
@@ -319,7 +319,7 @@ export const SpendingExplorerPage = () => {
             <span>Net approved expenditure</span>
             <strong>{formatJmd(approvedNetTotal, true)}</strong>
             <p>Gross estimates less the approved Appropriations-in-Aid offset.</p>
-            <div><BadgeCheck size={18} aria-hidden="true" /> Frozen Data Model {data.contract_version}</div>
+            <div><BadgeCheck size={18} aria-hidden="true" /> Approved FY {data.fiscal_year} figures</div>
           </aside>
         </section>
 
@@ -327,7 +327,7 @@ export const SpendingExplorerPage = () => {
           <SummaryCard icon={Landmark} label="Approved net total" value={formatJmd(approvedNetTotal, true)} note="As Passed expenditure envelope" />
           <SummaryCard icon={CircleDollarSign} label="Appropriations-in-Aid" value={formatJmd(aiaOffset, true)} note="Transparent negative offset" tone="is-offset" />
           <SummaryCard icon={BarChart3} label="Public categories" value={String(every100Rows.length)} note="Including the AIA offset" />
-          <SummaryCard icon={BookOpenCheck} label="Public data rows" value={new Intl.NumberFormat("en-JM").format(spendingRows.length)} note="Approved Explorer dataset" />
+          <SummaryCard icon={BookOpenCheck} label="Budget records" value={new Intl.NumberFormat("en-JM").format(spendingRows.length)} note="Detailed approved estimates" />
         </section>
 
         <Every100Section rows={every100Rows} />
@@ -338,7 +338,7 @@ export const SpendingExplorerPage = () => {
               <p className="spending-explorer-kicker">Filter the approved estimates</p>
               <h2>Explore government spending</h2>
             </div>
-            <p>Filters combine with one another. Amounts remain signed, so Appropriations-in-Aid continues to reduce the relevant net total.</p>
+            <p>Choose one or more filters to narrow the results. Appropriations-in-Aid is shown as a negative offset.</p>
           </div>
 
           <div className="spending-explorer-filter-panel">
@@ -360,7 +360,7 @@ export const SpendingExplorerPage = () => {
           <div className="spending-explorer-selection-summary">
             <div><span>Selected net amount</span><strong>{formatJmd(filteredTotal, true)}</strong></div>
             <div><span>Share of approved net total</span><strong>{approvedNetTotal ? formatPercent((filteredTotal / approvedNetTotal) * 100) : "—"}</strong></div>
-            <div><span>Matching public rows</span><strong>{new Intl.NumberFormat("en-JM").format(filteredRows.length)}</strong></div>
+            <div><span>Matching records</span><strong>{new Intl.NumberFormat("en-JM").format(filteredRows.length)}</strong></div>
           </div>
 
           <div className="spending-explorer-breakdown-grid">
@@ -369,7 +369,7 @@ export const SpendingExplorerPage = () => {
               <CategoryBreakdown rows={filteredRows} denominator={approvedNetTotal || 1} />
             </article>
             <article className="spending-explorer-panel spending-explorer-table-panel">
-              <div className="spending-explorer-panel-heading"><h3>Detailed approved spending rows</h3><span>Source-backed data-serving rows</span></div>
+              <div className="spending-explorer-panel-heading"><h3>Detailed spending records</h3><span>Approved budget figures</span></div>
               <SpendingTable rows={filteredRows} page={page} onPageChange={setPage} />
             </article>
           </div>
@@ -383,13 +383,13 @@ export const SpendingExplorerPage = () => {
         <section id="spending-methodology" className="spending-explorer-section spending-explorer-methodology">
           <div>
             <p className="spending-explorer-kicker">How to read this Explorer</p>
-            <h2>Methodology and boundaries</h2>
+            <h2>How to read the numbers</h2>
             <p>This is the FY {data.fiscal_year} Central Government Estimates As Passed—not a report of actual ministry spending. Actual expenditure will only be added when an official source supports it.</p>
           </div>
           <div className="spending-explorer-method-grid">
-            <article><ShieldCheck aria-hidden="true" /><strong>Human-approved model</strong><span>The public-category taxonomy and AIA treatment were approved before the v1 freeze.</span></article>
-            <article><CircleDollarSign aria-hidden="true" /><strong>Signed net accounting</strong><span>Gross approved spending is reduced by the separate negative Appropriations-in-Aid offset.</span></article>
-            <article><BookOpenCheck aria-hidden="true" /><strong>Read-only source data</strong><span>The public frontend reads approved data-serving tabs and never writes to the workbook.</span></article>
+            <article><ShieldCheck aria-hidden="true" /><strong>Clear categories</strong><span>Spending is grouped into public categories for easier comparison.</span></article>
+            <article><CircleDollarSign aria-hidden="true" /><strong>Net spending totals</strong><span>Appropriations-in-Aid is shown separately as a negative offset.</span></article>
+            <article><BookOpenCheck aria-hidden="true" /><strong>Official figures</strong><span>The figures come from the Estimates of Expenditure As Passed.</span></article>
           </div>
         </section>
       </main>

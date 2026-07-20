@@ -140,7 +140,7 @@ test("spending normalization excludes unreleased and malformed rows", () => {
   ]);
   assert.equal(result.rows.length, 1);
   assert.equal(result.rows[0].amount_jmd, 1_250_000);
-  assert.deepEqual(result.warnings, ["Excluded malformed DS_SpendingExplorer row MALFORMED."]);
+  assert.deepEqual(result.warnings, ["Some spending records could not be displayed because required details were incomplete."]);
 });
 
 test("spending normalization retains vote-level Appropriations-in-Aid offsets", () => {
