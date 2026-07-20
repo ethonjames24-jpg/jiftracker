@@ -123,6 +123,8 @@ const requiredStringsPresent = (row, fields) => fields.every((field) => cleanVal
 export const normalizeEvery100Rows = (rows) => {
   const warnings = [];
   const validRows = rows.flatMap((row) => {
+    if (!RELEASED_ROW_STATUSES.has(cleanValue(row.data_status).toUpperCase())) return [];
+
     const numeric = {
       amount_jmd: parseNumber(row.amount_jmd),
       denominator_amount_jmd: parseNumber(row.denominator_amount_jmd),
@@ -141,7 +143,6 @@ export const normalizeEvery100Rows = (rows) => {
       return [];
     }
 
-    if (!RELEASED_ROW_STATUSES.has(cleanValue(row.data_status).toUpperCase())) return [];
     return [{ ...row, ...numeric }];
   });
 
@@ -154,6 +155,8 @@ export const normalizeEvery100Rows = (rows) => {
 export const normalizeSpendingRows = (rows) => {
   const warnings = [];
   const validRows = rows.flatMap((row) => {
+    if (!RELEASED_ROW_STATUSES.has(cleanValue(row.data_status).toUpperCase())) return [];
+
     const numeric = {
       amount_jmd: parseNumber(row.amount_jmd),
       share_of_total_pct: parseNumber(row.share_of_total_pct),
@@ -171,7 +174,6 @@ export const normalizeSpendingRows = (rows) => {
       return [];
     }
 
-    if (!RELEASED_ROW_STATUSES.has(cleanValue(row.data_status).toUpperCase())) return [];
     return [{ ...row, ...numeric }];
   });
 

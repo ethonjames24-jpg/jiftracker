@@ -88,10 +88,19 @@ test("Every J$100 normalization retains the signed AIA offset", () => {
     data_status: "RELEASED",
     last_updated: "2026-07-20T15:11:29-05:00",
   };
-  const result = normalizeEvery100Rows([base]);
+  const result = normalizeEvery100Rows([
+    base,
+    {
+      ...base,
+      record_id: "PRIVATE_DRAFT_E100",
+      amount_jmd: "",
+      data_status: "MODEL_APPROVED_RELEASE_NOT_AUTHORIZED",
+    },
+  ]);
   assert.equal(result.rows.length, 1);
   assert.equal(result.rows[0].amount_jmd, -48_730_045_000);
   assert.equal(result.rows[0].per_j100, -3.3798);
+  assert.deepEqual(result.warnings, []);
 });
 
 test("spending normalization excludes unreleased and malformed rows", () => {
@@ -121,10 +130,15 @@ test("spending normalization excludes unreleased and malformed rows", () => {
   };
   const result = normalizeSpendingRows([
     base,
-    { ...base, record_id: "PENDING", data_status: "MODEL_APPROVED_RELEASE_NOT_AUTHORIZED" },
+    {
+      ...base,
+      record_id: "PRIVATE_DRAFT_SPENDING",
+      amount_jmd: "",
+      data_status: "MODEL_APPROVED_RELEASE_NOT_AUTHORIZED",
+    },
     { ...base, record_id: "MALFORMED", amount_jmd: "" },
   ]);
   assert.equal(result.rows.length, 1);
   assert.equal(result.rows[0].amount_jmd, 1_250_000);
-  assert.equal(result.warnings.length, 1);
+  assert.deepEqual(result.warnings, ["Excluded malformed DS_SpendingExplorer row MALFORMED."]);
 });
