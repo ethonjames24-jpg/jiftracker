@@ -142,3 +142,35 @@ test("spending normalization excludes unreleased and malformed rows", () => {
   assert.equal(result.rows[0].amount_jmd, 1_250_000);
   assert.deepEqual(result.warnings, ["Excluded malformed DS_SpendingExplorer row MALFORMED."]);
 });
+
+test("spending normalization retains vote-level Appropriations-in-Aid offsets", () => {
+  const result = normalizeSpendingRows([{
+    record_id: "DS_SPEND_AIA_1",
+    fiscal_year: "2026/27",
+    period_label: "FY2026/27",
+    period_type: "ANNUAL",
+    measure_type: "APPROPRIATIONS_IN_AID",
+    organisation_id: "ORG_1",
+    organisation_name: "Example ministry",
+    function_id: "",
+    function_name: "",
+    programme_id: "",
+    programme_name: "",
+    economic_id: "ECON_AIA",
+    economic_name: "Appropriations-in-Aid",
+    public_category_id: "CAT_AIA",
+    public_category_name: "Appropriations-in-Aid (Offset)",
+    recurrent_or_capital: "RECURRENT",
+    amount_jmd: "-510850000",
+    share_of_total_pct: "-0.03543",
+    source_id: "SRC_EOE_2026_27_PASSED",
+    source_url: "https://example.com/source.pdf",
+    data_status: "RELEASED",
+    last_updated: "2026-07-20T15:11:29-05:00",
+  }]);
+
+  assert.equal(result.rows.length, 1);
+  assert.equal(result.rows[0].amount_jmd, -510_850_000);
+  assert.equal(result.rows[0].function_id, "");
+  assert.deepEqual(result.warnings, []);
+});

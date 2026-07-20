@@ -157,16 +157,18 @@ export const normalizeSpendingRows = (rows) => {
   const validRows = rows.flatMap((row) => {
     if (!RELEASED_ROW_STATUSES.has(cleanValue(row.data_status).toUpperCase())) return [];
 
+    const isAppropriationsInAid = cleanValue(row.measure_type).toUpperCase() === "APPROPRIATIONS_IN_AID";
+
     const numeric = {
       amount_jmd: parseNumber(row.amount_jmd),
       share_of_total_pct: parseNumber(row.share_of_total_pct),
     };
     const stringsValid = requiredStringsPresent(row, [
       "record_id", "fiscal_year", "period_label", "period_type", "measure_type",
-      "organisation_id", "organisation_name", "function_id", "function_name",
+      "organisation_id", "organisation_name",
       "economic_id", "economic_name", "public_category_id", "public_category_name",
       "recurrent_or_capital", "source_id", "source_url", "data_status", "last_updated",
-    ]);
+    ]) && (isAppropriationsInAid || requiredStringsPresent(row, ["function_id", "function_name"]));
     const numbersValid = Object.values(numeric).every((value) => value !== null);
 
     if (!stringsValid || !numbersValid) {
