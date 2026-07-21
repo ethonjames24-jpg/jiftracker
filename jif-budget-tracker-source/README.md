@@ -72,11 +72,12 @@ Variables:
 
 ```bash
 VITE_GOOGLE_SHEET_ID=13npg-j5jjMzE115EOkkBdq7Rav1L5-RUPl1rza5e_v0
+VITE_SPENDING_EXPLORER_SHEET_ID=1SWibIHNJzgkWRPb57YiBvV3QHXKwrRrgXzG0fKdvv80
 VITE_LOGO_URL=/jif-logo.png
 VITE_TRACKER_SUBSCRIBE_WEBHOOK_URL=
 ```
 
-`VITE_GOOGLE_SHEET_ID` and `VITE_LOGO_URL` are public. `VITE_TRACKER_SUBSCRIBE_WEBHOOK_URL` is the public n8n webhook endpoint that receives subscription requests. No private Google Sheets credentials are required for the default setup. The logo is bundled locally at `public/jif-logo.png`, so the dashboard does not depend on the original upload URL.
+`VITE_GOOGLE_SHEET_ID`, `VITE_SPENDING_EXPLORER_SHEET_ID`, and `VITE_LOGO_URL` are public. The two Sheet IDs intentionally stay separate: the first continues to serve the monthly tracker, while the second serves the additive Government Spending Explorer. `VITE_TRACKER_SUBSCRIBE_WEBHOOK_URL` is the public n8n webhook endpoint that receives subscription requests. No private Google Sheets credentials are required for the default setup. The logo is bundled locally at `public/jif-logo.png`, so the dashboard does not depend on the original upload URL.
 
 If `VITE_TRACKER_SUBSCRIBE_WEBHOOK_URL` is blank, the subscription form shows a controlled configuration message and does not submit anywhere.
 
@@ -91,19 +92,53 @@ https://docs.google.com/spreadsheets/d/{SHEET_ID}/gviz/tq?tqx=out:csv&sheet={TAB
 It reads these tabs:
 
 - `DS_MonthlyTracker`
+- `DS_PublicMonthlyExtras`
 - `archive`
 
 The app fetches CSV data in the browser, parses it, cleans it, and renders the dashboard.
 
+## Government Spending Explorer
+
+The Explorer is an additive application branch at:
+
+```text
+/?view=spending
+```
+
+The existing routes remain unchanged, including `/?month=YYYY-MM`, `/?admin=checklist&month=YYYY-MM`, and all `capture=hero|kpi|sources` URLs. Capture and admin views take precedence if parameters are combined.
+
+The Explorer reads a sanitized public-feed workbook through `VITE_SPENDING_EXPLORER_SHEET_ID`. The frozen Data Model v1 workbook remains private. The public feed contains only:
+
+- `README_Control` for the release gate
+- `DS_Every100` for the approved public-category summary
+- `DS_SpendingExplorer` for filterable approved spending rows
+- An explicit public-field whitelist from `Source_Catalog`
+
+The loader checks `README_Control` before it requests any public data-serving rows. Public rendering requires all of the following:
+
+- `publication_status=RELEASED`
+- `release_authorization_status=AUTHORIZED`
+- Frozen model and frontend contract version `v1.0`
+- `aia_public_treatment=SEPARATE_NEGATIVE_OFFSET_APPROVED`
+- `default_currency=JMD`
+
+Until those checks pass, the route shows a controlled “Prepared, not yet published” state. It does not expose the Explorer dataset, change the monthly tracker, or create a public navigation link.
+
+Before authorization, the public feed keeps `DS_Every100`, `DS_SpendingExplorer`, and `Source_Catalog` header-only. The publication workflow must copy only released rows and approved source fields into those tabs, then set the two human-release controls as its final step. Draft, QA, reconciliation, fact, staging and model tabs must never be copied into the public feed.
+
+Appropriations-in-Aid remains a signed negative offset throughout filtering, totals, tables and the “Every J$100” view. The frontend never clamps, redistributes or changes its sign.
+
 ### Important Google Sheet sharing requirement
 
-The Google Sheet must be shared publicly as read-only:
+Only the sanitized public-feed workbook must be shared publicly as read-only:
 
 ```text
 Anyone with the link → Viewer
 ```
 
 No write access is used. The dashboard does not edit, delete, append, or modify Google Sheet rows.
+
+Do not share the frozen Data Model v1 workbook publicly. Its internal tabs are outside the frontend contract.
 
 ## Subscription form architecture
 

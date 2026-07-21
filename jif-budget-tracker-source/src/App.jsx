@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { LOGO_URL } from "./config.js";
 import { BackToTopButton, Header } from "./components/Header.jsx";
 import { Overview } from "./components/Overview.jsx";
@@ -13,6 +14,10 @@ import { AdminChecklist, isAdminChecklistRoute } from "./components/AdminCheckli
 import { CaptureView, getCaptureMode } from "./components/CaptureViews.jsx";
 import { ErrorState, LoadingState } from "./components/States.jsx";
 import { useTrackerData } from "./hooks/useTrackerData.js";
+import { isSpendingExplorerRoute } from "./utils/appRoute.js";
+
+const SpendingExplorerPage = lazy(() => import("./components/spending/SpendingExplorerPage.jsx")
+  .then((module) => ({ default: module.SpendingExplorerPage })));
 
 const Footer = () => (
   <footer data-testid="site-footer" className="site-footer">
@@ -21,7 +26,7 @@ const Footer = () => (
         <img src={LOGO_URL} alt="Jamaica In Focus logo" data-testid="footer-logo" className="footer-logo" />
         <p data-testid="footer-brand-text">Jamaica In Focus Budget Performance Tracker. We check the receipts.</p>
       </div>
-      <p data-testid="footer-live-data-note" className="footer-note">Live read-only Google Sheet feed</p>
+      <p data-testid="footer-live-data-note" className="footer-note">Updated monthly from official public-finance sources</p>
     </div>
   </footer>
 );
@@ -30,7 +35,7 @@ const NonBlockingError = ({ message }) => (
   <div data-testid="nonblocking-error-banner" className="nonblocking-error">{message}</div>
 );
 
-export default function App() {
+const MonthlyTrackerApp = () => {
   const { data, selectedMonth, loading, error, loadTracker, handleMonthChange } = useTrackerData();
   const captureMode = getCaptureMode();
   const showAdminChecklist = isAdminChecklistRoute();
@@ -63,4 +68,15 @@ export default function App() {
       <Footer />
     </div>
   );
+};
+
+export default function App() {
+  if (isSpendingExplorerRoute()) {
+    return (
+      <Suspense fallback={<LoadingState />}>
+        <SpendingExplorerPage />
+      </Suspense>
+    );
+  }
+  return <MonthlyTrackerApp />;
 }
