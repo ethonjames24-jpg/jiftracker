@@ -80,7 +80,7 @@ export const MonthComparison = ({ comparison }) => {
     return (
       <section id="month-comparison" className="section-band month-comparison-section" data-testid="month-comparison-section">
         <div className="section-inner">
-          <p className="eyebrow">Month-to-month readout</p>
+          <p className="eyebrow">Month-to-month view</p>
           <h2>Month-to-Month Comparison</h2>
           <article className="comparison-empty-card" data-testid="month-comparison-empty">
             <GitCompareArrows size={28} className="green-icon" aria-hidden="true" />
@@ -101,7 +101,7 @@ export const MonthComparison = ({ comparison }) => {
   return (
     <section id="month-comparison" className="section-band month-comparison-section" data-testid="month-comparison-section">
       <div className="section-inner">
-        <p className="eyebrow">Month-to-month readout</p>
+        <p className="eyebrow">Month-to-month view</p>
         <h2>Month-to-Month Comparison</h2>
         <div className="comparison-grid">
           <ComparisonMonthCard eyebrow="Selected" month={comparison.selected_month} />

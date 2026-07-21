@@ -39,7 +39,7 @@ export const Overview = ({ currentMonth }) => {
             {currentMonth?.tracker_state || "Tracker state pending"}
           </div>
           <h1 data-testid="dashboard-title">Jamaica Budget Performance Tracker</h1>
-          <p data-testid="dashboard-subtitle" className="subtitle">Tracking monthly central government outturn against the FY 2026/27 budget.</p>
+          <p data-testid="dashboard-subtitle" className="subtitle">Tracking central government revenue, spending and balances against the approved FY 2026/27 plan.</p>
           <div className="hero-status-row">
             <div data-testid="current-month-label" className="month-chip">{currentMonth?.month_label || "Month pending"}</div>
             <StatusBadge status={currentMonth?.status_headline} testId="overall-status-badge" />
@@ -60,7 +60,7 @@ export const Overview = ({ currentMonth }) => {
         <WhatChangedCard currentMonth={currentMonth} />
       </div>
       <div className="info-grid">
-        <InfoCard icon={AlertTriangle} title="Monthly note" value={currentMonth?.monthly_note} testId="monthly-note-card" />
+        <InfoCard icon={AlertTriangle} title="Why this matters" value={currentMonth?.monthly_note} testId="monthly-note-card" />
         <PublicSummaryCard summary={currentMonth?.approved_email_summary} />
       </div>
     </section>
