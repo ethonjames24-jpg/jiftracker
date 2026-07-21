@@ -8,6 +8,58 @@ export const EMPTY_EXPLORER_FILTERS = {
   measure_type: "",
 };
 
+const FILTER_QUERY_KEYS = {
+  public_category_id: "category",
+  function_id: "function",
+  organisation_id: "organisation",
+  programme_id: "programme",
+  economic_id: "economic",
+  recurrent_or_capital: "budget",
+  measure_type: "measure",
+};
+
+export const explorerFiltersFromSearch = (search = "") => {
+  const params = new URLSearchParams(search);
+  return Object.fromEntries(Object.entries(FILTER_QUERY_KEYS)
+    .map(([field, queryKey]) => [field, params.get(queryKey) || ""]));
+};
+
+export const searchWithExplorerFilters = (search = "", filters = EMPTY_EXPLORER_FILTERS) => {
+  const params = new URLSearchParams(search);
+  params.set("view", "spending");
+  Object.entries(FILTER_QUERY_KEYS).forEach(([field, queryKey]) => {
+    const value = filters[field] || "";
+    if (value) params.set(queryKey, value);
+    else params.delete(queryKey);
+  });
+  return `?${params.toString()}`;
+};
+
+const CSV_COLUMNS = [
+  ["Fiscal year", "fiscal_year"],
+  ["Organisation", "organisation_name"],
+  ["Function", "function_name"],
+  ["Programme", "programme_name"],
+  ["Economic classification", "economic_name"],
+  ["Public category", "public_category_name"],
+  ["Budget type", "recurrent_or_capital"],
+  ["Measure", "measure_type"],
+  ["Amount JMD", "amount_jmd"],
+  ["Share of net total (%)", "share_of_total_pct"],
+  ["Official source", "source_url"],
+];
+
+const csvCell = (value) => {
+  const raw = value === null || value === undefined ? "" : String(value);
+  const safe = typeof value === "number" || !/^[=+@]/.test(raw) ? raw : `'${raw}`;
+  return `"${safe.replaceAll('"', '""')}"`;
+};
+
+export const buildSpendingCsv = (rows) => [
+  CSV_COLUMNS.map(([label]) => csvCell(label)).join(","),
+  ...rows.map((row) => CSV_COLUMNS.map(([, field]) => csvCell(row[field])).join(",")),
+].join("\r\n");
+
 const labelFor = (row, idField) => row[idField.replace(/_id$/, "_name")] || row[idField] || "Not classified";
 
 export const filterSpendingRows = (rows, filters) => rows.filter((row) => (

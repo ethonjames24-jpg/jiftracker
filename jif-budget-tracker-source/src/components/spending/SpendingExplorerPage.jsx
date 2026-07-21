@@ -7,6 +7,7 @@ import {
   ChevronLeft,
   ChevronRight,
   CircleDollarSign,
+  Download,
   ExternalLink,
   FileCheck2,
   Filter,
@@ -16,19 +17,23 @@ import {
   RefreshCw,
   RotateCcw,
   SearchX,
+  Share2,
   ShieldCheck,
 } from "lucide-react";
 import { LOGO_URL } from "../../config.js";
 import { BackToTopButton } from "../Header.jsx";
 import { useSpendingExplorerData } from "../../hooks/useSpendingExplorerData.js";
 import {
+  buildSpendingCsv,
   buildFilterOptions,
   EMPTY_EXPLORER_FILTERS,
+  explorerFiltersFromSearch,
   filterSpendingRows,
   formatJmd,
   formatPercent,
   groupSpendingRows,
   measureTypeLabel,
+  searchWithExplorerFilters,
   sumSpendingRows,
 } from "../../utils/spendingExplorerModel.js";
 
@@ -57,6 +62,7 @@ const ExplorerHeader = ({ released = false }) => (
           <a href="#spending-overview">Overview</a>
           <a href="#every-100">Every J$100</a>
           <a href="#spending-breakdown">Explore spending</a>
+          <a href="#spending-glossary">Glossary</a>
           <a href="#spending-sources">Sources</a>
           <a href="#spending-methodology">Methodology</a>
         </div>
@@ -309,10 +315,31 @@ const SourceSection = ({ sources }) => (
   </section>
 );
 
+const GlossarySection = () => (
+  <section id="spending-glossary" className="spending-explorer-section spending-explorer-glossary">
+    <div className="spending-explorer-section-heading">
+      <div>
+        <p className="spending-explorer-kicker">Budget terms, simply explained</p>
+        <h2>Quick glossary</h2>
+      </div>
+      <p>Short definitions for the terms used throughout the Explorer.</p>
+    </div>
+    <dl className="spending-explorer-glossary-grid">
+      <div><dt>Recurrent spending</dt><dd>Day-to-day government costs such as salaries, operations, grants and debt payments.</dd></div>
+      <div><dt>Capital spending</dt><dd>Investment in projects and assets such as roads, schools, hospitals and major equipment.</dd></div>
+      <div><dt>Voted estimate</dt><dd>Spending that Parliament approves through the annual budget process.</dd></div>
+      <div><dt>Public debt</dt><dd>Money allocated to repay government borrowing and the interest or other costs attached to it.</dd></div>
+    </dl>
+  </section>
+);
+
 export const SpendingExplorerPage = () => {
   const { data, loading, error, loadExplorer } = useSpendingExplorerData();
-  const [filters, setFilters] = useState(EMPTY_EXPLORER_FILTERS);
+  const [filters, setFilters] = useState(() => (
+    typeof window === "undefined" ? EMPTY_EXPLORER_FILTERS : explorerFiltersFromSearch(window.location.search)
+  ));
   const [page, setPage] = useState(1);
+  const [shareStatus, setShareStatus] = useState("");
 
   const spendingRows = data?.spending || [];
   const every100Rows = data?.every_100 || [];
@@ -324,8 +351,33 @@ export const SpendingExplorerPage = () => {
 
   useEffect(() => setPage(1), [filters]);
 
-  const updateFilter = (field, value) => setFilters((current) => ({ ...current, [field]: value }));
-  const resetFilters = () => setFilters(EMPTY_EXPLORER_FILTERS);
+  const commitFilters = (nextFilters) => {
+    setFilters(nextFilters);
+    const nextSearch = searchWithExplorerFilters(window.location.search, nextFilters);
+    window.history.replaceState(null, "", `${window.location.pathname}${nextSearch}${window.location.hash}`);
+    setShareStatus("");
+  };
+  const updateFilter = (field, value) => commitFilters({ ...filters, [field]: value });
+  const resetFilters = () => commitFilters(EMPTY_EXPLORER_FILTERS);
+
+  const copyShareLink = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setShareStatus("Link copied");
+    } catch {
+      setShareStatus("Copy the link from your address bar");
+    }
+  };
+
+  const downloadFilteredRows = () => {
+    const blob = new Blob([buildSpendingCsv(filteredRows)], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `jif-government-spending-${data.fiscal_year.replace("/", "-")}${activeFilterCount ? "-filtered" : ""}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
 
   if (loading && !data) {
     return <ExplorerState type="loading" title="Loading the Explorer" message="Loading the approved government spending figures." />;
@@ -407,6 +459,12 @@ export const SpendingExplorerPage = () => {
             </div>
           </div>
 
+          <div className="spending-explorer-filter-actions" aria-label="Share or download these results">
+            <button type="button" onClick={copyShareLink}><Share2 size={17} aria-hidden="true" /> Copy link to this view</button>
+            <button type="button" onClick={downloadFilteredRows}><Download size={17} aria-hidden="true" /> Download {activeFilterCount ? "filtered " : ""}CSV</button>
+            {shareStatus && <span role="status">{shareStatus}</span>}
+          </div>
+
           {activeFilterCount > 0 && (
             <section className="spending-explorer-your-selection" aria-labelledby="your-selection-title">
               <div className="spending-explorer-panel-heading"><h3 id="your-selection-title">Your selection</h3><span>{activeFilterCount} active {activeFilterCount === 1 ? "filter" : "filters"}</span></div>
@@ -431,6 +489,7 @@ export const SpendingExplorerPage = () => {
         {data.warnings.length > 0 && (
           <aside className="spending-explorer-data-warning" role="status">{data.warnings.join(" ")}</aside>
         )}
+        <GlossarySection />
         <SourceSection sources={data.sources} />
 
         <section id="spending-methodology" className="spending-explorer-section spending-explorer-methodology">

@@ -1,10 +1,13 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
+  buildSpendingCsv,
   EMPTY_EXPLORER_FILTERS,
+  explorerFiltersFromSearch,
   filterSpendingRows,
   formatJmd,
   groupSpendingRows,
+  searchWithExplorerFilters,
   sumSpendingRows,
 } from "./spendingExplorerModel.js";
 
@@ -32,4 +35,23 @@ test("signed aggregation preserves negative offsets", () => {
 test("JMD formatting keeps the negative sign and J$ prefix", () => {
   assert.equal(formatJmd(-48_730_045_000, true), "−J$48.7bn");
   assert.equal(formatJmd(1_441_781_354_000, true), "J$1.44tn");
+});
+
+test("Explorer filters round-trip through shareable query parameters", () => {
+  const filters = { ...EMPTY_EXPLORER_FILTERS, public_category_id: "CAT_HEALTH", recurrent_or_capital: "RECURRENT" };
+  const search = searchWithExplorerFilters("?view=spending&utm_source=press", filters);
+  assert.equal(search, "?view=spending&utm_source=press&category=CAT_HEALTH&budget=RECURRENT");
+  assert.deepEqual(explorerFiltersFromSearch(search), filters);
+});
+
+test("CSV export includes approved fields and safely escapes spreadsheet formulas", () => {
+  const csv = buildSpendingCsv([{
+    fiscal_year: "2026/27",
+    organisation_name: '=HYPERLINK("bad")',
+    amount_jmd: -20,
+    source_url: "https://example.com/source.pdf",
+  }]);
+  assert.match(csv, /"Fiscal year","Organisation"/);
+  assert.match(csv, /"'=HYPERLINK\(""bad""\)"/);
+  assert.match(csv, /,"-20",/);
 });
