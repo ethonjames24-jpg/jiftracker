@@ -11,6 +11,7 @@ import {
   ExternalLink,
   FileCheck2,
   Filter,
+  GitCompareArrows,
   Landmark,
   LoaderCircle,
   MinusCircle,
@@ -28,6 +29,8 @@ import {
   buildFilterOptions,
   EMPTY_EXPLORER_FILTERS,
   explorerFiltersFromSearch,
+  explorerFiscalYearFromSearch,
+  filterRowsByFiscalYear,
   filterSpendingRows,
   formatJmd,
   formatPercent,
@@ -61,6 +64,7 @@ const ExplorerHeader = ({ released = false }) => (
         <div>
           <a href="#spending-overview">Overview</a>
           <a href="#every-100">Every J$100</a>
+          <a href="#annual-comparison">Compare years</a>
           <a href="#spending-breakdown">Explore spending</a>
           <a href="#spending-glossary">Glossary</a>
           <a href="#spending-sources">Sources</a>
@@ -164,6 +168,60 @@ const SummaryCard = ({ icon: Icon, label, value, note, tone = "" }) => (
     <small>{note}</small>
   </article>
 );
+
+const YearSelector = ({ years, value, onChange }) => (
+  <label className="spending-explorer-year-selector">
+    <span>Fiscal year</span>
+    <select value={value} onChange={(event) => onChange(event.target.value)} aria-label="Select fiscal year">
+      {years.map((year) => <option key={year} value={year}>FY {year}</option>)}
+    </select>
+  </label>
+);
+
+const AnnualComparison = ({ rows, every100Rows, selectedFiscalYear }) => {
+  const comparisonRows = rows.filter((row) => row.current_fiscal_year === selectedFiscalYear);
+  if (!comparisonRows.length) {
+    return (
+      <section className="spending-explorer-section spending-explorer-comparison is-unavailable">
+        <GitCompareArrows aria-hidden="true" />
+        <div><h2>Compared with last year</h2><p>Select the latest fiscal year to see how approved allocations changed.</p></div>
+      </section>
+    );
+  }
+
+  const priorFiscalYear = comparisonRows[0].prior_fiscal_year;
+  const currentTotal = every100Rows.find((row) => row.fiscal_year === selectedFiscalYear)?.denominator_amount_jmd || 0;
+  const priorTotal = every100Rows.find((row) => row.fiscal_year === priorFiscalYear)?.denominator_amount_jmd || 0;
+  const totalChange = currentTotal - priorTotal;
+  const totalPercent = priorTotal ? (totalChange / priorTotal) * 100 : null;
+  const categories = comparisonRows.filter((row) => row.entity_id !== "CAT_AIA_OFFSET")
+    .sort((a, b) => Math.abs(b.amount_change_jmd) - Math.abs(a.amount_change_jmd));
+
+  return (
+    <section id="annual-comparison" className="spending-explorer-section spending-explorer-comparison">
+      <div className="spending-explorer-section-heading">
+        <div><p className="spending-explorer-kicker">What changed?</p><h2>Compared with FY {priorFiscalYear}</h2></div>
+        <p>Changes compare the approved Estimates As Passed for each fiscal year—not actual spending.</p>
+      </div>
+      <div className="spending-explorer-comparison-summary">
+        <article><span>Approved budget change</span><strong>{formatJmd(totalChange, true)}</strong><small>{totalPercent === null ? "Not comparable" : `${formatPercent(totalPercent)} from FY ${priorFiscalYear}`}</small></article>
+        <article><span>FY {selectedFiscalYear}</span><strong>{formatJmd(currentTotal, true)}</strong><small>Net approved expenditure</small></article>
+        <article><span>FY {priorFiscalYear}</span><strong>{formatJmd(priorTotal, true)}</strong><small>Net approved expenditure</small></article>
+      </div>
+      <div className="spending-explorer-comparison-list" role="table" aria-label={`Approved category changes from FY ${priorFiscalYear} to FY ${selectedFiscalYear}`}>
+        <div className="is-header" role="row"><span>Public category</span><span>Amount change</span><span>Percentage</span><span>Movement</span></div>
+        {categories.map((row) => (
+          <div key={row.comparison_id} role="row">
+            <strong>{row.entity_name}</strong>
+            <span className={row.amount_change_jmd < 0 ? "is-down" : "is-up"}>{row.amount_change_jmd > 0 ? "+" : ""}{formatJmd(row.amount_change_jmd, true)}</span>
+            <span>{row.percent_change === null ? "Not comparable" : `${row.percent_change > 0 ? "+" : ""}${formatPercent(row.percent_change)}`}</span>
+            <span>{row.rank_change > 0 ? `Up ${row.rank_change}` : row.rank_change < 0 ? `Down ${Math.abs(row.rank_change)}` : "No change"}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+};
 
 const PlainLanguageAnswers = ({ every100Rows, spendingRows }) => {
   const largestCategory = [...every100Rows]
@@ -338,11 +396,19 @@ export const SpendingExplorerPage = () => {
   const [filters, setFilters] = useState(() => (
     typeof window === "undefined" ? EMPTY_EXPLORER_FILTERS : explorerFiltersFromSearch(window.location.search)
   ));
+  const [selectedFiscalYear, setSelectedFiscalYear] = useState(() => (
+    typeof window === "undefined" ? "" : explorerFiscalYearFromSearch(window.location.search)
+  ));
   const [page, setPage] = useState(1);
   const [shareStatus, setShareStatus] = useState("");
 
-  const spendingRows = data?.spending || [];
-  const every100Rows = data?.every_100 || [];
+  const fiscalYears = data?.fiscal_years || [];
+  const activeFiscalYear = fiscalYears.includes(selectedFiscalYear) ? selectedFiscalYear : (data?.fiscal_year || fiscalYears[0] || "");
+  const allSpendingRows = data?.spending || [];
+  const allEvery100Rows = data?.every_100 || [];
+  const spendingRows = useMemo(() => filterRowsByFiscalYear(allSpendingRows, activeFiscalYear), [allSpendingRows, activeFiscalYear]);
+  const every100Rows = useMemo(() => filterRowsByFiscalYear(allEvery100Rows, activeFiscalYear), [allEvery100Rows, activeFiscalYear]);
+  const visibleSources = (data?.sources || []).filter((source) => !source.fiscal_year || source.fiscal_year === activeFiscalYear);
   const filteredRows = useMemo(() => filterSpendingRows(spendingRows, filters), [spendingRows, filters]);
   const filteredTotal = useMemo(() => sumSpendingRows(filteredRows), [filteredRows]);
   const approvedNetTotal = every100Rows[0]?.denominator_amount_jmd || 0;
@@ -350,15 +416,26 @@ export const SpendingExplorerPage = () => {
   const activeFilterCount = Object.values(filters).filter(Boolean).length;
 
   useEffect(() => setPage(1), [filters]);
+  useEffect(() => {
+    if (activeFiscalYear && activeFiscalYear !== selectedFiscalYear) setSelectedFiscalYear(activeFiscalYear);
+  }, [activeFiscalYear, selectedFiscalYear]);
 
   const commitFilters = (nextFilters) => {
     setFilters(nextFilters);
-    const nextSearch = searchWithExplorerFilters(window.location.search, nextFilters);
+    const nextSearch = searchWithExplorerFilters(window.location.search, nextFilters, activeFiscalYear);
     window.history.replaceState(null, "", `${window.location.pathname}${nextSearch}${window.location.hash}`);
     setShareStatus("");
   };
   const updateFilter = (field, value) => commitFilters({ ...filters, [field]: value });
   const resetFilters = () => commitFilters(EMPTY_EXPLORER_FILTERS);
+  const updateFiscalYear = (fiscalYear) => {
+    setSelectedFiscalYear(fiscalYear);
+    setFilters(EMPTY_EXPLORER_FILTERS);
+    setPage(1);
+    const nextSearch = searchWithExplorerFilters(window.location.search, EMPTY_EXPLORER_FILTERS, fiscalYear);
+    window.history.replaceState(null, "", `${window.location.pathname}${nextSearch}${window.location.hash}`);
+    setShareStatus("");
+  };
 
   const copyShareLink = async () => {
     try {
@@ -374,7 +451,7 @@ export const SpendingExplorerPage = () => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `jif-government-spending-${data.fiscal_year.replace("/", "-")}${activeFilterCount ? "-filtered" : ""}.csv`;
+    link.download = `jif-government-spending-${activeFiscalYear.replace("/", "-")}${activeFilterCount ? "-filtered" : ""}.csv`;
     link.click();
     URL.revokeObjectURL(url);
   };
@@ -408,7 +485,8 @@ export const SpendingExplorerPage = () => {
         {error && <div className="spending-explorer-inline-warning">{error}</div>}
         <section id="spending-overview" className="spending-explorer-hero">
           <div className="spending-explorer-hero-copy">
-            <p className="spending-explorer-kicker">FY {data.fiscal_year} · Estimates As Passed</p>
+            <YearSelector years={fiscalYears} value={activeFiscalYear} onChange={updateFiscalYear} />
+            <p className="spending-explorer-kicker">FY {activeFiscalYear} · Estimates As Passed</p>
             <h1>Government spending, made easier to inspect.</h1>
             <p>Explore Jamaica’s approved Central Government expenditure by public category, organisation, function, programme and economic classification.</p>
             <div className="spending-explorer-hero-actions">
@@ -420,7 +498,7 @@ export const SpendingExplorerPage = () => {
             <span>Net approved expenditure</span>
             <strong>{formatJmd(approvedNetTotal, true)}</strong>
             <p>The approved expenditure total after offsets.</p>
-            <div><BadgeCheck size={18} aria-hidden="true" /> Approved FY {data.fiscal_year} figures</div>
+            <div><BadgeCheck size={18} aria-hidden="true" /> Approved FY {activeFiscalYear} figures</div>
           </aside>
         </section>
 
@@ -432,6 +510,7 @@ export const SpendingExplorerPage = () => {
         </section>
 
         <Every100Section rows={every100Rows} />
+        <AnnualComparison rows={data.comparison || []} every100Rows={allEvery100Rows} selectedFiscalYear={activeFiscalYear} />
         <PlainLanguageAnswers every100Rows={every100Rows} spendingRows={spendingRows} />
 
         <section id="spending-breakdown" className="spending-explorer-section spending-explorer-breakdown">
@@ -490,13 +569,13 @@ export const SpendingExplorerPage = () => {
           <aside className="spending-explorer-data-warning" role="status">{data.warnings.join(" ")}</aside>
         )}
         <GlossarySection />
-        <SourceSection sources={data.sources} />
+        <SourceSection sources={visibleSources} />
 
         <section id="spending-methodology" className="spending-explorer-section spending-explorer-methodology">
           <div>
             <p className="spending-explorer-kicker">How to read this Explorer</p>
             <h2>How to read the numbers</h2>
-            <p>This is the FY {data.fiscal_year} Central Government Estimates As Passed—not a report of actual ministry spending. Actual expenditure will only be added when an official source supports it.</p>
+            <p>This is the FY {activeFiscalYear} Central Government Estimates As Passed—not a report of actual ministry spending. Actual expenditure will only be added when an official source supports it.</p>
           </div>
           <div className="spending-explorer-method-grid">
             <article><ShieldCheck aria-hidden="true" /><strong>Clear categories</strong><span>Spending is grouped into public categories for easier comparison.</span></article>

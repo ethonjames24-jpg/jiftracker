@@ -1,6 +1,6 @@
 import { SPENDING_EXPLORER_SHEET_ID, SPENDING_EXPLORER_SHEET_TABS } from "../config.js";
 
-export const SPENDING_EXPLORER_CONTRACT_VERSION = "v1.0";
+export const SPENDING_EXPLORER_CONTRACT_VERSION = "v1.1";
 
 const CSV_BASE_URL = "https://docs.google.com/spreadsheets/d";
 const PUBLIC_SOURCE_FIELDS = [
@@ -91,10 +91,10 @@ export const buildControlMap = (rows) => rows.reduce((controls, row) => {
 
 export const evaluateExplorerRelease = (controls = {}) => {
   const checks = {
-    publication_released: controls.publication_status === "RELEASED",
+    publication_released: ["RELEASED", "RELEASED_VERSIONED_FEED"].includes(controls.publication_status),
     release_authorized: controls.release_authorization_status === "AUTHORIZED",
-    model_version_frozen: controls.model_version === "v1.0"
-      && cleanValue(controls.schema_status).includes("MODEL_V1_FROZEN"),
+    model_version_supported: controls.model_version === "v1.1"
+      && cleanValue(controls.schema_status).includes("MODEL_V1_1"),
     contract_version_supported: controls.frontend_contract_version === SPENDING_EXPLORER_CONTRACT_VERSION,
     aia_treatment_approved: controls.aia_public_treatment === "SEPARATE_NEGATIVE_OFFSET_APPROVED",
     currency_supported: controls.default_currency === "JMD",
@@ -110,6 +110,29 @@ export const evaluateExplorerRelease = (controls = {}) => {
       : "The Government Spending Explorer is prepared but has not been authorized for public release.",
   };
 };
+
+export const normalizeComparisonRows = (rows) => rows.flatMap((row) => {
+  if (!RELEASED_ROW_STATUSES.has(cleanValue(row.data_status).toUpperCase())) return [];
+  const numeric = {
+    current_amount_jmd: parseNumber(row.current_amount_jmd),
+    prior_amount_jmd: parseNumber(row.prior_amount_jmd),
+    amount_change_jmd: parseNumber(row.amount_change_jmd),
+    percent_change: parseNumber(row.percent_change),
+    current_rank: parseNumber(row.current_rank),
+    prior_rank: parseNumber(row.prior_rank),
+    rank_change: parseNumber(row.rank_change),
+  };
+  const required = requiredStringsPresent(row, [
+    "comparison_id", "current_fiscal_year", "prior_fiscal_year", "comparison_grain",
+    "entity_id", "entity_name", "current_source_id", "prior_source_id", "data_status", "last_updated",
+  ]);
+  const amountsValid = [numeric.current_amount_jmd, numeric.prior_amount_jmd, numeric.amount_change_jmd]
+    .every((value) => value !== null);
+  if (!required || !amountsValid) return [];
+  return [{ ...row, ...numeric }];
+});
+
+const fiscalYearStart = (fiscalYear) => Number(cleanValue(fiscalYear).split("/")[0]) || 0;
 
 const parseNumber = (value) => {
   const cleaned = cleanValue(value).replaceAll(",", "").replace("%", "");
@@ -213,14 +236,16 @@ export const fetchSpendingExplorerData = async (fetchImpl = fetch) => {
       controls,
       release,
       fiscal_year: controls.initial_fiscal_year || "",
+      fiscal_years: [],
       every_100: [],
       spending: [],
+      comparison: [],
       sources: [],
       warnings: [],
     };
   }
 
-  const [every100Source, spendingSource, sourceCatalog] = await Promise.all([
+  const [every100Source, spendingSource, sourceCatalog, comparisonSource] = await Promise.all([
     fetchSheetRows(SPENDING_EXPLORER_SHEET_TABS.every100, "record_id", {}, fetchImpl),
     fetchSheetRows(SPENDING_EXPLORER_SHEET_TABS.spending, "record_id", {}, fetchImpl),
     fetchSheetRows(
@@ -229,23 +254,30 @@ export const fetchSpendingExplorerData = async (fetchImpl = fetch) => {
       { query: "select A,B,C,D,G,H,I,K" },
       fetchImpl,
     ),
+    fetchSheetRows(SPENDING_EXPLORER_SHEET_TABS.comparison, "comparison_id", {}, fetchImpl),
   ]);
 
   const every100 = normalizeEvery100Rows(every100Source);
   const spending = normalizeSpendingRows(spendingSource);
+  const comparison = normalizeComparisonRows(comparisonSource);
   if (!every100.rows.length || !spending.rows.length) {
     throw new Error("The released Explorer dataset did not contain eligible public rows.");
   }
 
   const usedSourceIds = new Set([...every100.rows, ...spending.rows].map((row) => row.source_id));
+  const fiscalYears = Array.from(new Set([...every100.rows, ...spending.rows].map((row) => row.fiscal_year)))
+    .filter(Boolean)
+    .sort((a, b) => fiscalYearStart(b) - fiscalYearStart(a));
 
   return {
     contract_version: SPENDING_EXPLORER_CONTRACT_VERSION,
     controls,
     release,
-    fiscal_year: every100.rows[0]?.fiscal_year || spending.rows[0]?.fiscal_year || controls.initial_fiscal_year || "",
+    fiscal_year: fiscalYears[0] || controls.initial_fiscal_year || "",
+    fiscal_years: fiscalYears,
     every_100: every100.rows,
     spending: spending.rows,
+    comparison,
     sources: whitelistSources(sourceCatalog).filter((source) => usedSourceIds.has(source.source_id)),
     warnings: [...every100.warnings, ...spending.warnings],
   };

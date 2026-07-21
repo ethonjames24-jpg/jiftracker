@@ -3,7 +3,9 @@ import assert from "node:assert/strict";
 import {
   buildSpendingCsv,
   EMPTY_EXPLORER_FILTERS,
+  explorerFiscalYearFromSearch,
   explorerFiltersFromSearch,
+  filterRowsByFiscalYear,
   filterSpendingRows,
   formatJmd,
   groupSpendingRows,
@@ -39,9 +41,16 @@ test("JMD formatting keeps the negative sign and J$ prefix", () => {
 
 test("Explorer filters round-trip through shareable query parameters", () => {
   const filters = { ...EMPTY_EXPLORER_FILTERS, public_category_id: "CAT_HEALTH", recurrent_or_capital: "RECURRENT" };
-  const search = searchWithExplorerFilters("?view=spending&utm_source=press", filters);
-  assert.equal(search, "?view=spending&utm_source=press&category=CAT_HEALTH&budget=RECURRENT");
+  const search = searchWithExplorerFilters("?view=spending&utm_source=press", filters, "2026/27");
+  assert.equal(search, "?view=spending&utm_source=press&category=CAT_HEALTH&budget=RECURRENT&fy=2026%2F27");
   assert.deepEqual(explorerFiltersFromSearch(search), filters);
+  assert.equal(explorerFiscalYearFromSearch(search), "2026/27");
+});
+
+test("fiscal-year filtering keeps annual datasets separate", () => {
+  const annualRows = [{ fiscal_year: "2025/26" }, { fiscal_year: "2026/27" }, { fiscal_year: "2026/27" }];
+  assert.equal(filterRowsByFiscalYear(annualRows, "2025/26").length, 1);
+  assert.equal(filterRowsByFiscalYear(annualRows, "2026/27").length, 2);
 });
 
 test("CSV export includes approved fields and safely escapes spreadsheet formulas", () => {

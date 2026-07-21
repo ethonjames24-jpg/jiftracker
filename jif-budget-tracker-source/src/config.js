@@ -16,8 +16,9 @@ export const SHEET_TABS = {
 };
 
 export const SPENDING_EXPLORER_SHEET_TABS = {
-  controls: "README_Control",
-  spending: "DS_SpendingExplorer",
-  every100: "DS_Every100",
-  sources: "Source_Catalog",
+  controls: "README_Control_v1_1",
+  spending: "DS_SpendingExplorer_v1_1",
+  every100: "DS_Every100_v1_1",
+  sources: "Source_Catalog_v1_1",
+  comparison: "DS_AnnualComparison",
 };

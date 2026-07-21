@@ -24,7 +24,9 @@ export const explorerFiltersFromSearch = (search = "") => {
     .map(([field, queryKey]) => [field, params.get(queryKey) || ""]));
 };
 
-export const searchWithExplorerFilters = (search = "", filters = EMPTY_EXPLORER_FILTERS) => {
+export const explorerFiscalYearFromSearch = (search = "") => new URLSearchParams(search).get("fy") || "";
+
+export const searchWithExplorerFilters = (search = "", filters = EMPTY_EXPLORER_FILTERS, fiscalYear = "") => {
   const params = new URLSearchParams(search);
   params.set("view", "spending");
   Object.entries(FILTER_QUERY_KEYS).forEach(([field, queryKey]) => {
@@ -32,8 +34,14 @@ export const searchWithExplorerFilters = (search = "", filters = EMPTY_EXPLORER_
     if (value) params.set(queryKey, value);
     else params.delete(queryKey);
   });
+  if (fiscalYear) params.set("fy", fiscalYear);
+  else params.delete("fy");
   return `?${params.toString()}`;
 };
+
+export const filterRowsByFiscalYear = (rows, fiscalYear) => (
+  fiscalYear ? rows.filter((row) => row.fiscal_year === fiscalYear) : rows
+);
 
 const CSV_COLUMNS = [
   ["Fiscal year", "fiscal_year"],

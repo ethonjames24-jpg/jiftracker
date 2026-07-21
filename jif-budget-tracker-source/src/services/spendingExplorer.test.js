@@ -5,16 +5,17 @@ import {
   evaluateExplorerRelease,
   fetchSpendingExplorerData,
   normalizeEvery100Rows,
+  normalizeComparisonRows,
   normalizeSpendingRows,
   parseCsv,
 } from "./spendingExplorer.js";
 
 const approvedControls = {
-  publication_status: "RELEASED",
+  publication_status: "RELEASED_VERSIONED_FEED",
   release_authorization_status: "AUTHORIZED",
-  model_version: "v1.0",
-  schema_status: "MODEL_V1_FROZEN_RELEASED",
-  frontend_contract_version: "v1.0",
+  model_version: "v1.1",
+  schema_status: "MODEL_V1_1_MULTI_YEAR_RELEASED",
+  frontend_contract_version: "v1.1",
   aia_public_treatment: "SEPARATE_NEGATIVE_OFFSET_APPROVED",
   default_currency: "JMD",
 };
@@ -52,9 +53,9 @@ test("the loader checks controls first and does not request DS rows before relea
     "control_field,value,notes",
     "publication_status,DEVELOPMENT,",
     "release_authorization_status,NOT_AUTHORIZED,",
-    "model_version,v1.0,",
-    "schema_status,MODEL_V1_FROZEN_RELEASE_AUTHORIZATION_PENDING,",
-    "frontend_contract_version,v1.0,",
+    "model_version,v1.1,",
+    "schema_status,MODEL_V1_1_MULTI_YEAR_RELEASED,",
+    "frontend_contract_version,v1.1,",
     "aia_public_treatment,SEPARATE_NEGATIVE_OFFSET_APPROVED,",
     "default_currency,JMD,",
   ].join("\n");
@@ -64,10 +65,35 @@ test("the loader checks controls first and does not request DS rows before relea
   };
 
   const result = await fetchSpendingExplorerData(fetchImpl);
-  assert.deepEqual(requestedTabs, ["README_Control"]);
+  assert.deepEqual(requestedTabs, ["README_Control_v1_1"]);
   assert.equal(result.release.authorized, false);
   assert.deepEqual(result.spending, []);
   assert.deepEqual(result.every_100, []);
+});
+
+test("annual comparison normalization preserves signed changes and nullable ranks", () => {
+  const result = normalizeComparisonRows([{
+    comparison_id: "CMP_1",
+    current_fiscal_year: "2026/27",
+    prior_fiscal_year: "2025/26",
+    comparison_grain: "PUBLIC_CATEGORY",
+    entity_id: "CAT_EDUCATION",
+    entity_name: "Education",
+    current_amount_jmd: "213532517000",
+    prior_amount_jmd: "180843460000",
+    amount_change_jmd: "32689057000",
+    percent_change: "18.08",
+    current_rank: "3",
+    prior_rank: "4",
+    rank_change: "1",
+    current_source_id: "SRC_26",
+    prior_source_id: "SRC_25",
+    data_status: "RELEASED",
+    last_updated: "2026-07-20T20:15:42-05:00",
+  }]);
+  assert.equal(result.length, 1);
+  assert.equal(result[0].amount_change_jmd, 32_689_057_000);
+  assert.equal(result[0].rank_change, 1);
 });
 
 test("Every J$100 normalization retains the signed AIA offset", () => {
