@@ -26,7 +26,10 @@ const Footer = () => (
         <img src={LOGO_URL} alt="Jamaica In Focus logo" data-testid="footer-logo" className="footer-logo" />
         <p data-testid="footer-brand-text">Jamaica In Focus Budget Performance Tracker. We check the receipts.</p>
       </div>
-      <p data-testid="footer-live-data-note" className="footer-note">Updated monthly from official public-finance sources</p>
+      <div className="footer-meta">
+        <p data-testid="footer-live-data-note" className="footer-note">Updated monthly from official public-finance sources</p>
+        <p className="footer-builder-credit">Built by Crypten Technologies</p>
+      </div>
     </div>
   </footer>
 );
