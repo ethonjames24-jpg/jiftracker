@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { LOGO_URL } from "../../config.js";
 import { BackToTopButton } from "../Header.jsx";
+import { PublicToolsFooter } from "../PublicToolsFooter.jsx";
 import { useSpendingExplorerData } from "../../hooks/useSpendingExplorerData.js";
 import {
   buildSpendingCsv,
@@ -75,21 +76,6 @@ const ExplorerHeader = ({ released = false }) => (
   </>
 );
 
-const ExplorerFooter = () => (
-  <footer className="spending-explorer-footer">
-    <div>
-      <span className="spending-explorer-footer-brand">
-        <img src={LOGO_URL} alt="" />
-        <strong>Jamaica In Focus</strong>
-      </span>
-      <div className="spending-explorer-footer-actions">
-        <a href="/"><ArrowLeft size={16} aria-hidden="true" /> Return to the monthly tracker</a>
-        <span>Built by Crypten Technologies</span>
-      </div>
-    </div>
-  </footer>
-);
-
 const ExplorerState = ({ type, title, message, onRetry }) => (
   <div className="spending-explorer spending-explorer-state-page">
     <ExplorerHeader />
@@ -105,7 +91,7 @@ const ExplorerState = ({ type, title, message, onRetry }) => (
         </div>
       </article>
     </main>
-    <ExplorerFooter />
+    <PublicToolsFooter sourceHref="#spending-sources" />
   </div>
 );
 
@@ -588,7 +574,7 @@ export const SpendingExplorerPage = () => {
         </section>
       </main>
       <BackToTopButton />
-      <ExplorerFooter />
+      <PublicToolsFooter sourceHref="#spending-sources" />
     </div>
   );
 };
