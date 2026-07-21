@@ -60,7 +60,7 @@ export const Overview = ({ currentMonth }) => {
         <WhatChangedCard currentMonth={currentMonth} />
       </div>
       <div className="info-grid">
-        <InfoCard icon={AlertTriangle} title="Monthly note" value={currentMonth?.monthly_note} testId="monthly-note-card" />
+        <InfoCard icon={AlertTriangle} title="Why this matters" value={currentMonth?.monthly_note} testId="monthly-note-card" />
         <PublicSummaryCard summary={currentMonth?.approved_email_summary} />
       </div>
     </section>
