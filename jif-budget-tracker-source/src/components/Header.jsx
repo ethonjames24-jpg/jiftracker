@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ArrowUp, BarChart3, FileText, GitCompareArrows, Link2, ShieldCheck } from "lucide-react";
+import { ArrowUp, BarChart3, FileText, GitCompareArrows, Landmark, Link2, ShieldCheck } from "lucide-react";
 import { LOGO_URL } from "../config.js";
 
 const links = [
@@ -203,13 +203,20 @@ export const Header = ({ months, selectedMonth, onMonthChange }) => (
             <p data-testid="brand-tagline" className="brand-tagline">Receipts checked. Public finance tracked.</p>
           </div>
         </div>
-        <select data-testid="month-select-trigger" className="month-select" value={selectedMonth || ""} onChange={(event) => onMonthChange(event.target.value)}>
-          {months.map((month) => (
-            <option key={month.month_sort} value={month.month_sort} data-testid={`month-select-option-${month.month_sort}`}>
-              {month.month_label}
-            </option>
-          ))}
-        </select>
+        <div className="header-actions">
+          <a className="explorer-switch-link" href="/?view=spending" data-testid="government-spending-explorer-link">
+            <Landmark size={18} aria-hidden="true" />
+            <span className="explorer-switch-label-full">Government Spending Explorer</span>
+            <span className="explorer-switch-label-short">Spending Explorer</span>
+          </a>
+          <select data-testid="month-select-trigger" className="month-select" value={selectedMonth || ""} onChange={(event) => onMonthChange(event.target.value)} aria-label="Select tracker month">
+            {months.map((month) => (
+              <option key={month.month_sort} value={month.month_sort} data-testid={`month-select-option-${month.month_sort}`}>
+                {month.month_label}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
     </header>
     <SectionNavigation />

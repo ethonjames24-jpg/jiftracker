@@ -82,7 +82,10 @@ const ExplorerFooter = () => (
         <img src={LOGO_URL} alt="" />
         <strong>Jamaica In Focus</strong>
       </span>
-      <a href="/"><ArrowLeft size={16} aria-hidden="true" /> Return to the monthly tracker</a>
+      <div className="spending-explorer-footer-actions">
+        <a href="/"><ArrowLeft size={16} aria-hidden="true" /> Return to the monthly tracker</a>
+        <span>Built by Crypten Technologies</span>
+      </div>
     </div>
   </footer>
 );
