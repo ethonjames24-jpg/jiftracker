@@ -19,6 +19,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { LOGO_URL } from "../../config.js";
+import { BackToTopButton } from "../Header.jsx";
 import { useSpendingExplorerData } from "../../hooks/useSpendingExplorerData.js";
 import {
   buildFilterOptions,
@@ -348,6 +349,8 @@ export const SpendingExplorerPage = () => {
 
   return (
     <div className="spending-explorer" data-testid="spending-explorer-app">
+      <div id="page-top" className="page-top-sentinel" aria-hidden="true" />
+      <div id="back-to-top-sentinel" className="back-to-top-sentinel" aria-hidden="true" />
       <ExplorerHeader released />
       <main>
         {error && <div className="spending-explorer-inline-warning">{error}</div>}
@@ -443,6 +446,7 @@ export const SpendingExplorerPage = () => {
           </div>
         </section>
       </main>
+      <BackToTopButton />
       <ExplorerFooter />
     </div>
   );
