@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
-import { LOGO_URL } from "./config.js";
 import { BackToTopButton, Header } from "./components/Header.jsx";
+import { PublicToolsFooter } from "./components/PublicToolsFooter.jsx";
 import { Overview } from "./components/Overview.jsx";
 import { SummaryCards } from "./components/SummaryCards.jsx";
 import { KpiTable } from "./components/KpiTable.jsx";
@@ -18,21 +18,6 @@ import { isSpendingExplorerRoute } from "./utils/appRoute.js";
 
 const SpendingExplorerPage = lazy(() => import("./components/spending/SpendingExplorerPage.jsx")
   .then((module) => ({ default: module.SpendingExplorerPage })));
-
-const Footer = () => (
-  <footer data-testid="site-footer" className="site-footer">
-    <div className="footer-inner">
-      <div className="footer-brand">
-        <img src={LOGO_URL} alt="Jamaica In Focus logo" data-testid="footer-logo" className="footer-logo" />
-        <p data-testid="footer-brand-text">Jamaica In Focus Budget Performance Tracker. We check the receipts.</p>
-      </div>
-      <div className="footer-meta">
-        <p data-testid="footer-live-data-note" className="footer-note">Updated monthly from official public-finance sources</p>
-        <p className="footer-builder-credit">Built by Crypten Technologies</p>
-      </div>
-    </div>
-  </footer>
-);
 
 const NonBlockingError = ({ message }) => (
   <div data-testid="nonblocking-error-banner" className="nonblocking-error">{message}</div>
@@ -68,7 +53,7 @@ const MonthlyTrackerApp = () => {
       </main>
       <BackToTopButton />
       <MobileSubscribeButton />
-      <Footer />
+      <PublicToolsFooter />
     </div>
   );
 };
