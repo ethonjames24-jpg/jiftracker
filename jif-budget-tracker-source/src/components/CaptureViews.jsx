@@ -119,7 +119,7 @@ export const KpiCaptureView = ({ currentMonth, kpis }) => (
         <article className="info-card" data-testid="capture-monthly-note-card">
           <div className="info-card-title-row">
             <Gauge size={22} className="green-icon" aria-hidden="true" />
-            <h2>Monthly note</h2>
+            <h2>Why this matters</h2>
           </div>
           <p>{currentMonth?.monthly_note || "No note reported for this month."}</p>
         </article>
