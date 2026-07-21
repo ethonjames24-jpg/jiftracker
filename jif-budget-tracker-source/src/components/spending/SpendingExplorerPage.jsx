@@ -115,7 +115,7 @@ const Every100Section = ({ rows }) => {
           <p className="spending-explorer-kicker">A simpler way to read the budget</p>
           <h2>Where every J$100 goes</h2>
         </div>
-        <p>Each amount uses the net approved expenditure envelope as its denominator. The values reconcile to J$100 before display rounding.</p>
+        <p>See how the approved budget is divided when the total is scaled down to J$100.</p>
       </div>
       <div className="spending-explorer-every100-list">
         {rows.map((row) => {
@@ -132,7 +132,6 @@ const Every100Section = ({ rows }) => {
                 <div className="spending-explorer-bar-track" aria-hidden="true">
                   <span style={{ width: `${width}%` }} />
                 </div>
-                {isOffset && <small>Appropriations-in-Aid is presented as a transparent negative offset.</small>}
               </div>
               <div className="spending-explorer-every100-value">
                 <strong>{row.per_j100 < 0 ? "−" : ""}J${Math.abs(row.per_j100).toFixed(2)}</strong>
@@ -142,6 +141,10 @@ const Every100Section = ({ rows }) => {
           );
         })}
       </div>
+      <aside className="spending-explorer-aia-explainer">
+        <strong>What is Appropriations-in-Aid?</strong>
+        <span>It is money government organisations expect to collect and use. It appears as a negative amount because it reduces the funding needed from the central budget.</span>
+      </aside>
     </section>
   );
 };
@@ -154,6 +157,49 @@ const SummaryCard = ({ icon: Icon, label, value, note, tone = "" }) => (
     <small>{note}</small>
   </article>
 );
+
+const PlainLanguageAnswers = ({ every100Rows, spendingRows }) => {
+  const largestCategory = [...every100Rows]
+    .filter((row) => row.amount_jmd > 0)
+    .sort((a, b) => b.amount_jmd - a.amount_jmd)[0];
+  const largestOrganisation = groupSpendingRows(spendingRows, "organisation_id", "organisation_name")
+    .filter((group) => group.amount_jmd > 0)[0];
+  const budgetTypes = groupSpendingRows(spendingRows, "recurrent_or_capital", "recurrent_or_capital");
+  const recurrent = budgetTypes.find((group) => group.id === "RECURRENT")?.amount_jmd || 0;
+  const capital = budgetTypes.find((group) => group.id === "CAPITAL")?.amount_jmd || 0;
+
+  return (
+    <section className="spending-explorer-section spending-explorer-questions" aria-labelledby="spending-questions-title">
+      <div className="spending-explorer-section-heading">
+        <div>
+          <p className="spending-explorer-kicker">Start with the big picture</p>
+          <h2 id="spending-questions-title">Three questions people ask</h2>
+        </div>
+        <p>Quick answers from the approved budget, before you explore the detail.</p>
+      </div>
+      <div className="spending-explorer-question-grid">
+        <article tabIndex="0">
+          <BarChart3 aria-hidden="true" />
+          <h3>Which area receives the most?</h3>
+          <strong>{largestCategory?.public_category_name || "—"}</strong>
+          <span>{largestCategory ? formatJmd(largestCategory.amount_jmd, true) : "No figure available"}</span>
+        </article>
+        <article tabIndex="0">
+          <Landmark aria-hidden="true" />
+          <h3>Which organisation manages the most?</h3>
+          <strong>{largestOrganisation?.name || "—"}</strong>
+          <span>{largestOrganisation ? formatJmd(largestOrganisation.amount_jmd, true) : "No figure available"}</span>
+        </article>
+        <article tabIndex="0">
+          <CircleDollarSign aria-hidden="true" />
+          <h3>How much is recurrent versus capital?</h3>
+          <strong>{formatJmd(recurrent, true)} recurrent</strong>
+          <span>{formatJmd(capital, true)} capital</span>
+        </article>
+      </div>
+    </section>
+  );
+};
 
 const CategoryBreakdown = ({ rows, denominator }) => {
   const grouped = groupSpendingRows(rows, "public_category_id", "public_category_name");
@@ -318,19 +364,20 @@ export const SpendingExplorerPage = () => {
           <aside className="spending-explorer-hero-total">
             <span>Net approved expenditure</span>
             <strong>{formatJmd(approvedNetTotal, true)}</strong>
-            <p>Gross estimates less the approved Appropriations-in-Aid offset.</p>
+            <p>The approved expenditure total after offsets.</p>
             <div><BadgeCheck size={18} aria-hidden="true" /> Approved FY {data.fiscal_year} figures</div>
           </aside>
         </section>
 
         <section className="spending-explorer-summary" aria-label="Approved budget summary">
           <SummaryCard icon={Landmark} label="Approved net total" value={formatJmd(approvedNetTotal, true)} note="As Passed expenditure envelope" />
-          <SummaryCard icon={CircleDollarSign} label="Appropriations-in-Aid" value={formatJmd(aiaOffset, true)} note="Transparent negative offset" tone="is-offset" />
+          <SummaryCard icon={CircleDollarSign} label="Appropriations-in-Aid" value={formatJmd(aiaOffset, true)} note="Shown separately in Every J$100" tone="is-offset" />
           <SummaryCard icon={BarChart3} label="Public categories" value={String(every100Rows.length)} note="Including the AIA offset" />
           <SummaryCard icon={BookOpenCheck} label="Budget records" value={new Intl.NumberFormat("en-JM").format(spendingRows.length)} note="Detailed approved estimates" />
         </section>
 
         <Every100Section rows={every100Rows} />
+        <PlainLanguageAnswers every100Rows={every100Rows} spendingRows={spendingRows} />
 
         <section id="spending-breakdown" className="spending-explorer-section spending-explorer-breakdown">
           <div className="spending-explorer-section-heading">
@@ -338,7 +385,7 @@ export const SpendingExplorerPage = () => {
               <p className="spending-explorer-kicker">Filter the approved estimates</p>
               <h2>Explore government spending</h2>
             </div>
-            <p>Choose one or more filters to narrow the results. Appropriations-in-Aid is shown as a negative offset.</p>
+            <p>Choose one or more filters to narrow the results and answer your own questions.</p>
           </div>
 
           <div className="spending-explorer-filter-panel">
@@ -357,22 +404,25 @@ export const SpendingExplorerPage = () => {
             </div>
           </div>
 
-          <div className="spending-explorer-selection-summary">
-            <div><span>Selected net amount</span><strong>{formatJmd(filteredTotal, true)}</strong></div>
-            <div><span>Share of approved net total</span><strong>{approvedNetTotal ? formatPercent((filteredTotal / approvedNetTotal) * 100) : "—"}</strong></div>
-            <div><span>Matching records</span><strong>{new Intl.NumberFormat("en-JM").format(filteredRows.length)}</strong></div>
-          </div>
-
-          <div className="spending-explorer-breakdown-grid">
-            <article className="spending-explorer-panel">
-              <div className="spending-explorer-panel-heading"><h3>Selection by public category</h3><span>Signed net amounts</span></div>
+          {activeFilterCount > 0 && (
+            <section className="spending-explorer-your-selection" aria-labelledby="your-selection-title">
+              <div className="spending-explorer-panel-heading"><h3 id="your-selection-title">Your selection</h3><span>{activeFilterCount} active {activeFilterCount === 1 ? "filter" : "filters"}</span></div>
+              <div className="spending-explorer-selection-summary">
+                <div><span>Selected net amount</span><strong>{formatJmd(filteredTotal, true)}</strong></div>
+                <div><span>Share of approved net total</span><strong>{approvedNetTotal ? formatPercent((filteredTotal / approvedNetTotal) * 100) : "—"}</strong></div>
+                <div><span>Matching records</span><strong>{new Intl.NumberFormat("en-JM").format(filteredRows.length)}</strong></div>
+              </div>
               <CategoryBreakdown rows={filteredRows} denominator={approvedNetTotal || 1} />
-            </article>
-            <article className="spending-explorer-panel spending-explorer-table-panel">
-              <div className="spending-explorer-panel-heading"><h3>Detailed spending records</h3><span>Approved budget figures</span></div>
-              <SpendingTable rows={filteredRows} page={page} onPageChange={setPage} />
-            </article>
-          </div>
+            </section>
+          )}
+
+          <details className="spending-explorer-details">
+            <summary>
+              <span>View detailed spending records</span>
+              <small>{new Intl.NumberFormat("en-JM").format(filteredRows.length)} records match the current filters</small>
+            </summary>
+            <SpendingTable rows={filteredRows} page={page} onPageChange={setPage} />
+          </details>
         </section>
 
         {data.warnings.length > 0 && (
@@ -388,7 +438,7 @@ export const SpendingExplorerPage = () => {
           </div>
           <div className="spending-explorer-method-grid">
             <article><ShieldCheck aria-hidden="true" /><strong>Clear categories</strong><span>Spending is grouped into public categories for easier comparison.</span></article>
-            <article><CircleDollarSign aria-hidden="true" /><strong>Net spending totals</strong><span>Appropriations-in-Aid is shown separately as a negative offset.</span></article>
+            <article><CircleDollarSign aria-hidden="true" /><strong>Approved budget</strong><span>These are planned allocations—not reports of money already spent.</span></article>
             <article><BookOpenCheck aria-hidden="true" /><strong>Official figures</strong><span>The figures come from the Estimates of Expenditure As Passed.</span></article>
           </div>
         </section>
