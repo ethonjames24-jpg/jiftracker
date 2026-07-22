@@ -14,7 +14,7 @@ export const SummaryCards = ({ counts }) => {
     <section className="section-band summary-section" data-testid="status-summary-section">
       <div className="section-inner">
         <p data-testid="summary-eyebrow" className="eyebrow">Status summary</p>
-        <h2 data-testid="summary-heading">Where the fiscal lines stand</h2>
+        <h2 data-testid="summary-heading">How the tracked measures are performing</h2>
         <div className="summary-grid">
           {items.map(({ label, value, icon: Icon, color, testId }, index) => (
             <article key={label} data-testid={`${testId}-card`} className="summary-card animate-rise" style={{ animationDelay: `${index * CARD_ANIMATION_STAGGER_MS}ms` }}>

@@ -63,7 +63,7 @@ const KpiReadoutCards = ({ kpis = [] }) => {
         <article key={`${kpi.kpi_label}-${index}`} className="capture-kpi-card" data-testid={`capture-kpi-readout-${index}`}>
           <div>
             <p className="source-label">{kpi.kpi_label || "KPI not reported"}</p>
-            <p>{kpi.read_variance_text || kpi.monthly_outturn_value || "Readout not reported"}</p>
+            <p>{kpi.read_variance_text || kpi.monthly_outturn_value || "Comparison not reported"}</p>
           </div>
           <StatusBadge status={kpi.status} testId={`capture-kpi-status-${index}`} />
         </article>
@@ -82,7 +82,7 @@ export const HeroCaptureView = ({ currentMonth }) => (
           {currentMonth?.tracker_state || "Tracker state pending"}
         </div>
         <h1 data-testid="capture-dashboard-title">Jamaica Budget Performance Tracker</h1>
-        <p className="subtitle">Monthly central government outturn against the FY 2026/27 budget baseline.</p>
+        <p className="subtitle">Central government revenue, spending and balances against the approved FY 2026/27 plan.</p>
         <div className="hero-status-row">
           <div className="month-chip">{currentMonth?.month_label || "Month pending"}</div>
           <StatusBadge status={currentMonth?.status_headline} testId="capture-overall-status-badge" />
@@ -104,11 +104,11 @@ export const HeroCaptureView = ({ currentMonth }) => (
 
 export const KpiCaptureView = ({ currentMonth, kpis }) => (
   <div className="capture-page capture-kpi-page" data-testid="capture-kpi-view" data-screenshot-mode="kpi">
-    <CaptureBrand monthLabel={currentMonth?.month_label} kicker="KPI overview capture" />
+    <CaptureBrand monthLabel={currentMonth?.month_label} kicker="Key measures at a glance" />
     <main className="capture-kpi-layout">
       <section className="capture-kpi-intro">
         <p className="eyebrow">Current month overview</p>
-        <h1>{currentMonth?.month_label || "Month pending"} KPI readout</h1>
+        <h1>{currentMonth?.month_label || "Month pending"} KPI summary</h1>
         <StatusBadge status={currentMonth?.status_headline} testId="capture-kpi-overall-status-badge" />
       </section>
       <section className="capture-metric-grid capture-kpi-metrics" aria-label="KPI counts">

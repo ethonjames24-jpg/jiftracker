@@ -96,12 +96,12 @@ const PublicReceiptsPack = ({ currentMonth, monthlyOutturn, budgetBaseline }) =>
       )}
       <div className="receipts-pack-list">
         <div className="receipts-pack-row" data-testid="receipts-pack-monthly-outturn-row">
-          <p className="source-label">Monthly outturn document</p>
+          <p className="source-label">{monthlyOutturn.label}</p>
           <p>{monthlyOutturn.value || "Not reported in the sheet for this month."}</p>
           {monthlyOutturn.link ? <SourceLink link={monthlyOutturn.link} /> : <p className="source-unavailable">Not available for this month</p>}
         </div>
         <div className="receipts-pack-row" data-testid="receipts-pack-budget-baseline-row">
-          <p className="source-label">Budget / baseline document</p>
+          <p className="source-label">{budgetBaseline.label}</p>
           <p>{budgetBaseline.value || "Not reported in the sheet for this month."}</p>
           {budgetBaseline.link ? <SourceLink link={budgetBaseline.link} /> : <p className="source-unavailable">Not available for this month</p>}
         </div>
@@ -123,15 +123,17 @@ const PublicReceiptsPack = ({ currentMonth, monthlyOutturn, budgetBaseline }) =>
 
 export const SourceSection = ({ currentMonth }) => {
   const monthlyOutturn = sourceDetailFor({
-    label: "Monthly outturn document",
+    label: "Monthly results document (official outturn)",
     value: currentMonth?.monthly_outturn_source || currentMonth?.source_document_1_label || currentMonth?.source_doc_title,
     url: currentMonth?.source_document_1_url || currentMonth?.source_doc_url,
-    fallbackLabel: "Central Government Operations Table — April 2026",
+    fallbackLabel: currentMonth?.month_label
+      ? `Central Government Operations Table — ${currentMonth.month_label}`
+      : "Central Government Operations Table",
     cta: "Open source document",
     testId: "source-document-1-link",
   });
   const budgetBaseline = sourceDetailFor({
-    label: "Budget / baseline document",
+    label: "Budget plan document (official baseline)",
     value: currentMonth?.budget_baseline_source || currentMonth?.source_document_2_label || currentMonth?.budget_source_title,
     url: currentMonth?.source_document_2_url || currentMonth?.budget_source_url,
     fallbackLabel: "2026–2027 Estimates of Expenditure",
@@ -139,8 +141,13 @@ export const SourceSection = ({ currentMonth }) => {
     testId: "source-document-2-link",
   });
   const sourceContext = [
-    { label: "Supporting Fiscal Context", value: currentMonth?.supporting_fiscal_context, icon: ScrollText, testId: "supporting-fiscal-context" },
+    { label: "Additional official context", value: currentMonth?.supporting_fiscal_context, icon: ScrollText, testId: "supporting-fiscal-context" },
   ];
+  const sourceBasis = [
+    monthlyOutturn.value,
+    budgetBaseline.value,
+    "related official Ministry of Finance publications",
+  ].filter(hasText).join("; ");
 
   return (
     <section id="source-documents" className="section-band source-section" data-testid="source-documents-section" data-screenshot-target="source-documents" aria-labelledby="source-documents-heading">
@@ -148,7 +155,7 @@ export const SourceSection = ({ currentMonth }) => {
         <div>
           <p data-testid="sources-eyebrow" className="eyebrow">Source documents</p>
           <h2 id="source-documents-heading" data-testid="sources-heading">Official source documents</h2>
-          <p data-testid="source-basis-text" className="source-basis">Source basis: Central Government Operations Table — April 2026; 2026–2027 Estimates of Expenditure; budget documents; fiscal policy documents; revenue estimates; and related official Ministry of Finance publications.</p>
+          <p data-testid="source-basis-text" className="source-basis">Source basis: {sourceBasis}.</p>
         </div>
         <div className="source-card-stack">
           <PublicReceiptsPack currentMonth={currentMonth} monthlyOutturn={monthlyOutturn} budgetBaseline={budgetBaseline} />
