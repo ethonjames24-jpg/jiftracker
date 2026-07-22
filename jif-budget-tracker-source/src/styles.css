@@ -88,8 +88,7 @@ h2 { margin: 4px 0 24px; font-size: clamp(2.2rem, 4vw, 3.2rem); line-height: 1; 
 .status-neutral { background: #eee; border-color: #555; color: #111; }
 
 .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
-.summary-card { background: #fffdf3; padding: 22px; transition: transform .2s ease; }
-.summary-card:hover { transform: translateY(-4px); }
+.summary-card { background: #fffdf3; padding: 22px; }
 .summary-card-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .summary-card-header p { margin: 0; font-weight: 900; text-transform: uppercase; letter-spacing: .12em; color: #555; }
 .summary-count { margin: 28px 0 0; font-size: 4.2rem; font-weight: 900; }
@@ -419,6 +418,54 @@ tbody tr:nth-child(even) { background: var(--paper); }
 .movement-unchanged h4 { color: #555; }
 .comparison-empty-card { display: flex; align-items: center; gap: 14px; background: #fffdf3; font-weight: 900; line-height: 1.55; }
 .comparison-empty-card p { margin: 0; }
+
+/* Match the Explorer's responsive card treatment across the monthly tracker. */
+.scorecard,
+.info-card,
+.summary-card,
+.source-card,
+.archive-card,
+.method-card,
+.disclaimer,
+.comparison-card,
+.comparison-empty-card {
+  transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease;
+}
+
+.metric,
+.comparison-count-tile,
+.table-card tbody tr {
+  transition: background-color .18s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .scorecard:hover,
+  .info-card:hover,
+  .summary-card:hover,
+  .source-card:hover,
+  .source-card:focus-within,
+  .archive-card:hover,
+  .archive-card:focus-within,
+  .method-card:hover,
+  .disclaimer:hover,
+  .comparison-card:hover,
+  .comparison-empty-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 10px 12px 0 var(--green);
+    background-color: #fffdf3;
+  }
+
+  .archive-card:hover,
+  .archive-card:focus-within {
+    box-shadow: 10px 12px 0 var(--gold);
+  }
+
+  .metric:hover,
+  .comparison-count-tile:hover,
+  .table-card tbody tr:hover {
+    background-color: #fff7ca;
+  }
+}
 
 @media (max-width: 900px) {
   .comparison-grid { grid-template-columns: 1fr; }
