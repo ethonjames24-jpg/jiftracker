@@ -10,6 +10,7 @@ import {
   formatJmd,
   groupSpendingRows,
   searchWithExplorerFilters,
+  selectLatestAnnualComparison,
   sumSpendingRows,
 } from "./spendingExplorerModel.js";
 
@@ -51,6 +52,19 @@ test("fiscal-year filtering keeps annual datasets separate", () => {
   const annualRows = [{ fiscal_year: "2025/26" }, { fiscal_year: "2026/27" }, { fiscal_year: "2026/27" }];
   assert.equal(filterRowsByFiscalYear(annualRows, "2025/26").length, 1);
   assert.equal(filterRowsByFiscalYear(annualRows, "2026/27").length, 2);
+});
+
+test("annual comparison stays on the latest released year pair independently of the selected year", () => {
+  const comparisonRows = [
+    { comparison_id: "CMP_25", current_fiscal_year: "2025/26", prior_fiscal_year: "2024/25" },
+    { comparison_id: "CMP_26_HEALTH", current_fiscal_year: "2026/27", prior_fiscal_year: "2025/26" },
+    { comparison_id: "CMP_26_EDUCATION", current_fiscal_year: "2026/27", prior_fiscal_year: "2025/26" },
+  ];
+
+  const comparison = selectLatestAnnualComparison(comparisonRows);
+  assert.equal(comparison.currentFiscalYear, "2026/27");
+  assert.equal(comparison.priorFiscalYear, "2025/26");
+  assert.deepEqual(comparison.rows.map((row) => row.comparison_id), ["CMP_26_HEALTH", "CMP_26_EDUCATION"]);
 });
 
 test("CSV export includes approved fields and safely escapes spreadsheet formulas", () => {
