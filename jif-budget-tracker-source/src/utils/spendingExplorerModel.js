@@ -43,6 +43,33 @@ export const filterRowsByFiscalYear = (rows, fiscalYear) => (
   fiscalYear ? rows.filter((row) => row.fiscal_year === fiscalYear) : rows
 );
 
+const fiscalYearStart = (fiscalYear) => {
+  const year = Number.parseInt(String(fiscalYear || "").slice(0, 4), 10);
+  return Number.isFinite(year) ? year : 0;
+};
+
+export const selectLatestAnnualComparison = (rows = []) => {
+  const comparisons = new Map();
+
+  rows.forEach((row) => {
+    if (!row.current_fiscal_year || !row.prior_fiscal_year) return;
+    const key = `${row.current_fiscal_year}|${row.prior_fiscal_year}`;
+    const comparison = comparisons.get(key) || {
+      currentFiscalYear: row.current_fiscal_year,
+      priorFiscalYear: row.prior_fiscal_year,
+      rows: [],
+    };
+    comparison.rows.push(row);
+    comparisons.set(key, comparison);
+  });
+
+  return Array.from(comparisons.values()).sort((a, b) => (
+    fiscalYearStart(b.currentFiscalYear) - fiscalYearStart(a.currentFiscalYear)
+      || fiscalYearStart(b.priorFiscalYear) - fiscalYearStart(a.priorFiscalYear)
+      || b.rows.length - a.rows.length
+  ))[0] || { currentFiscalYear: "", priorFiscalYear: "", rows: [] };
+};
+
 const CSV_COLUMNS = [
   ["Fiscal year", "fiscal_year"],
   ["Organisation", "organisation_name"],
