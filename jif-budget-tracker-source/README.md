@@ -107,24 +107,28 @@ The Explorer is an additive application branch at:
 
 The existing routes remain unchanged, including `/?month=YYYY-MM`, `/?admin=checklist&month=YYYY-MM`, and all `capture=hero|kpi|sources` URLs. Capture and admin views take precedence if parameters are combined.
 
-The Explorer reads a sanitized public-feed workbook through `VITE_SPENDING_EXPLORER_SHEET_ID`. The frozen Data Model v1 workbook remains private. The public feed contains only:
+The Explorer reads a sanitized public-feed workbook through `VITE_SPENDING_EXPLORER_SHEET_ID`. The frozen Data Model v1 workbook and the operational v1.1 model remain private. The active public frontend contract is v1.1 and reads only:
 
-- `README_Control` for the release gate
-- `DS_Every100` for the approved public-category summary
-- `DS_SpendingExplorer` for filterable approved spending rows
-- An explicit public-field whitelist from `Source_Catalog`
+- `README_Control_v1_1` for the release gate
+- `DS_Every100_v1_1` for the approved public-category summaries for FY2025/26 and FY2026/27
+- `DS_SpendingExplorer_v1_1` for filterable approved spending rows for both fiscal years
+- `DS_AnnualComparison` for the fixed FY2026/27-versus-FY2025/26 comparison
+- An explicit public-field whitelist from `Source_Catalog_v1_1`
 
-The loader checks `README_Control` before it requests any public data-serving rows. Public rendering requires all of the following:
+The loader checks `README_Control_v1_1` before it requests any public data-serving rows. Public rendering requires all of the following:
 
-- `publication_status=RELEASED`
+- `publication_status=RELEASED` or `RELEASED_VERSIONED_FEED`
 - `release_authorization_status=AUTHORIZED`
-- Frozen model and frontend contract version `v1.0`
+- `model_version=v1.1` with a `MODEL_V1_1` schema status
+- `frontend_contract_version=v1.1`
 - `aia_public_treatment=SEPARATE_NEGATIVE_OFFSET_APPROVED`
 - `default_currency=JMD`
 
-Until those checks pass, the route shows a controlled “Prepared, not yet published” state. It does not expose the Explorer dataset, change the monthly tracker, or create a public navigation link.
+Until those checks pass, the route shows a controlled “Prepared, not yet published” state and does not request the public serving rows. It does not expose draft data or change the monthly tracker.
 
-Before authorization, the public feed keeps `DS_Every100`, `DS_SpendingExplorer`, and `Source_Catalog` header-only. The publication workflow must copy only released rows and approved source fields into those tabs, then set the two human-release controls as its final step. Draft, QA, reconciliation, fact, staging and model tabs must never be copied into the public feed.
+Production initially selects FY2026/27 and also supports FY2025/26 through the `fy` query parameter and fiscal-year selector. The released FY2026/27-versus-FY2025/26 comparison remains visible under either year selection and appears before “Every J$100.” The comparison covers approved Estimates As Passed, not actual expenditure.
+
+The v1.1 publication process must copy only authorized rows and approved source fields into the versioned public tabs, populate `DS_AnnualComparison`, and set the human-release controls as its final step. Draft, QA, reconciliation, fact, staging and model tabs must never be copied into the public feed. `DS_SpendingActuals` and `DS_ProgrammeOutcomes` contain no released rows and are not read by the frontend.
 
 Appropriations-in-Aid remains a signed negative offset throughout filtering, totals, tables and the “Every J$100” view. The frontend never clamps, redistributes or changes its sign.
 
