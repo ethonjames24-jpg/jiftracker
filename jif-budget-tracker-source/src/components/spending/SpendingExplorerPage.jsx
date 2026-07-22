@@ -38,6 +38,7 @@ import {
   groupSpendingRows,
   measureTypeLabel,
   searchWithExplorerFilters,
+  selectLatestAnnualComparison,
   sumSpendingRows,
 } from "../../utils/spendingExplorerModel.js";
 
@@ -64,8 +65,8 @@ const ExplorerHeader = ({ released = false }) => (
       <nav className="spending-explorer-nav" aria-label="Spending Explorer sections">
         <div>
           <a href="#spending-overview">Overview</a>
-          <a href="#every-100">Every J$100</a>
           <a href="#annual-comparison">Compare years</a>
+          <a href="#every-100">Every J$100</a>
           <a href="#spending-breakdown">Explore spending</a>
           <a href="#spending-glossary">Glossary</a>
           <a href="#spending-sources">Sources</a>
@@ -167,19 +168,23 @@ const YearSelector = ({ years, value, onChange }) => (
   </label>
 );
 
-const AnnualComparison = ({ rows, every100Rows, selectedFiscalYear }) => {
-  const comparisonRows = rows.filter((row) => row.current_fiscal_year === selectedFiscalYear);
+const AnnualComparison = ({ rows, every100Rows }) => {
+  const {
+    currentFiscalYear,
+    priorFiscalYear,
+    rows: comparisonRows,
+  } = selectLatestAnnualComparison(rows);
+
   if (!comparisonRows.length) {
     return (
-      <section className="spending-explorer-section spending-explorer-comparison is-unavailable">
+      <section id="annual-comparison" className="spending-explorer-section spending-explorer-comparison is-unavailable">
         <GitCompareArrows aria-hidden="true" />
-        <div><h2>Compared with last year</h2><p>Select the latest fiscal year to see how approved allocations changed.</p></div>
+        <div><h2>Compare fiscal years</h2><p>No released year-over-year comparison is available yet.</p></div>
       </section>
     );
   }
 
-  const priorFiscalYear = comparisonRows[0].prior_fiscal_year;
-  const currentTotal = every100Rows.find((row) => row.fiscal_year === selectedFiscalYear)?.denominator_amount_jmd || 0;
+  const currentTotal = every100Rows.find((row) => row.fiscal_year === currentFiscalYear)?.denominator_amount_jmd || 0;
   const priorTotal = every100Rows.find((row) => row.fiscal_year === priorFiscalYear)?.denominator_amount_jmd || 0;
   const totalChange = currentTotal - priorTotal;
   const totalPercent = priorTotal ? (totalChange / priorTotal) * 100 : null;
@@ -189,15 +194,15 @@ const AnnualComparison = ({ rows, every100Rows, selectedFiscalYear }) => {
   return (
     <section id="annual-comparison" className="spending-explorer-section spending-explorer-comparison">
       <div className="spending-explorer-section-heading">
-        <div><p className="spending-explorer-kicker">What changed?</p><h2>Compared with FY {priorFiscalYear}</h2></div>
-        <p>Changes compare the approved Estimates As Passed for each fiscal year—not actual spending.</p>
+        <div><p className="spending-explorer-kicker">Year-over-year view</p><h2>FY {currentFiscalYear} vs FY {priorFiscalYear}</h2></div>
+        <p>This fixed comparison stays visible while you explore either fiscal year. It compares approved Estimates As Passed—not actual spending.</p>
       </div>
       <div className="spending-explorer-comparison-summary">
-        <article><span>Approved budget change</span><strong>{formatJmd(totalChange, true)}</strong><small>{totalPercent === null ? "Not comparable" : `${formatPercent(totalPercent)} from FY ${priorFiscalYear}`}</small></article>
-        <article><span>FY {selectedFiscalYear}</span><strong>{formatJmd(currentTotal, true)}</strong><small>Net approved expenditure</small></article>
+        <article><span>Approved budget change</span><strong>{formatJmd(totalChange, true)}</strong><small>{totalPercent === null ? "Not comparable" : `${formatPercent(totalPercent)} from FY ${priorFiscalYear} to FY ${currentFiscalYear}`}</small></article>
+        <article><span>FY {currentFiscalYear}</span><strong>{formatJmd(currentTotal, true)}</strong><small>Net approved expenditure</small></article>
         <article><span>FY {priorFiscalYear}</span><strong>{formatJmd(priorTotal, true)}</strong><small>Net approved expenditure</small></article>
       </div>
-      <div className="spending-explorer-comparison-list" role="table" aria-label={`Approved category changes from FY ${priorFiscalYear} to FY ${selectedFiscalYear}`}>
+      <div className="spending-explorer-comparison-list" role="table" aria-label={`Approved category changes from FY ${priorFiscalYear} to FY ${currentFiscalYear}`}>
         <div className="is-header" role="row"><span>Public category</span><span>Amount change</span><span>Percentage</span><span>Movement</span></div>
         {categories.map((row) => (
           <div key={row.comparison_id} role="row">
@@ -479,7 +484,7 @@ export const SpendingExplorerPage = () => {
             <h1>Government spending, made easier to inspect.</h1>
             <p>Explore Jamaica’s approved Central Government expenditure by public category, organisation, function, programme and economic classification.</p>
             <div className="spending-explorer-hero-actions">
-              <a href="#every-100"><CircleDollarSign size={18} aria-hidden="true" /> See every J$100</a>
+              <a href="#annual-comparison"><GitCompareArrows size={18} aria-hidden="true" /> Compare fiscal years</a>
               <a href="#spending-breakdown"><Filter size={18} aria-hidden="true" /> Explore the detail</a>
             </div>
           </div>
@@ -498,8 +503,8 @@ export const SpendingExplorerPage = () => {
           <SummaryCard icon={BookOpenCheck} label="Budget records" value={new Intl.NumberFormat("en-JM").format(spendingRows.length)} note="Detailed approved estimates" />
         </section>
 
+        <AnnualComparison rows={data.comparison || []} every100Rows={allEvery100Rows} />
         <Every100Section rows={every100Rows} />
-        <AnnualComparison rows={data.comparison || []} every100Rows={allEvery100Rows} selectedFiscalYear={activeFiscalYear} />
         <PlainLanguageAnswers every100Rows={every100Rows} spendingRows={spendingRows} />
 
         <section id="spending-breakdown" className="spending-explorer-section spending-explorer-breakdown">
