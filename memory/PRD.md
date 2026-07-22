@@ -1,5 +1,7 @@
 # Jamaica In Focus Budget Performance Tracker PRD
 
+> **Current implementation note:** This file preserves the original product history, including references to a retired FastAPI prototype. The active production application is the standalone React/Vite package in `jif-budget-tracker-source/`. Use [`jif-budget-tracker-source/docs/ENGINEERING_HANDOFF.md`](../jif-budget-tracker-source/docs/ENGINEERING_HANDOFF.md) for the current architecture, data boundaries, validation, deployment, rollback, and handoff rules.
+
 ## Original Problem Statement
 Create a professional live web dashboard for the Jamaica In Focus Budget Performance Tracker. The dashboard must connect to the same Google Sheets workbook currently used for the tracker, read live data from the Google Sheet, update whenever the sheet is updated, and remain read-only. The dashboard should use Jamaica In Focus civic accountability styling with yellow/gold, black, white, deep green accents, and red warnings. Required sections include current month overview, KPI summary cards, KPI breakdown table, source documents, archive, methodology, and footer branding.
 

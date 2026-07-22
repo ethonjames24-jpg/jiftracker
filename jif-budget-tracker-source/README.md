@@ -2,6 +2,8 @@
 
 A standalone React/Vite dashboard for the **Jamaica In Focus Budget Performance Tracker**. It reads approved, public tracker data directly from a Google Sheets workbook using read-only public CSV exports.
 
+Current architecture, safety boundaries, release checks, rollback guidance, and the active change log are maintained in [`docs/ENGINEERING_HANDOFF.md`](docs/ENGINEERING_HANDOFF.md).
+
 ## What is included
 
 - Full React frontend source code
