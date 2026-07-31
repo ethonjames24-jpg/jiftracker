@@ -152,6 +152,20 @@ Never use a rollback to alter public data, Google Sheet history, n8n execution h
 
 ## 8. Current release record
 
+### 2026-07-31 — May Receipts Pack publication and Step 4 preflight
+
+- GitHub commit: the single asset-and-documentation release created from this record
+- Public asset: `public/receipts-packs/2026-05-jif-receipts-pack.pdf`
+- Stable production URL: `https://tracker.infocusja.com/receipts-packs/2026-05-jif-receipts-pack.pdf`
+- Public PDF SHA-256: `74a98406ce4a00288edca6309c1e6f8b7e8c5fe613aeb585b893b4399ac9e369`
+- Editorial result: all eight May KPI values and statuses reconcile to the published Tracker; May remains 3 On Track, 1 Watch and 4 Under Pressure
+- Method disclosure: the pack records that the revised May CGO workbook's displayed Capital Expenditure and Interest parent-row variance formulas use April alone; JIF recalculated the public percentages from the intact April-May YTD outturn and YTD budget columns
+- Governance disclosure: Capital Expenditure uses the approved -10%/-20% standing band; the active workflow's unapproved wider Non-Tax Revenue band is recorded as a June-readiness issue and does not change May's +20.3% On Track result
+- Step 4 preflight: 19 static contract checks passed, 0 failed; no workflow was executed and no May or June asset was generated
+- Durable preflight record: `docs/STEP4_PREFLIGHT_2026-07-31.md`
+- Post-deployment data update: write May's verified URL and label only to `DS_PublicMonthlyExtras.receipts_pack_*`; no KPI, scorecard, archive or workflow row changes
+- Failure containment: May must not be replayed through the publication workflow; the first real Step 4 production check waits for June and remains human-gated
+
 ### 2026-07-31 — Spending Explorer navigation and alignment
 
 - GitHub commit: `f3d43a8` — `Improve Explorer navigation and alignment`
