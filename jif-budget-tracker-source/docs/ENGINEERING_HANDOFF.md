@@ -90,6 +90,7 @@ The Monthly Tracker uses one 1,180px horizontal rail for the header, section nav
 
 - Use `html` scroll padding as the single sticky-anchor offset. Do not add the same offset again with section scroll margins.
 - Keep the compact monthly-alert CTA between the month comparison and KPI results. Keep the full subscription form after Methodology so it does not interrupt the core results.
+- The floating monthly-update CTA appears only after the compact invitation has scrolled above the viewport, hides while the full form is visible, and scrolls to and focuses the email field. On desktop it sits above Back to Top; on mobile it spans the bottom while Back to Top moves above it. Do not add a popup or a second subscription endpoint.
 - The overview scorecard is the single KPI-count summary. Do not reintroduce the removed four-card status-summary section.
 - The KPI table remains horizontally scrollable. At mobile width, keep the budget-measure column sticky, preserve the visible sideways-scroll cue, and keep planned/reported values right-aligned with tabular numerals.
 - Source Documents and Methodology use full-width introductions followed by balanced content grids. Avoid a tall narrow introduction column beside substantially longer cards.

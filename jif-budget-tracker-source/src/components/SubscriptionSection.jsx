@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Bell, MailCheck, Send, ShieldCheck } from "lucide-react";
 import { isSubscribeWebhookConfigured, submitSubscription } from "../services/subscribe.js";
 
@@ -12,16 +12,69 @@ const statusMessages = {
   configuration_error: "Subscription form is not configured yet. Add VITE_TRACKER_SUBSCRIBE_WEBHOOK_URL to enable submissions.",
 };
 
+const SUBSCRIPTION_STATUS_EVENT = "jif:subscription-status";
+
+const prefersReducedMotion = () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+
 const scrollToSubscribeForm = () => {
-  document.getElementById("subscribe")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  const section = document.getElementById("subscribe");
+  const emailInput = document.getElementById("subscriber-email");
+  if (!section) return;
+
+  section.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "start" });
+  window.setTimeout(() => emailInput?.focus({ preventScroll: true }), prefersReducedMotion() ? 0 : 450);
 };
 
-export const MobileSubscribeButton = () => (
-  <button type="button" data-testid="mobile-subscribe-scroll-button" className="mobile-subscribe-button" onClick={scrollToSubscribeForm}>
-    <Bell size={16} aria-hidden="true" />
-    GET MONTHLY UPDATES
-  </button>
-);
+export const FloatingSubscribeButton = () => {
+  const [hasPassedInvitation, setHasPassedInvitation] = useState(false);
+  const [isFormVisible, setIsFormVisible] = useState(false);
+  const [subscriptionStatus, setSubscriptionStatus] = useState("");
+
+  useEffect(() => {
+    const invitation = document.querySelector("[data-testid='compact-subscribe-cta-section']");
+    const form = document.getElementById("subscribe");
+    if (!invitation || !form) return undefined;
+
+    const invitationObserver = new IntersectionObserver(([entry]) => {
+      setHasPassedInvitation(!entry.isIntersecting && entry.boundingClientRect.top < 0);
+    });
+    const formObserver = new IntersectionObserver(([entry]) => setIsFormVisible(entry.isIntersecting), { threshold: 0.12 });
+
+    invitationObserver.observe(invitation);
+    formObserver.observe(form);
+    return () => {
+      invitationObserver.disconnect();
+      formObserver.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleStatus = (event) => setSubscriptionStatus(event.detail?.status || "");
+    window.addEventListener(SUBSCRIPTION_STATUS_EVENT, handleStatus);
+    return () => window.removeEventListener(SUBSCRIPTION_STATUS_EVENT, handleStatus);
+  }, []);
+
+  const isComplete = subscriptionStatus === "pending_confirmation" || subscriptionStatus === "already_subscribed";
+  const isVisible = hasPassedInvitation && !isFormVisible;
+  const label = subscriptionStatus === "pending_confirmation"
+    ? "CHECK YOUR EMAIL"
+    : isComplete ? "YOU'RE SIGNED UP" : "GET THE NEXT UPDATE";
+
+  return (
+    <button
+      type="button"
+      data-testid="floating-subscribe-scroll-button"
+      className={`floating-subscribe-button ${isVisible ? "floating-subscribe-button-visible" : ""} ${isComplete ? "floating-subscribe-button-complete" : ""}`}
+      onClick={isComplete ? undefined : scrollToSubscribeForm}
+      disabled={isComplete}
+      aria-hidden={!isVisible}
+      tabIndex={isVisible ? 0 : -1}
+    >
+      {isComplete ? <MailCheck size={17} aria-hidden="true" /> : <Bell size={17} aria-hidden="true" />}
+      {label}
+    </button>
+  );
+};
 
 export const CompactSubscribeCta = () => (
   <section className="compact-subscribe-cta" data-testid="compact-subscribe-cta-section">
@@ -59,6 +112,7 @@ export const SubscriptionSection = ({ monthSort }) => {
     setIsSubmitting(true);
     const result = await submitSubscription({ email, monthSort, consent, company });
     setStatus(result.status);
+    window.dispatchEvent(new CustomEvent(SUBSCRIPTION_STATUS_EVENT, { detail: { status: result.status } }));
     if (result.status === "pending_confirmation" || result.status === "already_subscribed") {
       setEmail("");
       setConsent(false);

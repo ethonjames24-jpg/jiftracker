@@ -25,3 +25,18 @@ test("keeps one sticky-anchor offset and the mobile KPI scanning contract", asyn
   assert.match(source, /\.app :is\(a, button, input, select\):focus-visible/);
   assert.match(source, /--header-height: 118px; --section-nav-height: 58px;/);
 });
+
+test("keeps the floating subscription prompt clear of Back to Top", async () => {
+  const app = await readSource("../App.jsx");
+  const component = await readSource("../components/SubscriptionSection.jsx");
+  const styles = await readSource("../styles.css");
+
+  assert.match(app, /<FloatingSubscribeButton \/>/);
+  assert.match(component, /hasPassedInvitation && !isFormVisible/);
+  assert.match(component, /emailInput\?\.focus\(\{ preventScroll: true \}\)/);
+  assert.match(component, /pending_confirmation/);
+  assert.match(styles, /\.floating-subscribe-button \{[^}]*bottom: 84px;/);
+  assert.match(styles, /\.back-to-top-button \{[^}]*bottom: 24px;/);
+  assert.match(styles, /\.floating-subscribe-button \{ left: 16px; right: 16px; bottom: 16px;/);
+  assert.match(styles, /\.back-to-top-button \{ right: 16px; bottom: 78px;/);
+});

@@ -8,7 +8,7 @@ import { ArchiveSection } from "./components/ArchiveSection.jsx";
 import { MethodologySection } from "./components/MethodologySection.jsx";
 import { PublicWarnings } from "./components/PublicWarnings.jsx";
 import { MonthComparison } from "./components/MonthComparison.jsx";
-import { CompactSubscribeCta, MobileSubscribeButton, SubscriptionSection } from "./components/SubscriptionSection.jsx";
+import { CompactSubscribeCta, FloatingSubscribeButton, SubscriptionSection } from "./components/SubscriptionSection.jsx";
 import { AdminChecklist, isAdminChecklistRoute } from "./components/AdminChecklist.jsx";
 import { CaptureView, getCaptureMode } from "./components/CaptureViews.jsx";
 import { ErrorState, LoadingState } from "./components/States.jsx";
@@ -50,7 +50,7 @@ const MonthlyTrackerApp = () => {
         <SubscriptionSection monthSort={data.current_month?.month_sort || selectedMonth} />
       </main>
       <BackToTopButton />
-      <MobileSubscribeButton />
+      <FloatingSubscribeButton />
       <PublicToolsFooter />
     </div>
   );

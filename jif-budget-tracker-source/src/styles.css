@@ -107,8 +107,8 @@ h2 { margin: 4px 0 24px; font-size: clamp(2.2rem, 4vw, 3.2rem); line-height: 1; 
 .honeypot-field input { width: 1px; height: 1px; }
 .consent-row { display: flex; align-items: flex-start; gap: 11px; border: var(--border); background: white; padding: 14px; border-radius: 7px; text-transform: none !important; letter-spacing: 0 !important; line-height: 1.45; }
 .consent-row input { margin-top: 3px; width: 18px; height: 18px; accent-color: var(--green); flex: 0 0 auto; }
-.subscribe-form button, .compact-subscribe-cta button, .mobile-subscribe-button { display: inline-flex; align-items: center; justify-content: center; gap: 9px; border: var(--border); background: var(--gold); color: var(--black); border-radius: 7px; padding: 13px 18px; font-weight: 900; box-shadow: 4px 4px 0 var(--black); cursor: pointer; transition: transform .18s ease, background-color .18s ease; }
-.subscribe-form button:hover, .compact-subscribe-cta button:hover, .mobile-subscribe-button:hover { transform: translateY(-2px); background: #ffe26a; }
+.subscribe-form button, .compact-subscribe-cta button, .floating-subscribe-button { display: inline-flex; align-items: center; justify-content: center; gap: 9px; border: var(--border); background: var(--gold); color: var(--black); border-radius: 7px; padding: 13px 18px; font-weight: 900; box-shadow: 4px 4px 0 var(--black); cursor: pointer; transition: opacity .18s ease, transform .18s ease, background-color .18s ease; }
+.subscribe-form button:hover, .compact-subscribe-cta button:hover, .floating-subscribe-button:hover { transform: translateY(-2px); background: #ffe26a; }
 .subscribe-form button:disabled { opacity: .7; cursor: wait; transform: none; }
 .privacy-notice { margin: 0; color: #555; font-size: .86rem; line-height: 1.55; font-weight: 700; }
 .subscribe-message { margin: 0; border: 2px solid; border-radius: 7px; padding: 12px; font-weight: 900; line-height: 1.45; }
@@ -117,7 +117,11 @@ h2 { margin: 4px 0 24px; font-size: clamp(2.2rem, 4vw, 3.2rem); line-height: 1; 
 .compact-subscribe-cta { max-width: 1180px; margin: 38px auto; padding: 24px; display: flex; justify-content: space-between; align-items: center; gap: 24px; background: var(--paper); }
 .compact-subscribe-cta h2 { margin-bottom: 8px; }
 .compact-subscribe-cta p:last-child { margin: 0; font-weight: 800; }
-.mobile-subscribe-button { display: none; position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 30; }
+.floating-subscribe-button { position: fixed; right: 18px; bottom: 84px; z-index: 31; min-height: 46px; border-radius: 999px; opacity: 0; transform: translateY(14px); pointer-events: none; }
+.floating-subscribe-button-visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.floating-subscribe-button-complete { background: #d1fae5; color: #064e3b; border-color: #047857; cursor: default; }
+.floating-subscribe-button-complete:hover { background: #d1fae5; transform: translateY(0); }
+.floating-subscribe-button:disabled { opacity: 1; }
 
 .back-to-top-button { position: fixed; right: 18px; bottom: 24px; z-index: 32; min-height: 44px; display: inline-flex; align-items: center; gap: 7px; border: var(--border); border-radius: 999px; background: var(--black); color: white; padding: 10px 14px; font-weight: 900; box-shadow: 4px 4px 0 var(--gold); cursor: pointer; opacity: 0; transform: translateY(14px); pointer-events: none; transition: opacity .18s ease, transform .18s ease; }
 .back-to-top-button-visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
@@ -243,9 +247,9 @@ tbody tr:nth-child(even) { background: var(--paper); }
   .explorer-switch-link { min-width: 0; flex: 1 1 56%; padding-left: 10px; padding-right: 10px; font-size: .8rem; }
   .explorer-switch-label-full { display: none; }
   .explorer-switch-label-short { display: inline; }
-  .mobile-subscribe-button { display: inline-flex; }
-  .back-to-top-button { right: 16px; bottom: 74px; }
-  .public-tools-footer { padding-bottom: 78px; }
+  .floating-subscribe-button { left: 16px; right: 16px; bottom: 16px; border-radius: 7px; }
+  .back-to-top-button { right: 16px; bottom: 78px; }
+  .public-tools-footer { padding-bottom: 82px; }
   .mobile-table-hint { display: inline; }
   .table-card { position: relative; }
   .table-card::after { content: "Scroll →"; position: sticky; left: calc(100% - 86px); bottom: 8px; display: block; width: 78px; margin: -32px 8px 8px auto; border: 2px solid var(--black); border-radius: 999px; background: var(--gold); padding: 5px 8px; font-size: .68rem; font-weight: 900; text-align: center; text-transform: uppercase; pointer-events: none; }
