@@ -491,11 +491,11 @@ tbody tr:nth-child(even) { background: var(--paper); }
 }
 
 /* Government Spending Explorer — isolated additive application */
-.spending-explorer { --explorer-ink: #101810; --explorer-green: #075b34; --explorer-gold: #f8c400; --explorer-paper: #f7f3e6; --explorer-line: #192219; min-height: 100vh; color: var(--explorer-ink); background: #fff; }
+.spending-explorer { --explorer-ink: #101810; --explorer-green: #075b34; --explorer-gold: #f8c400; --explorer-paper: #f7f3e6; --explorer-line: #192219; --explorer-shell-width: 1240px; --explorer-rail-width: 1192px; --explorer-gutter: 24px; min-height: 100vh; color: var(--explorer-ink); background: #fff; }
 .spending-explorer * { box-sizing: border-box; }
 .spending-explorer a:focus-visible, .spending-explorer button:focus-visible, .spending-explorer select:focus-visible { outline: 3px solid var(--explorer-green); outline-offset: 3px; }
 .spending-explorer-header { position: sticky; top: 0; z-index: 60; border-bottom: 4px solid var(--explorer-line); background: var(--explorer-gold); }
-.spending-explorer-header-inner { max-width: 1240px; min-height: 82px; margin: 0 auto; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 22px; }
+.spending-explorer-header-inner { max-width: var(--explorer-shell-width); min-height: 82px; margin: 0 auto; padding: 12px var(--explorer-gutter); display: flex; align-items: center; justify-content: space-between; gap: 22px; }
 .spending-explorer-brand { display: inline-flex; align-items: center; gap: 12px; color: inherit; text-decoration: none; }
 .spending-explorer-brand img { width: 52px; height: 52px; border: 2px solid var(--explorer-line); border-radius: 999px; background: white; object-fit: cover; }
 .spending-explorer-brand span { display: grid; gap: 3px; }
@@ -505,11 +505,13 @@ tbody tr:nth-child(even) { background: var(--paper); }
 .spending-explorer-release-pill.is-released { background: #d1fae5; color: #064e3b; }
 .spending-explorer-release-pill.is-gated { background: white; }
 .spending-explorer-nav { position: sticky; top: 82px; z-index: 55; border-bottom: 2px solid var(--explorer-line); background: rgba(247,243,230,.96); backdrop-filter: blur(7px); }
-.spending-explorer-nav > div { max-width: 1240px; margin: 0 auto; padding: 9px 24px 11px; display: flex; gap: 9px; overflow-x: auto; }
-.spending-explorer-nav a { flex: 0 0 auto; border: 2px solid var(--explorer-line); border-radius: 999px; background: white; color: inherit; padding: 8px 12px; text-decoration: none; font-size: .78rem; font-weight: 900; }
+.spending-explorer-nav > div { max-width: var(--explorer-shell-width); margin: 0 auto; padding: 9px var(--explorer-gutter) 11px; display: flex; gap: 9px; overflow-x: auto; }
+.spending-explorer-nav a { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px; border: 2px solid var(--explorer-line); border-radius: 999px; background: white; color: inherit; padding: 8px 12px; text-decoration: none; font-size: .78rem; font-weight: 900; }
 .spending-explorer-nav a:hover { background: var(--explorer-gold); }
+.spending-explorer-nav .spending-explorer-tracker-link { position: sticky; left: 0; z-index: 2; border-radius: 7px; background: var(--explorer-ink); color: white; box-shadow: 3px 3px 0 var(--explorer-gold); }
+.spending-explorer-nav .spending-explorer-tracker-link:hover, .spending-explorer-nav .spending-explorer-tracker-link:focus-visible { background: var(--explorer-green); }
 .spending-explorer-kicker { margin: 0 0 9px; color: var(--explorer-green); font-size: .76rem; font-weight: 900; letter-spacing: .18em; text-transform: uppercase; }
-.spending-explorer-hero { max-width: 1240px; margin: 0 auto; padding: 72px 24px 54px; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(340px, .75fr); gap: 54px; align-items: center; }
+.spending-explorer-hero { max-width: var(--explorer-shell-width); margin: 0 auto; padding: 72px var(--explorer-gutter) 54px; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(340px, .75fr); gap: 54px; align-items: center; }
 .spending-explorer-hero-copy { border-left: 12px solid var(--explorer-green); padding: 20px 0 22px 28px; }
 .spending-explorer-year-selector { width: fit-content; display: grid; grid-template-columns: auto minmax(150px, 1fr); align-items: center; gap: 10px; margin-bottom: 20px; border: 2px solid var(--explorer-line); border-radius: 7px; background: var(--explorer-gold); box-shadow: 4px 4px 0 var(--explorer-line); padding: 8px 10px 8px 13px; }
 .spending-explorer-year-selector > span { font-size: .72rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
@@ -526,7 +528,7 @@ tbody tr:nth-child(even) { background: var(--paper); }
 .spending-explorer-hero-total > strong { position: relative; display: block; margin: 18px 0 12px; font-family: "Newsreader", serif; font-size: clamp(3.7rem, 6vw, 6rem); line-height: .9; }
 .spending-explorer-hero-total p { position: relative; line-height: 1.55; font-weight: 800; }
 .spending-explorer-hero-total div { position: relative; display: inline-flex; align-items: center; gap: 7px; border: 1px solid rgba(255,255,255,.35); padding: 8px 10px; font-size: .78rem; font-weight: 900; }
-.spending-explorer-summary { max-width: 1240px; margin: 0 auto; padding: 0 24px 64px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.spending-explorer-summary { max-width: var(--explorer-shell-width); margin: 0 auto; padding: 0 var(--explorer-gutter) 64px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
 .spending-explorer-summary-card { min-height: 188px; border: 2px solid var(--explorer-line); border-radius: 9px; background: #fffdf5; box-shadow: 6px 6px 0 var(--explorer-line); padding: 21px; display: flex; flex-direction: column; align-items: flex-start; transition: transform .18s ease, box-shadow .18s ease; }
 .spending-explorer-summary-card:hover { transform: translateY(-4px); box-shadow: 8px 10px 0 var(--explorer-line); }
 .spending-explorer-summary-card svg { color: var(--explorer-green); }
@@ -535,7 +537,7 @@ tbody tr:nth-child(even) { background: var(--paper); }
 .spending-explorer-summary-card small { margin-top: auto; padding-top: 12px; color: #596159; font-weight: 800; line-height: 1.4; }
 .spending-explorer-summary-card.is-offset { background: #fff0e6; box-shadow: 6px 6px 0 #a33a18; }
 .spending-explorer-summary-card.is-offset svg, .spending-explorer-summary-card.is-offset > strong { color: #8d2d10; }
-.spending-explorer-section { scroll-margin-top: 150px; padding: 70px max(24px, calc((100vw - 1192px) / 2)); }
+.spending-explorer-section { scroll-margin-top: 150px; padding: 70px max(var(--explorer-gutter), calc((100vw - var(--explorer-rail-width)) / 2)); }
 .spending-explorer-section-heading { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, .65fr); gap: 36px; align-items: end; margin-bottom: 34px; }
 .spending-explorer-section-heading h2, .spending-explorer-methodology h2 { margin: 5px 0 0; font-size: clamp(2.7rem, 5vw, 4.8rem); }
 .spending-explorer-section-heading > p { margin: 0; font-weight: 800; line-height: 1.65; }
@@ -590,8 +592,9 @@ tbody tr:nth-child(even) { background: var(--paper); }
 .spending-explorer-filter-heading > span strong { min-width: 24px; height: 24px; display: grid; place-items: center; border-radius: 999px; background: var(--explorer-ink); color: white; font-size: .75rem; }
 .spending-explorer-filter-heading button { border: 2px solid var(--explorer-line); border-radius: 6px; background: white; padding: 8px 10px; cursor: pointer; }
 .spending-explorer-filter-heading button:disabled { opacity: .5; cursor: default; }
-.spending-explorer-filter-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; padding: 18px; }
-.spending-explorer-filter-grid label { display: grid; gap: 7px; }
+.spending-explorer-filter-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 14px; padding: 18px; }
+.spending-explorer-filter-grid label { grid-column: span 3; display: grid; gap: 7px; }
+.spending-explorer-filter-grid label:nth-child(n + 5) { grid-column: span 4; }
 .spending-explorer-filter-grid label span { font-size: .74rem; font-weight: 900; letter-spacing: .09em; text-transform: uppercase; }
 .spending-explorer-filter-grid select { width: 100%; min-height: 45px; border: 2px solid var(--explorer-line); border-radius: 6px; background: white; padding: 9px 10px; font-weight: 800; }
 .spending-explorer-filter-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 20px; }
@@ -648,6 +651,7 @@ tbody tr:nth-child(even) { background: var(--paper); }
 .spending-explorer-sources { border-block: 4px solid var(--explorer-line); background: var(--explorer-ink); color: white; }
 .spending-explorer-sources .spending-explorer-kicker { color: var(--explorer-gold); }
 .spending-explorer-source-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.spending-explorer-source-grid article:only-child { grid-column: 1 / -1; }
 .spending-explorer-source-grid article { border: 2px solid var(--explorer-gold); border-radius: 9px; background: white; color: var(--explorer-ink); box-shadow: 6px 6px 0 var(--explorer-gold); padding: 22px; transition: transform .18s ease, box-shadow .18s ease; }
 .spending-explorer-source-grid article:hover { transform: translateY(-4px); box-shadow: 9px 11px 0 var(--explorer-gold); }
 .spending-explorer-source-grid article > p:first-of-type { margin: 16px 0 7px; color: var(--explorer-green); font-size: .7rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
@@ -680,6 +684,7 @@ tbody tr:nth-child(even) { background: var(--paper); }
 @media (max-width: 980px) {
   .spending-explorer-hero, .spending-explorer-methodology { grid-template-columns: 1fr; }
   .spending-explorer-summary, .spending-explorer-filter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .spending-explorer-filter-grid label, .spending-explorer-filter-grid label:nth-child(n + 5) { grid-column: auto; }
   .spending-explorer-section-heading { grid-template-columns: 1fr; align-items: start; }
   .spending-explorer-category-list > article { grid-template-columns: minmax(200px, 1fr) minmax(180px, 1.2fr) 120px; }
   .spending-explorer-question-grid { grid-template-columns: 1fr; }

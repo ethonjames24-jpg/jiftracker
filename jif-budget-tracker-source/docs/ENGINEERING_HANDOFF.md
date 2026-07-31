@@ -74,6 +74,16 @@ The rules live in `src/styles.css` under the comment:
 /* Match the Explorer's responsive card treatment across the monthly tracker. */
 ```
 
+### Spending Explorer layout contract
+
+The Explorer uses one shared horizontal rail for its header, sticky navigation, hero, summary cards, and section content. The rail values are defined as Explorer-scoped CSS custom properties in `src/styles.css`; keep those values centralized rather than introducing one-off section widths.
+
+- The first item in the sticky Explorer navigation is the explicit `Budget Tracker` return link. Keep it visible at the left edge when the section links overflow horizontally.
+- The seven desktop filters intentionally use a four-plus-three layout. Tablet uses two columns and mobile uses one column.
+- When the released source catalog produces one visible source for the selected fiscal year, that source card spans the full row. Multiple sources continue to use the two-column grid.
+- Summary, annual-comparison, and plain-language question grids retain their existing equal-card geometry.
+- These rules are presentation-only. Do not couple them to release controls, data loading, filtering, URL state, or the monthly Tracker model.
+
 ## 5. Required validation gate
 
 Run from `jif-budget-tracker-source/`:

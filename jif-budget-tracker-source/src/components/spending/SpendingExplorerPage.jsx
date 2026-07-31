@@ -64,6 +64,10 @@ const ExplorerHeader = ({ released = false }) => (
     {released && (
       <nav className="spending-explorer-nav" aria-label="Spending Explorer sections">
         <div>
+          <a className="spending-explorer-tracker-link" href="/" data-testid="spending-explorer-tracker-link">
+            <ArrowLeft size={16} aria-hidden="true" />
+            Budget Tracker
+          </a>
           <a href="#spending-overview">Overview</a>
           <a href="#annual-comparison">Compare years</a>
           <a href="#every-100">Every J$100</a>
