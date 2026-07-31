@@ -2,7 +2,6 @@ import { lazy, Suspense } from "react";
 import { BackToTopButton, Header } from "./components/Header.jsx";
 import { PublicToolsFooter } from "./components/PublicToolsFooter.jsx";
 import { Overview } from "./components/Overview.jsx";
-import { SummaryCards } from "./components/SummaryCards.jsx";
 import { KpiTable } from "./components/KpiTable.jsx";
 import { SourceSection } from "./components/SourceSection.jsx";
 import { ArchiveSection } from "./components/ArchiveSection.jsx";
@@ -43,13 +42,12 @@ const MonthlyTrackerApp = () => {
         <PublicWarnings data={data} />
         <Overview currentMonth={data.current_month} />
         <MonthComparison comparison={data.month_comparison} />
-        <SubscriptionSection monthSort={data.current_month?.month_sort || selectedMonth} />
-        <SummaryCards counts={data.current_month?.counts} />
+        <CompactSubscribeCta />
         <KpiTable kpis={data.kpis || []} monthLabel={data.current_month?.month_label} />
         <ArchiveSection archive={data.archive || []} />
         <SourceSection currentMonth={data.current_month} />
         <MethodologySection currentMonth={data.current_month} />
-        <CompactSubscribeCta />
+        <SubscriptionSection monthSort={data.current_month?.month_sort || selectedMonth} />
       </main>
       <BackToTopButton />
       <MobileSubscribeButton />

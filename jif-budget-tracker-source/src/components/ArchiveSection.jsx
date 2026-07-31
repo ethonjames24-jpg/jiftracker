@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { StatusBadge } from "./StatusBadge.jsx";
+import { sortArchiveNewestFirst } from "../utils/archive.js";
 
 const PUBLIC_STATUSES = ["On Track", "Watch", "Under Pressure"];
 
@@ -32,7 +33,7 @@ export const ArchiveSection = ({ archive = [] }) => {
 
   const years = useMemo(() => optionValues(archive, ["fiscal_year", "year"]), [archive]);
 
-  const filteredArchive = useMemo(() => archive.filter((item) => {
+  const filteredArchive = useMemo(() => sortArchiveNewestFirst(archive).filter((item) => {
     const itemYears = [item.fiscal_year, item.year].filter(Boolean);
     return (statusFilter === "all" || normalise(item.status) === normalise(statusFilter))
       && (yearFilter === "all" || itemYears.includes(yearFilter))

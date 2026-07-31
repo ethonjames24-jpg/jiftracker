@@ -84,6 +84,22 @@ The Explorer uses one shared horizontal rail for its header, sticky navigation, 
 - Summary, annual-comparison, and plain-language question grids retain their existing equal-card geometry.
 - These rules are presentation-only. Do not couple them to release controls, data loading, filtering, URL state, or the monthly Tracker model.
 
+### Monthly Tracker layout contract
+
+The Monthly Tracker uses one 1,180px horizontal rail for the header, section navigation, overview, and all main content sections. The July 2026 controlled layout pass adds these requirements:
+
+- Use `html` scroll padding as the single sticky-anchor offset. Do not add the same offset again with section scroll margins.
+- Keep the compact monthly-alert CTA between the month comparison and KPI results. Keep the full subscription form after Methodology so it does not interrupt the core results.
+- The overview scorecard is the single KPI-count summary. Do not reintroduce the removed four-card status-summary section.
+- The KPI table remains horizontally scrollable. At mobile width, keep the budget-measure column sticky, preserve the visible sideways-scroll cue, and keep planned/reported values right-aligned with tabular numerals.
+- Source Documents and Methodology use full-width introductions followed by balanced content grids. Avoid a tall narrow introduction column beside substantially longer cards.
+- Archive results are sorted by `month_sort` newest-first after filters are applied, without mutating the public feed.
+- All visible links, buttons, inputs, and selects use the same JIF `:focus-visible` treatment. Mouse-only hover remains confined to fine-pointer devices.
+- At 900px and below, the combined sticky header/navigation target is 176px (`118px + 58px`), with the brand tagline hidden to avoid wrapping. Keep the CSS custom properties synchronized with the rendered bars.
+- Capture, admin, Explorer, Sheets, and subscription workflow contracts are outside this presentation pass and must remain unchanged.
+
+Regression coverage lives in `src/utils/trackerLayoutContract.test.js` and `src/utils/archive.test.js`.
+
 ## 5. Required validation gate
 
 Run from `jif-budget-tracker-source/`:

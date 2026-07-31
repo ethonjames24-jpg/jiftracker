@@ -14,7 +14,7 @@ const slug = (value) => value.toLowerCase().replaceAll("&", "and").replaceAll(" 
 export const MethodologySection = ({ currentMonth }) => (
   <section id="methodology" className="section-band methodology-section" data-testid="methodology-section" data-screenshot-target="methodology">
     <div className="methodology-grid">
-      <div>
+      <div className="section-intro methodology-intro">
         <p data-testid="methodology-eyebrow" className="eyebrow">Methodology</p>
         <h2 data-testid="methodology-heading">How the tracker reads the budget</h2>
         <p data-testid="methodology-description" className="methodology-copy">Each month, the Jamaica In Focus Budget Performance Tracker compares the cumulative results reported since the financial year began in April with the Government’s plan for the same period. It shows what was planned, what the official public-finance tables report, and how eight key measures are performing.</p>

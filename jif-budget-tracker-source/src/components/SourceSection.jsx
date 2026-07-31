@@ -152,7 +152,7 @@ export const SourceSection = ({ currentMonth }) => {
   return (
     <section id="source-documents" className="section-band source-section" data-testid="source-documents-section" data-screenshot-target="source-documents" aria-labelledby="source-documents-heading">
       <div className="source-grid">
-        <div>
+        <div className="section-intro source-intro">
           <p data-testid="sources-eyebrow" className="eyebrow">Source documents</p>
           <h2 id="source-documents-heading" data-testid="sources-heading">Official source documents</h2>
           <p data-testid="source-basis-text" className="source-basis">Source basis: {sourceBasis}.</p>
