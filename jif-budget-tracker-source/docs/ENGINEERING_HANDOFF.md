@@ -1,6 +1,6 @@
 # JIF Budget Tracker and Spending Explorer Engineering Handoff
 
-Last reviewed: 2026-07-22
+Last reviewed: 2026-07-31
 
 This is the current operational handoff for the public Jamaica In Focus Budget Tracker and Government Spending Explorer. It is authoritative for the standalone Vite application in `jif-budget-tracker-source/`. The older `memory/PRD.md` records useful project history, but some early FastAPI references there describe a retired prototype rather than the current production architecture.
 
@@ -134,6 +134,17 @@ Preferred recovery order:
 Never use a rollback to alter public data, Google Sheet history, n8n execution history, or subscriber notification records. Those systems require their own reconciliation procedures.
 
 ## 8. Current release record
+
+### 2026-07-31 — Spending Explorer navigation and alignment
+
+- GitHub commit: `f3d43a8` — `Improve Explorer navigation and alignment`
+- Scope: sticky `Budget Tracker` return link, shared Explorer alignment rail, intentional four-plus-three desktop filter grid, responsive two-column/tablet and one-column/mobile filters, and full-row presentation for a single official source
+- Files: `src/components/spending/SpendingExplorerPage.jsx`, `src/styles.css`, and this handoff
+- Automated tests: 21 passed, 0 failed
+- Production build: passed; local output generated `/assets/index-BX_7bJkg.css`
+- Cloudflare Pages: completed successfully for `f3d43a8`; production served the same `/assets/index-BX_7bJkg.css` asset
+- Live verification: the return control remained first and sticky, keyboard activation reached `/`, desktop filters rendered as four plus three, the single source card spanned the full row, and the production CSS contained the 980px tablet and 680px mobile filter rules
+- Failure containment: presentation-only release; no changes to Google Sheets, n8n workflows, subscriber records, data contracts, DNS, environment variables, or credentials
 
 ### 2026-07-22 — Tracker interaction parity
 
