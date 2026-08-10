@@ -83,7 +83,7 @@ export const MonthComparison = ({ comparison }) => {
           <p className="eyebrow">Month-to-month view</p>
           <h2>Month-to-Month Comparison</h2>
           <article className="comparison-empty-card" data-testid="month-comparison-empty">
-            <GitCompareArrows size={28} className="green-icon" aria-hidden="true" />
+            <GitCompareArrows size={28} className="civic-icon" aria-hidden="true" />
             <p>{comparison?.message || "No previous tracker month is available yet for comparison."}</p>
           </article>
         </div>
@@ -109,7 +109,7 @@ export const MonthComparison = ({ comparison }) => {
           <article className="comparison-card comparison-summary-card" data-testid="comparison-change-summary-card">
             <div className="comparison-card-heading">
               <h3>Change summary</h3>
-              <GitCompareArrows size={24} className="green-icon" aria-hidden="true" />
+              <GitCompareArrows size={24} className="civic-icon" aria-hidden="true" />
             </div>
             <p className="comparison-summary-line" data-testid="comparison-summary-line">{comparison.summary_text}</p>
             <p className="comparison-detail" data-testid="comparison-pressure-detail">{pressureDetailText}</p>

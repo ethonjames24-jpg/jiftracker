@@ -1,5 +1,6 @@
 import { AlertTriangle, ExternalLink, Link2, ScrollText } from "lucide-react";
 import { PUBLIC_WARNING_MESSAGES, hasSourceLinkWarnings, isPublicHttpUrl as isSafeHttpUrl } from "../utils/dataQuality.js";
+import { receiptsCheckApproved } from "../utils/brandContent.js";
 
 const BLOCKED_PUBLIC_URL_TERMS = ["n8n", "subscriber", "subscription"];
 
@@ -34,10 +35,11 @@ const publicLinkFor = ({ label, url, fallbackLabel, cta, testId, meta = "" }) =>
   };
 };
 
-const sourceDetailFor = ({ label, value, url, fallbackLabel, cta, testId }) => ({
+const sourceDetailFor = ({ label, value, url, fallbackLabel, cta, testId, metadata }) => ({
   label,
   value,
   link: publicLinkFor({ label: value, url, fallbackLabel, cta, testId }),
+  metadata,
 });
 
 const receiptsPackDetailForMonth = (currentMonth) => ({
@@ -66,8 +68,18 @@ const SourceLink = ({ link }) => (
   </a>
 );
 
+const SourceMetadata = ({ metadata }) => (
+  <dl className="source-metadata" data-testid={metadata.testId}>
+    <div><dt>Source owner</dt><dd>{metadata.owner || "Not stated in the public feed"}</dd></div>
+    <div><dt>Publication date</dt><dd>{metadata.publicationDate || "Not stated in the public feed"}</dd></div>
+    <div><dt>Period covered</dt><dd>{metadata.period || "Not stated in the public feed"}</dd></div>
+    <div><dt>Used for tracker month</dt><dd>{metadata.trackerMonth || "Not stated in the public feed"}</dd></div>
+  </dl>
+);
+
 const PublicReceiptsPack = ({ currentMonth, monthlyOutturn, budgetBaseline }) => {
   const receiptsPack = receiptsPackDetailForMonth(currentMonth);
+  const isReceiptsChecked = receiptsCheckApproved(currentMonth);
   const showSourceWarning = hasSourceLinkWarnings(currentMonth);
   const notes = [
     currentMonth?.source_note || currentMonth?.what_changed_source_note,
@@ -81,7 +93,9 @@ const PublicReceiptsPack = ({ currentMonth, monthlyOutturn, budgetBaseline }) =>
       <div className="public-receipts-pack-header">
         <Link2 size={29} aria-hidden="true" />
         <div>
-          <p className="eyebrow">Receipts checked</p>
+          <p className="eyebrow" data-testid="receipts-check-status">
+            {isReceiptsChecked ? "Receipts Checked" : "Official source record"}
+          </p>
           <h3 data-testid="public-receipts-pack-heading">Public Receipts Pack</h3>
         </div>
       </div>
@@ -98,11 +112,13 @@ const PublicReceiptsPack = ({ currentMonth, monthlyOutturn, budgetBaseline }) =>
         <div className="receipts-pack-row" data-testid="receipts-pack-monthly-outturn-row">
           <p className="source-label">{monthlyOutturn.label}</p>
           <p>{monthlyOutturn.value || "Not reported in the sheet for this month."}</p>
+          <SourceMetadata metadata={monthlyOutturn.metadata} />
           {monthlyOutturn.link ? <SourceLink link={monthlyOutturn.link} /> : <p className="source-unavailable">Not available for this month</p>}
         </div>
         <div className="receipts-pack-row" data-testid="receipts-pack-budget-baseline-row">
           <p className="source-label">{budgetBaseline.label}</p>
           <p>{budgetBaseline.value || "Not reported in the sheet for this month."}</p>
+          <SourceMetadata metadata={budgetBaseline.metadata} />
           {budgetBaseline.link ? <SourceLink link={budgetBaseline.link} /> : <p className="source-unavailable">Not available for this month</p>}
         </div>
         <div className="receipts-pack-row" data-testid="receipts-pack-link-row">
@@ -131,6 +147,13 @@ export const SourceSection = ({ currentMonth }) => {
       : "Central Government Operations Table",
     cta: "Open source document",
     testId: "source-document-1-link",
+    metadata: {
+      testId: "source-document-1-metadata",
+      owner: currentMonth?.source_document_1_owner,
+      publicationDate: currentMonth?.source_document_1_publication_date,
+      period: currentMonth?.source_document_1_period || currentMonth?.month_label,
+      trackerMonth: currentMonth?.month_label,
+    },
   });
   const budgetBaseline = sourceDetailFor({
     label: "Budget plan document (official baseline)",
@@ -139,6 +162,13 @@ export const SourceSection = ({ currentMonth }) => {
     fallbackLabel: "2026–2027 Estimates of Expenditure",
     cta: "Open budget source",
     testId: "source-document-2-link",
+    metadata: {
+      testId: "source-document-2-metadata",
+      owner: currentMonth?.source_document_2_owner,
+      publicationDate: currentMonth?.source_document_2_publication_date,
+      period: currentMonth?.source_document_2_period || currentMonth?.fiscal_year,
+      trackerMonth: currentMonth?.month_label,
+    },
   });
   const sourceContext = [
     { label: "Additional official context", value: currentMonth?.supporting_fiscal_context, icon: ScrollText, testId: "supporting-fiscal-context" },
@@ -161,7 +191,7 @@ export const SourceSection = ({ currentMonth }) => {
           <PublicReceiptsPack currentMonth={currentMonth} monthlyOutturn={monthlyOutturn} budgetBaseline={budgetBaseline} />
           {sourceContext.map(({ label, value, icon: Icon, testId }) => (
             <article key={label} data-testid={`${testId}-card`} className="source-card">
-              <Icon size={25} className="green-icon" aria-hidden="true" />
+              <Icon size={25} className="civic-icon" aria-hidden="true" />
               <div>
                 <p data-testid={`${testId}-label`} className="source-label">{label}</p>
                 <p data-testid={testId}>{value || "Not reported in the sheet for this month."}</p>

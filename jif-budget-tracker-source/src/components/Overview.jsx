@@ -3,6 +3,7 @@ import { LatestUpdateStatus } from "./LatestUpdateStatus.jsx";
 import { PublicSummaryCard } from "./PublicSummaryCard.jsx";
 import { StatusBadge } from "./StatusBadge.jsx";
 import { WhatChangedCard } from "./WhatChangedCard.jsx";
+import { editorialHeadlineFor } from "../utils/brandContent.js";
 
 const toneClasses = {
   green: "metric-green",
@@ -21,7 +22,7 @@ const Metric = ({ label, value = 0, testId, tone = "black" }) => (
 const InfoCard = ({ icon: Icon, title, value, testId }) => (
   <article data-testid={testId} className="info-card">
     <div className="info-card-title-row">
-      <Icon size={22} className="green-icon" aria-hidden="true" />
+      <Icon size={22} className="civic-icon" aria-hidden="true" />
       <h2 data-testid={`${testId}-title`}>{title}</h2>
     </div>
     <p data-testid={`${testId}-text`}>{value || "No note reported for this month."}</p>
@@ -38,7 +39,7 @@ export const Overview = ({ currentMonth }) => {
             <CalendarDays size={16} aria-hidden="true" />
             {currentMonth?.tracker_state || "Tracker state pending"}
           </div>
-          <h1 data-testid="dashboard-title">Jamaica Budget Performance Tracker</h1>
+          <h1 data-testid="dashboard-title">{editorialHeadlineFor(currentMonth)}</h1>
           <p data-testid="dashboard-subtitle" className="subtitle">Tracking central government revenue, spending and balances against the approved FY 2026/27 plan.</p>
           <div className="hero-status-row">
             <div data-testid="current-month-label" className="month-chip">{currentMonth?.month_label || "Month pending"}</div>

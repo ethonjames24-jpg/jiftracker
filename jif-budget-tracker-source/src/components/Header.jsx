@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowUp, BarChart3, FileText, GitCompareArrows, Landmark, Link2, ShieldCheck } from "lucide-react";
-import { LOGO_URL } from "../config.js";
+import { JifProductLockup } from "./JifProductLockup.jsx";
 
 const links = [
   { href: "#overview", label: "Overview", icon: BarChart3, testId: "nav-overview-link" },
@@ -197,11 +197,13 @@ export const Header = ({ months, selectedMonth, onMonthChange }) => (
     <header data-testid="site-header" className="site-header">
       <div className="header-inner">
         <div className="brand-lockup" data-testid="brand-lockup">
-          <img src={LOGO_URL} alt="Jamaica In Focus logo" data-testid="header-logo" className="brand-logo" />
-          <div>
-            <p data-testid="brand-name" className="brand-name">Jamaica In Focus</p>
-            <p data-testid="brand-tagline" className="brand-tagline">Receipts checked. Public finance tracked.</p>
-          </div>
+          <JifProductLockup
+            productName="Budget Tracker"
+            tagline="Track the numbers. Understand what changed."
+            className="tracker-product-lockup"
+          />
+          <span className="sr-only" data-testid="brand-name">JIF Budget Tracker</span>
+          <span className="sr-only" data-testid="brand-tagline">Track the numbers. Understand what changed.</span>
         </div>
         <div className="header-actions">
           <a className="explorer-switch-link" href="/?view=spending" data-testid="government-spending-explorer-link">

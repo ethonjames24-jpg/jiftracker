@@ -7,7 +7,7 @@ export const DataQualityNote = ({ currentMonth }) => {
   return (
     <article data-testid="data-quality-note" className="method-card data-quality-card">
       <div className="info-card-title-row">
-        <ShieldCheck size={22} className="green-icon" aria-hidden="true" />
+        <ShieldCheck size={22} className="civic-icon" aria-hidden="true" />
         <h3 data-testid="data-quality-heading">Public data quality note</h3>
       </div>
       {currentMonth?.data_quality_status && <p data-testid="data-quality-status" className="data-quality-status">{currentMonth.data_quality_status}</p>}

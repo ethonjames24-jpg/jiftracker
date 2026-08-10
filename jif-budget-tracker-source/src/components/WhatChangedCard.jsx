@@ -9,7 +9,7 @@ export const WhatChangedCard = ({ currentMonth }) => {
   return (
     <article data-testid="what-changed-card" className="info-card what-changed-card">
       <div className="info-card-title-row">
-        <Newspaper size={22} className="green-icon" aria-hidden="true" />
+        <Newspaper size={22} className="civic-icon" aria-hidden="true" />
         <h2 data-testid="what-changed-card-title">What Changed This Month</h2>
       </div>
       {hasEnhancedContent ? (

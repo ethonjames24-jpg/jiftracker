@@ -23,7 +23,7 @@ test("keeps one sticky-anchor offset and the mobile KPI scanning contract", asyn
   assert.match(source, /\.section-band\[id\] \{ scroll-margin-top: 0; \}/);
   assert.match(source, /\.table-card th:first-child, \.table-card td:first-child \{ position: sticky;/);
   assert.match(source, /\.app :is\(a, button, input, select\):focus-visible/);
-  assert.match(source, /--header-height: 118px; --section-nav-height: 58px;/);
+  assert.match(source, /--header-height: 126px; --section-nav-height: 58px;/);
 });
 
 test("keeps the floating subscription prompt clear of Back to Top", async () => {
