@@ -175,7 +175,7 @@ export const SubscriptionSection = ({ monthSort }) => {
               onChange={(event) => setConsent(event.target.checked)}
               required
             />
-            <span>I agree to receive Jamaica In Focus Budget Tracker update emails.</span>
+            <span>I agree to receive JIF Budget Tracker update emails.</span>
           </label>
 
           <button data-testid="subscribe-submit-button" type="submit" disabled={isSubmitting}>
@@ -184,7 +184,7 @@ export const SubscriptionSection = ({ monthSort }) => {
           </button>
 
           <p id="subscribe-privacy-notice" data-testid="subscribe-privacy-notice" className="privacy-notice">
-            Privacy notice: Your email will be used only to send Jamaica In Focus Budget Tracker updates. We will not sell or share your information, and you can unsubscribe at any time.
+            Privacy notice: Your email will be used only to send JIF Budget Tracker updates. We will not sell or share your information, and you can unsubscribe at any time.
           </p>
 
           {!isConfigured && !message && (

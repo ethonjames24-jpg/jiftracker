@@ -97,7 +97,7 @@ const StatusPill = ({ status }) => {
 const ComputedSection = ({ section }) => (
   <section className="admin-checklist-card" aria-labelledby={`admin-${section.title.replace(/\s+/g, "-").toLowerCase()}`}>
     <div className="admin-card-header">
-      <FileText size={22} className="green-icon" aria-hidden="true" />
+      <FileText size={22} className="civic-icon" aria-hidden="true" />
       <div>
         <h2 id={`admin-${section.title.replace(/\s+/g, "-").toLowerCase()}`}>{section.title}</h2>
         <p>{section.description}</p>
@@ -137,7 +137,7 @@ const AdminWarningList = ({ warnings }) => {
 const ManualSection = ({ section, checkedItems, onToggle }) => (
   <section className="admin-checklist-card admin-manual-card" aria-labelledby={`admin-${section.title.replace(/\s+/g, "-").toLowerCase()}`}>
     <div className="admin-card-header">
-      <ClipboardCheck size={22} className="green-icon" aria-hidden="true" />
+      <ClipboardCheck size={22} className="civic-icon" aria-hidden="true" />
       <div>
         <h2 id={`admin-${section.title.replace(/\s+/g, "-").toLowerCase()}`}>{section.title}</h2>
         <p>{section.description}</p>

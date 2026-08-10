@@ -1,5 +1,6 @@
 import { CalendarDays, FileCheck2, Gauge, Landmark, Link2, ScrollText } from "lucide-react";
-import { LOGO_URL } from "../config.js";
+import { editorialHeadlineFor } from "../utils/brandContent.js";
+import { JifProductLockup } from "./JifProductLockup.jsx";
 import { LatestUpdateStatus } from "./LatestUpdateStatus.jsx";
 import { PublicSummaryCard } from "./PublicSummaryCard.jsx";
 import { SourceSection } from "./SourceSection.jsx";
@@ -32,11 +33,11 @@ export const getCaptureMode = () => {
 const CaptureBrand = ({ monthLabel, kicker = "Screenshot capture" }) => (
   <header className="capture-brand" data-testid="capture-brand">
     <div className="capture-lockup">
-      <img src={LOGO_URL} alt="Jamaica In Focus logo" className="capture-logo" data-testid="capture-logo" />
-      <div>
-        <p className="brand-name">Jamaica In Focus</p>
-        <p className="brand-tagline">Budget Performance Tracker</p>
-      </div>
+      <JifProductLockup
+        productName="Budget Tracker"
+        tagline="Track the numbers. Understand what changed."
+        className="capture-product-lockup"
+      />
     </div>
     <div className="capture-month-block">
       <p>{kicker}</p>
@@ -81,7 +82,7 @@ export const HeroCaptureView = ({ currentMonth }) => (
           <CalendarDays size={16} aria-hidden="true" />
           {currentMonth?.tracker_state || "Tracker state pending"}
         </div>
-        <h1 data-testid="capture-dashboard-title">Jamaica Budget Performance Tracker</h1>
+        <h1 data-testid="capture-dashboard-title">{editorialHeadlineFor(currentMonth)}</h1>
         <p className="subtitle">Central government revenue, spending and balances against the approved FY 2026/27 plan.</p>
         <div className="hero-status-row">
           <div className="month-chip">{currentMonth?.month_label || "Month pending"}</div>
@@ -98,7 +99,7 @@ export const HeroCaptureView = ({ currentMonth }) => (
         </div>
       </aside>
     </main>
-    <p className="capture-hero-footer">Receipts checked. Public finance tracked.</p>
+    <p className="capture-hero-footer">Public record • Public interest</p>
   </div>
 );
 
@@ -118,7 +119,7 @@ export const KpiCaptureView = ({ currentMonth, kpis }) => (
         <WhatChangedCard currentMonth={currentMonth} />
         <article className="info-card" data-testid="capture-monthly-note-card">
           <div className="info-card-title-row">
-            <Gauge size={22} className="green-icon" aria-hidden="true" />
+            <Gauge size={22} className="civic-icon" aria-hidden="true" />
             <h2>Why this matters</h2>
           </div>
           <p>{currentMonth?.monthly_note || "No note reported for this month."}</p>

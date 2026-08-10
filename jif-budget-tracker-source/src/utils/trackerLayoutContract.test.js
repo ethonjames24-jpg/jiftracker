@@ -23,7 +23,40 @@ test("keeps one sticky-anchor offset and the mobile KPI scanning contract", asyn
   assert.match(source, /\.section-band\[id\] \{ scroll-margin-top: 0; \}/);
   assert.match(source, /\.table-card th:first-child, \.table-card td:first-child \{ position: sticky;/);
   assert.match(source, /\.app :is\(a, button, input, select\):focus-visible/);
-  assert.match(source, /--header-height: 118px; --section-nav-height: 58px;/);
+  assert.match(source, /--header-height: 146px; --section-nav-height: 58px;/);
+});
+
+test("keeps the endorsed header readable at desktop, tablet, and mobile widths", async () => {
+  const header = await readSource("../components/Header.jsx");
+  const styles = await readSource("../styles.css");
+
+  const navStart = header.indexOf('<nav ref={navRef} className="nav-links"');
+  const explorerSwitch = header.indexOf('data-testid="government-spending-explorer-link"');
+  const navEnd = header.indexOf("</nav>", navStart);
+
+  assert.ok(navStart > -1 && explorerSwitch > navStart && explorerSwitch < navEnd);
+  assert.match(header, /if \(activeSection === "overview"\) \{[\s\S]*nav\.scrollTo\(\{ left: 0/);
+  assert.match(styles, /--header-height: 124px;/);
+  assert.match(styles, /\.header-inner \{[^}]*max-width: 1360px;/);
+  assert.match(styles, /\.jif-product-lockup-wordmark \{[^}]*width: 520px;/);
+  assert.match(styles, /\.jif-product-lockup-copy strong \{[^}]*font-size: 1\.625rem;/);
+  assert.match(styles, /\.jif-product-lockup-copy small \{[^}]*color: var\(--navy\);[^}]*font-size: \.875rem;/);
+  assert.match(styles, /@media \(min-width: 901px\) and \(max-width: 1100px\)/);
+  assert.match(styles, /\.tracker-product-lockup \.jif-product-lockup-copy small \{ display: block;/);
+  assert.equal(styles.includes(".tracker-product-lockup .jif-product-lockup-copy small { display: none; }"), false);
+});
+
+test("keeps the Spending Explorer header at parity with the tracker identity", async () => {
+  const styles = await readSource("../styles.css");
+
+  assert.match(styles, /\.spending-explorer-header \{[^}]*height: var\(--header-height\);/);
+  assert.match(styles, /\.spending-explorer-header-inner \{[^}]*max-width: 1360px;[^}]*height: 100%;/);
+  assert.match(styles, /\.spending-explorer-nav \{[^}]*top: var\(--header-height\);/);
+  assert.match(styles, /@media \(max-width: 900px\) \{[\s\S]*\.explorer-product-lockup \.jif-product-lockup-monogram \{ display: block;/);
+  assert.match(styles, /\.explorer-product-lockup \.jif-product-lockup-copy small \{ display: block;[^}]*font-size: \.78rem;/);
+  assert.equal(styles.includes(".explorer-product-lockup .jif-product-lockup-copy small { display: none; }"), false);
+  assert.equal(styles.includes(".explorer-product-lockup .jif-product-lockup-wordmark { width: 274px; }"), false);
+  assert.equal(styles.includes(".spending-explorer-nav { position: sticky; top: 90px;"), false);
 });
 
 test("keeps the floating subscription prompt clear of Back to Top", async () => {

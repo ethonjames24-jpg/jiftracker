@@ -21,8 +21,8 @@ import {
   Share2,
   ShieldCheck,
 } from "lucide-react";
-import { LOGO_URL } from "../../config.js";
 import { BackToTopButton } from "../Header.jsx";
+import { JifProductLockup } from "../JifProductLockup.jsx";
 import { PublicToolsFooter } from "../PublicToolsFooter.jsx";
 import { useSpendingExplorerData } from "../../hooks/useSpendingExplorerData.js";
 import {
@@ -49,11 +49,11 @@ const ExplorerHeader = ({ released = false }) => (
     <header className="spending-explorer-header">
       <div className="spending-explorer-header-inner">
         <a className="spending-explorer-brand" href="/" aria-label="Jamaica In Focus monthly tracker">
-          <img src={LOGO_URL} alt="Jamaica In Focus logo" />
-          <span>
-            <strong>Jamaica In Focus</strong>
-            <small>Receipts checked. Public finance tracked.</small>
-          </span>
+          <JifProductLockup
+            productName="Spending Explorer"
+            tagline="See where the public money is allocated."
+            className="explorer-product-lockup"
+          />
         </a>
         <div className={`spending-explorer-release-pill ${released ? "is-released" : "is-gated"}`}>
           {released ? <BadgeCheck size={17} aria-hidden="true" /> : <ShieldCheck size={17} aria-hidden="true" />}
@@ -110,7 +110,7 @@ const SelectFilter = ({ label, value, onChange, options, allLabel }) => (
   </label>
 );
 
-const Every100Section = ({ rows }) => {
+const Every100Section = ({ rows, fiscalYear }) => {
   const maximumPositive = Math.max(...rows.map((row) => Math.max(row.per_j100, 0)), 1);
 
   return (
@@ -120,7 +120,7 @@ const Every100Section = ({ rows }) => {
           <p className="spending-explorer-kicker">A simpler way to read the budget</p>
           <h2>Where every J$100 goes</h2>
         </div>
-        <p>See how the approved budget is divided when the total is scaled down to J$100.</p>
+        <p>FY {fiscalYear} Estimates As Passed, using net approved expenditure after Appropriations-in-Aid, scaled down to J$100.</p>
       </div>
       <div className="spending-explorer-every100-list">
         {rows.map((row) => {
@@ -202,7 +202,7 @@ const AnnualComparison = ({ rows, every100Rows }) => {
         <p>This fixed comparison stays visible while you explore either fiscal year. It compares approved Estimates As Passed—not actual spending.</p>
       </div>
       <div className="spending-explorer-comparison-summary">
-        <article><span>Approved budget change</span><strong>{formatJmd(totalChange, true)}</strong><small>{totalPercent === null ? "Not comparable" : `${formatPercent(totalPercent)} from FY ${priorFiscalYear} to FY ${currentFiscalYear}`}</small></article>
+        <article><span>Approved budget change</span><strong>{totalChange > 0 ? "+" : ""}{formatJmd(totalChange, true)}</strong><small>{totalPercent === null ? "Not comparable" : `${totalPercent > 0 ? "+" : ""}${formatPercent(totalPercent)} from FY ${priorFiscalYear} to FY ${currentFiscalYear}`}</small></article>
         <article><span>FY {currentFiscalYear}</span><strong>{formatJmd(currentTotal, true)}</strong><small>Net approved expenditure</small></article>
         <article><span>FY {priorFiscalYear}</span><strong>{formatJmd(priorTotal, true)}</strong><small>Net approved expenditure</small></article>
       </div>
@@ -211,7 +211,7 @@ const AnnualComparison = ({ rows, every100Rows }) => {
         {categories.map((row) => (
           <div key={row.comparison_id} role="row">
             <strong>{row.entity_name}</strong>
-            <span className={row.amount_change_jmd < 0 ? "is-down" : "is-up"}>{row.amount_change_jmd > 0 ? "+" : ""}{formatJmd(row.amount_change_jmd, true)}</span>
+            <span className="is-signed-change">{row.amount_change_jmd > 0 ? "+" : ""}{formatJmd(row.amount_change_jmd, true)}</span>
             <span>{row.percent_change === null ? "Not comparable" : `${row.percent_change > 0 ? "+" : ""}${formatPercent(row.percent_change)}`}</span>
             <span>{row.rank_change > 0 ? `Up ${row.rank_change}` : row.rank_change < 0 ? `Down ${Math.abs(row.rank_change)}` : "No change"}</span>
           </div>
@@ -384,7 +384,7 @@ const GlossarySection = () => (
       <div><dt>Recurrent spending</dt><dd>Day-to-day government costs such as salaries, operations, grants and debt payments.</dd></div>
       <div><dt>Capital spending</dt><dd>Investment in projects and assets such as roads, schools, hospitals and major equipment.</dd></div>
       <div><dt>Voted estimate</dt><dd>Spending that Parliament approves through the annual budget process.</dd></div>
-      <div><dt>Public debt</dt><dd>Money allocated to repay government borrowing and the interest or other costs attached to it.</dd></div>
+      <div><dt>Appropriations-in-Aid</dt><dd>Income that public bodies are authorized to collect and use, shown here as an offset against the net approved total.</dd></div>
     </dl>
   </section>
 );
@@ -508,7 +508,7 @@ export const SpendingExplorerPage = () => {
         </section>
 
         <AnnualComparison rows={data.comparison || []} every100Rows={allEvery100Rows} />
-        <Every100Section rows={every100Rows} />
+        <Every100Section rows={every100Rows} fiscalYear={activeFiscalYear} />
         <PlainLanguageAnswers every100Rows={every100Rows} spendingRows={spendingRows} />
 
         <section id="spending-breakdown" className="spending-explorer-section spending-explorer-breakdown">
@@ -542,17 +542,18 @@ export const SpendingExplorerPage = () => {
             {shareStatus && <span role="status">{shareStatus}</span>}
           </div>
 
-          {activeFilterCount > 0 && (
-            <section className="spending-explorer-your-selection" aria-labelledby="your-selection-title">
-              <div className="spending-explorer-panel-heading"><h3 id="your-selection-title">Your selection</h3><span>{activeFilterCount} active {activeFilterCount === 1 ? "filter" : "filters"}</span></div>
-              <div className="spending-explorer-selection-summary">
-                <div><span>Selected net amount</span><strong>{formatJmd(filteredTotal, true)}</strong></div>
-                <div><span>Share of approved net total</span><strong>{approvedNetTotal ? formatPercent((filteredTotal / approvedNetTotal) * 100) : "—"}</strong></div>
-                <div><span>Matching records</span><strong>{new Intl.NumberFormat("en-JM").format(filteredRows.length)}</strong></div>
-              </div>
-              <CategoryBreakdown rows={filteredRows} denominator={approvedNetTotal || 1} />
-            </section>
-          )}
+          <section className="spending-explorer-your-selection" aria-labelledby="your-selection-title">
+            <div className="spending-explorer-panel-heading">
+              <h3 id="your-selection-title">Your selection</h3>
+              <span>{activeFilterCount > 0 ? `${activeFilterCount} active ${activeFilterCount === 1 ? "filter" : "filters"}` : `All approved FY ${activeFiscalYear} records`}</span>
+            </div>
+            <div className="spending-explorer-selection-summary">
+              <div><span>Selected net amount</span><strong>{formatJmd(filteredTotal, true)}</strong></div>
+              <div><span>Share of approved net total</span><strong>{approvedNetTotal ? formatPercent((filteredTotal / approvedNetTotal) * 100) : "—"}</strong></div>
+              <div><span>Matching records</span><strong>{new Intl.NumberFormat("en-JM").format(filteredRows.length)}</strong></div>
+            </div>
+            <CategoryBreakdown rows={filteredRows} denominator={approvedNetTotal || 1} />
+          </section>
 
           <details className="spending-explorer-details">
             <summary>

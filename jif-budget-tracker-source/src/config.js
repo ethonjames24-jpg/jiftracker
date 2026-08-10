@@ -2,7 +2,14 @@ const ENV = import.meta.env || {};
 
 export const SHEET_ID = ENV.VITE_GOOGLE_SHEET_ID || "13npg-j5jjMzE115EOkkBdq7Rav1L5-RUPl1rza5e_v0";
 
-export const LOGO_URL = ENV.VITE_LOGO_URL || "/jif-logo.png";
+export const MASTER_BADGE_URL = ENV.VITE_MASTER_BADGE_URL
+  || "/brand/jif-b1-b1-master-badge-web-v1.png";
+
+export const COMPACT_MONOGRAM_URL = ENV.VITE_COMPACT_MONOGRAM_URL
+  || "/brand/jif-compact-monogram-web-v1.png";
+
+export const HORIZONTAL_WORDMARK_URL = ENV.VITE_HORIZONTAL_WORDMARK_URL
+  || "/brand/jif-horizontal-light-background-wordmark-web-v1.png";
 
 export const TRACKER_SUBSCRIBE_WEBHOOK_URL = ENV.VITE_TRACKER_SUBSCRIBE_WEBHOOK_URL || "";
 

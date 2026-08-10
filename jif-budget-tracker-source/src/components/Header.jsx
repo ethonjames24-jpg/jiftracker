@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowUp, BarChart3, FileText, GitCompareArrows, Landmark, Link2, ShieldCheck } from "lucide-react";
-import { LOGO_URL } from "../config.js";
+import { JifProductLockup } from "./JifProductLockup.jsx";
 
 const links = [
   { href: "#overview", label: "Overview", icon: BarChart3, testId: "nav-overview-link" },
@@ -102,6 +102,11 @@ const SectionNavigation = () => {
     const activeLink = navRef.current?.querySelector(`[data-section-id="${activeSection}"]`);
     if (!nav || !activeLink) return;
 
+    if (activeSection === "overview") {
+      nav.scrollTo({ left: 0, behavior: prefersReducedMotion() ? "auto" : "smooth" });
+      return;
+    }
+
     nav.scrollTo({
       left: activeLink.offsetLeft - (nav.clientWidth / 2) + (activeLink.clientWidth / 2),
       behavior: prefersReducedMotion() ? "auto" : "smooth",
@@ -135,6 +140,15 @@ const SectionNavigation = () => {
   return (
     <div className="section-nav-shell" data-testid="section-navigation-shell">
       <nav ref={navRef} className="nav-links" data-testid="primary-navigation" aria-label="Dashboard sections">
+        <a
+          className="nav-button nav-product-switch"
+          href="/?view=spending"
+          data-testid="government-spending-explorer-link"
+        >
+          <Landmark size={16} aria-hidden="true" />
+          <span className="explorer-switch-label-full">Government Spending Explorer</span>
+          <span className="explorer-switch-label-short">Spending Explorer</span>
+        </a>
         {links.map(({ href, label, icon: Icon, testId }) => {
           const sectionId = href.replace("#", "");
           const isActive = activeSection === sectionId;
@@ -197,18 +211,15 @@ export const Header = ({ months, selectedMonth, onMonthChange }) => (
     <header data-testid="site-header" className="site-header">
       <div className="header-inner">
         <div className="brand-lockup" data-testid="brand-lockup">
-          <img src={LOGO_URL} alt="Jamaica In Focus logo" data-testid="header-logo" className="brand-logo" />
-          <div>
-            <p data-testid="brand-name" className="brand-name">Jamaica In Focus</p>
-            <p data-testid="brand-tagline" className="brand-tagline">Receipts checked. Public finance tracked.</p>
-          </div>
+          <JifProductLockup
+            productName="Budget Tracker"
+            tagline="Track the numbers. Understand what changed."
+            className="tracker-product-lockup"
+          />
+          <span className="sr-only" data-testid="brand-name">JIF Budget Tracker</span>
+          <span className="sr-only" data-testid="brand-tagline">Track the numbers. Understand what changed.</span>
         </div>
         <div className="header-actions">
-          <a className="explorer-switch-link" href="/?view=spending" data-testid="government-spending-explorer-link">
-            <Landmark size={18} aria-hidden="true" />
-            <span className="explorer-switch-label-full">Government Spending Explorer</span>
-            <span className="explorer-switch-label-short">Spending Explorer</span>
-          </a>
           <select data-testid="month-select-trigger" className="month-select" value={selectedMonth || ""} onChange={(event) => onMonthChange(event.target.value)} aria-label="Select tracker month">
             {months.map((month) => (
               <option key={month.month_sort} value={month.month_sort} data-testid={`month-select-option-${month.month_sort}`}>

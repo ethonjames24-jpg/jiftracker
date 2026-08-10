@@ -1,6 +1,6 @@
-# Jamaica In Focus Budget Performance Tracker
+# JIF Budget Tracker
 
-A standalone React/Vite dashboard for the **Jamaica In Focus Budget Performance Tracker**. It reads approved, public tracker data directly from a Google Sheets workbook using read-only public CSV exports.
+A standalone React/Vite dashboard for the **JIF Budget Tracker**. It reads approved, public tracker data directly from a Google Sheets workbook using read-only public CSV exports.
 
 Current architecture, safety boundaries, release checks, rollback guidance, and the active change log are maintained in [`docs/ENGINEERING_HANDOFF.md`](docs/ENGINEERING_HANDOFF.md).
 
@@ -75,11 +75,13 @@ Variables:
 ```bash
 VITE_GOOGLE_SHEET_ID=13npg-j5jjMzE115EOkkBdq7Rav1L5-RUPl1rza5e_v0
 VITE_SPENDING_EXPLORER_SHEET_ID=1SWibIHNJzgkWRPb57YiBvV3QHXKwrRrgXzG0fKdvv80
-VITE_LOGO_URL=/jif-logo.png
 VITE_TRACKER_SUBSCRIBE_WEBHOOK_URL=
+VITE_MASTER_BADGE_URL=
+VITE_COMPACT_MONOGRAM_URL=
+VITE_HORIZONTAL_WORDMARK_URL=
 ```
 
-`VITE_GOOGLE_SHEET_ID`, `VITE_SPENDING_EXPLORER_SHEET_ID`, and `VITE_LOGO_URL` are public. The two Sheet IDs intentionally stay separate: the first continues to serve the monthly tracker, while the second serves the additive Government Spending Explorer. `VITE_TRACKER_SUBSCRIBE_WEBHOOK_URL` is the public n8n webhook endpoint that receives subscription requests. No private Google Sheets credentials are required for the default setup. The logo is bundled locally at `public/jif-logo.png`, so the dashboard does not depend on the original upload URL.
+The two public Sheet IDs intentionally stay separate: the first serves the monthly tracker, while the second serves the additive Government Spending Explorer. `VITE_TRACKER_SUBSCRIBE_WEBHOOK_URL` is the public n8n webhook endpoint that receives subscription requests. No private Google Sheets credentials are required for the default setup. The approved JIF v1.0 badge, monogram, and horizontal wordmark are bundled under `public/brand/`; the three optional brand variables override those local defaults. The footer displays “Built by Crypten Technologies” as plain text because there is no active official Crypten website.
 
 If `VITE_TRACKER_SUBSCRIBE_WEBHOOK_URL` is blank, the subscription form shows a controlled configuration message and does not submit anywhere.
 
@@ -221,8 +223,11 @@ Node version: 18 or newer
 
 ```text
 VITE_GOOGLE_SHEET_ID
-VITE_LOGO_URL
+VITE_SPENDING_EXPLORER_SHEET_ID
 VITE_TRACKER_SUBSCRIBE_WEBHOOK_URL
+VITE_MASTER_BADGE_URL
+VITE_COMPACT_MONOGRAM_URL
+VITE_HORIZONTAL_WORDMARK_URL
 ```
 
 For Cloudflare Pages, configure `VITE_TRACKER_SUBSCRIBE_WEBHOOK_URL` separately in both:
@@ -293,7 +298,11 @@ If the public CSV method is disabled or blocked, use a backend proxy with either
 ├── vite.config.js
 ├── .env.example
 ├── public
-│   └── jif-logo.png
+│   └── brand
+│       ├── jif-b1-b1-master-badge-web-v1.png
+│       ├── jif-compact-monogram-web-v1.png
+│       ├── jif-horizontal-master-wordmark-web-v1.png
+│       └── jif-horizontal-light-background-wordmark-web-v1.png
 ├── src
 │   ├── App.jsx
 │   ├── config.js
@@ -302,6 +311,7 @@ If the public CSV method is disabled or blocked, use a backend proxy with either
 │   ├── components
 │   │   ├── ArchiveSection.jsx
 │   │   ├── Header.jsx
+│   │   ├── JifProductLockup.jsx
 │   │   ├── KpiTable.jsx
 │   │   ├── MethodologySection.jsx
 │   │   ├── Overview.jsx
