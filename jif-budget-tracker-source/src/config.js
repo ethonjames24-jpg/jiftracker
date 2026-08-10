@@ -9,7 +9,7 @@ export const COMPACT_MONOGRAM_URL = ENV.VITE_COMPACT_MONOGRAM_URL
   || "/brand/jif-compact-monogram-web-v1.png";
 
 export const HORIZONTAL_WORDMARK_URL = ENV.VITE_HORIZONTAL_WORDMARK_URL
-  || "/brand/jif-horizontal-master-wordmark-web-v1.png";
+  || "/brand/jif-horizontal-light-background-wordmark-web-v1.png";
 
 export const TRACKER_SUBSCRIBE_WEBHOOK_URL = ENV.VITE_TRACKER_SUBSCRIBE_WEBHOOK_URL || "";
 

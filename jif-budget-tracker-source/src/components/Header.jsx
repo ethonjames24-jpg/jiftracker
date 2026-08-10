@@ -102,6 +102,11 @@ const SectionNavigation = () => {
     const activeLink = navRef.current?.querySelector(`[data-section-id="${activeSection}"]`);
     if (!nav || !activeLink) return;
 
+    if (activeSection === "overview") {
+      nav.scrollTo({ left: 0, behavior: prefersReducedMotion() ? "auto" : "smooth" });
+      return;
+    }
+
     nav.scrollTo({
       left: activeLink.offsetLeft - (nav.clientWidth / 2) + (activeLink.clientWidth / 2),
       behavior: prefersReducedMotion() ? "auto" : "smooth",
@@ -135,6 +140,15 @@ const SectionNavigation = () => {
   return (
     <div className="section-nav-shell" data-testid="section-navigation-shell">
       <nav ref={navRef} className="nav-links" data-testid="primary-navigation" aria-label="Dashboard sections">
+        <a
+          className="nav-button nav-product-switch"
+          href="/?view=spending"
+          data-testid="government-spending-explorer-link"
+        >
+          <Landmark size={16} aria-hidden="true" />
+          <span className="explorer-switch-label-full">Government Spending Explorer</span>
+          <span className="explorer-switch-label-short">Spending Explorer</span>
+        </a>
         {links.map(({ href, label, icon: Icon, testId }) => {
           const sectionId = href.replace("#", "");
           const isActive = activeSection === sectionId;
@@ -206,11 +220,6 @@ export const Header = ({ months, selectedMonth, onMonthChange }) => (
           <span className="sr-only" data-testid="brand-tagline">Track the numbers. Understand what changed.</span>
         </div>
         <div className="header-actions">
-          <a className="explorer-switch-link" href="/?view=spending" data-testid="government-spending-explorer-link">
-            <Landmark size={18} aria-hidden="true" />
-            <span className="explorer-switch-label-full">Government Spending Explorer</span>
-            <span className="explorer-switch-label-short">Spending Explorer</span>
-          </a>
           <select data-testid="month-select-trigger" className="month-select" value={selectedMonth || ""} onChange={(event) => onMonthChange(event.target.value)} aria-label="Select tracker month">
             {months.map((month) => (
               <option key={month.month_sort} value={month.month_sort} data-testid={`month-select-option-${month.month_sort}`}>

@@ -39,7 +39,7 @@ test("uses the approved master assets through one endorsed product-lockup compon
   const footer = await readSource("../components/PublicToolsFooter.jsx");
   const explorer = await readSource("../components/spending/SpendingExplorerPage.jsx");
 
-  assert.match(config, /jif-horizontal-master-wordmark-web-v1\.png/);
+  assert.match(config, /jif-horizontal-light-background-wordmark-web-v1\.png/);
   assert.match(config, /jif-compact-monogram-web-v1\.png/);
   assert.match(config, /jif-b1-b1-master-badge-web-v1\.png/);
   assert.match(lockup, /data-brand-role="endorsed-product-lockup"/);
@@ -52,13 +52,17 @@ test("uses the approved master assets through one endorsed product-lockup compon
   assert.match(footer, /MASTER_BADGE_URL/);
 
   for (const asset of [
-    "../../public/brand/jif-horizontal-master-wordmark-web-v1.png",
+    "../../public/brand/jif-horizontal-light-background-wordmark-web-v1.png",
     "../../public/brand/jif-compact-monogram-web-v1.png",
     "../../public/brand/jif-b1-b1-master-badge-web-v1.png",
   ]) {
     const bytes = await readFile(new URL(asset, import.meta.url));
     assert.deepEqual([...bytes.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);
   }
+
+  const wordmarkBytes = await readFile(new URL("../../public/brand/jif-horizontal-light-background-wordmark-web-v1.png", import.meta.url));
+  assert.equal(wordmarkBytes.readUInt32BE(16), 1440);
+  assert.equal(wordmarkBytes.readUInt32BE(20), 268);
 });
 
 test("uses only the current product names and monthly editorial hero headline", async () => {

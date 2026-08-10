@@ -301,7 +301,8 @@ If the public CSV method is disabled or blocked, use a backend proxy with either
 │   └── brand
 │       ├── jif-b1-b1-master-badge-web-v1.png
 │       ├── jif-compact-monogram-web-v1.png
-│       └── jif-horizontal-master-wordmark-web-v1.png
+│       ├── jif-horizontal-master-wordmark-web-v1.png
+│       └── jif-horizontal-light-background-wordmark-web-v1.png
 ├── src
 │   ├── App.jsx
 │   ├── config.js
