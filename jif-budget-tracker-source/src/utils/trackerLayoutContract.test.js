@@ -46,6 +46,19 @@ test("keeps the endorsed header readable at desktop, tablet, and mobile widths",
   assert.equal(styles.includes(".tracker-product-lockup .jif-product-lockup-copy small { display: none; }"), false);
 });
 
+test("keeps the Spending Explorer header at parity with the tracker identity", async () => {
+  const styles = await readSource("../styles.css");
+
+  assert.match(styles, /\.spending-explorer-header \{[^}]*height: var\(--header-height\);/);
+  assert.match(styles, /\.spending-explorer-header-inner \{[^}]*max-width: 1360px;[^}]*height: 100%;/);
+  assert.match(styles, /\.spending-explorer-nav \{[^}]*top: var\(--header-height\);/);
+  assert.match(styles, /@media \(max-width: 900px\) \{[\s\S]*\.explorer-product-lockup \.jif-product-lockup-monogram \{ display: block;/);
+  assert.match(styles, /\.explorer-product-lockup \.jif-product-lockup-copy small \{ display: block;[^}]*font-size: \.78rem;/);
+  assert.equal(styles.includes(".explorer-product-lockup .jif-product-lockup-copy small { display: none; }"), false);
+  assert.equal(styles.includes(".explorer-product-lockup .jif-product-lockup-wordmark { width: 274px; }"), false);
+  assert.equal(styles.includes(".spending-explorer-nav { position: sticky; top: 90px;"), false);
+});
+
 test("keeps the floating subscription prompt clear of Back to Top", async () => {
   const app = await readSource("../App.jsx");
   const component = await readSource("../components/SubscriptionSection.jsx");
