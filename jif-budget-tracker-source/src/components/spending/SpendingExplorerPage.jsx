@@ -19,12 +19,14 @@ import {
   SearchX,
   Share2,
   ShieldCheck,
+  X,
 } from "lucide-react";
 import { BackToTopButton } from "../Header.jsx";
 import { JifProductLockup } from "../JifProductLockup.jsx";
 import { PublicToolsFooter } from "../PublicToolsFooter.jsx";
 import { LoadingLine, LoadingSkeleton } from "../States.jsx";
 import { useSpendingExplorerData } from "../../hooks/useSpendingExplorerData.js";
+import { useSectionReveals } from "../../hooks/useMotionPolish.js";
 import {
   buildSpendingCsv,
   buildFilterOptions,
@@ -105,14 +107,88 @@ const ExplorerState = ({ type, title, message, onRetry }) => (
   </div>
 );
 
-const SelectFilter = ({ label, value, onChange, options, allLabel }) => (
+const FILTER_DEFINITIONS = [
+  { field: "public_category_id", label: "Public category", allLabel: "All public categories" },
+  { field: "function_id", label: "Official function", allLabel: "All functions" },
+  { field: "organisation_id", label: "Organisation", allLabel: "All organisations" },
+  { field: "programme_id", label: "Programme", allLabel: "All programmes" },
+  { field: "economic_id", label: "Economic class", allLabel: "All economic classes" },
+  { field: "recurrent_or_capital", label: "Budget type", allLabel: "Recurrent and capital" },
+  { field: "measure_type", label: "Measure", allLabel: "All approved measures" },
+];
+
+const SelectFilter = ({ id, label, value, onChange, options, allLabel }) => (
   <label>
     <span>{label}</span>
-    <select value={value} onChange={(event) => onChange(event.target.value)}>
+    <select id={id} value={value} onChange={(event) => onChange(event.target.value)}>
       <option value="">{allLabel}</option>
       {options.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
     </select>
   </label>
+);
+
+const FilterControls = ({ idPrefix, filters, optionSets, onUpdate }) => (
+  <div className="spending-explorer-filter-grid">
+    {FILTER_DEFINITIONS.map(({ field, label, allLabel }) => (
+      <SelectFilter
+        key={field}
+        id={`${idPrefix}-${field}`}
+        label={label}
+        allLabel={allLabel}
+        value={filters[field]}
+        options={optionSets[field]}
+        onChange={(value) => onUpdate(field, value)}
+      />
+    ))}
+  </div>
+);
+
+const ActiveFilterChips = ({ filters, optionSets, onRemove }) => {
+  const chips = FILTER_DEFINITIONS.flatMap(({ field, label }) => {
+    if (!filters[field]) return [];
+    const selected = optionSets[field].find((option) => option.value === filters[field]);
+    return [{ field, label, value: selected?.label || filters[field] }];
+  });
+
+  if (!chips.length) return null;
+
+  return (
+    <div className="spending-explorer-filter-chips" aria-label="Active filters">
+      {chips.map((chip, index) => (
+        <button
+          type="button"
+          key={chip.field}
+          className="spending-explorer-filter-chip"
+          style={{ "--chip-order": index }}
+          onClick={() => onRemove(chip.field)}
+          aria-label={`Remove ${chip.label}: ${chip.value}`}
+        >
+          <span>{chip.label}: {chip.value}</span>
+          <X size={14} aria-hidden="true" />
+        </button>
+      ))}
+    </div>
+  );
+};
+
+const MobileFilterSheet = ({ open, closeRef, filters, optionSets, onUpdate, onReset, onClose, activeFilterCount }) => (
+  <div className="spending-explorer-filter-sheet" hidden={!open}>
+    <button className="spending-explorer-filter-backdrop" type="button" onClick={onClose} aria-label="Close filters" tabIndex="-1" />
+    <section id="mobile-filter-dialog" className="spending-explorer-filter-dialog" role="dialog" aria-modal="true" aria-labelledby="mobile-filter-title">
+      <div className="spending-explorer-filter-dialog-heading">
+        <div>
+          <p className="spending-explorer-kicker">Narrow the approved estimates</p>
+          <h2 id="mobile-filter-title">Filters</h2>
+        </div>
+        <button ref={closeRef} type="button" onClick={onClose} aria-label="Close filters"><X aria-hidden="true" /></button>
+      </div>
+      <FilterControls idPrefix="mobile-explorer-filter" filters={filters} optionSets={optionSets} onUpdate={onUpdate} />
+      <div className="spending-explorer-filter-dialog-actions">
+        <button type="button" onClick={onReset} disabled={!activeFilterCount}><RotateCcw size={16} aria-hidden="true" /> Reset all</button>
+        <button type="button" onClick={onClose}>Show results</button>
+      </div>
+    </section>
+  </div>
 );
 
 const Every100Section = ({ rows, fiscalYear }) => {
@@ -128,7 +204,7 @@ const Every100Section = ({ rows, fiscalYear }) => {
         <p>FY {fiscalYear} Estimates As Passed, using net approved expenditure after Appropriations-in-Aid, scaled down to J$100.</p>
       </div>
       <div className="spending-explorer-every100-list">
-        {rows.map((row) => {
+        {rows.map((row, index) => {
           const isOffset = row.amount_jmd < 0;
           const width = Math.max(2, (Math.abs(row.per_j100) / maximumPositive) * 100);
           return (
@@ -140,7 +216,7 @@ const Every100Section = ({ rows, fiscalYear }) => {
                   <span>{formatJmd(row.amount_jmd, true)}</span>
                 </div>
                 <div className="spending-explorer-bar-track" aria-hidden="true">
-                  <span style={{ width: `${width}%` }} />
+                  <span className="is-progressive-fill" style={{ width: `${width}%`, "--bar-delay": `${index * 55}ms` }} />
                 </div>
               </div>
               <div className="spending-explorer-every100-value">
@@ -368,6 +444,7 @@ const SourceSection = ({ sources }) => (
           <p>{String(source.source_type || "Official source").replaceAll("_", " ")}</p>
           <h3>{source.source_title}</h3>
           <span>{source.publisher}{source.publication_date ? ` · ${source.publication_date}` : ""}</span>
+          <div className="spending-explorer-source-verification"><BadgeCheck size={16} aria-hidden="true" /> Included in the approved Explorer release</div>
           <p className="spending-explorer-source-scope">{source.data_scope}</p>
           <a href={source.source_url} target="_blank" rel="noreferrer">Open official source <ExternalLink size={16} aria-hidden="true" /></a>
         </article>
@@ -405,7 +482,12 @@ export const SpendingExplorerPage = () => {
   const [page, setPage] = useState(1);
   const [shareStatus, setShareStatus] = useState("");
   const [isFilterTransitioning, setIsFilterTransitioning] = useState(false);
+  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
   const filterTransitionTimer = useRef(null);
+  const mainRef = useRef(null);
+  const mobileFilterCloseRef = useRef(null);
+  const previouslyFocusedRef = useRef(null);
+  useSectionReveals(mainRef, Boolean(data?.release?.authorized));
 
   const fiscalYears = data?.fiscal_years || [];
   const activeFiscalYear = fiscalYears.includes(selectedFiscalYear) ? selectedFiscalYear : (data?.fiscal_year || fiscalYears[0] || "");
@@ -425,6 +507,41 @@ export const SpendingExplorerPage = () => {
     if (activeFiscalYear && activeFiscalYear !== selectedFiscalYear) setSelectedFiscalYear(activeFiscalYear);
   }, [activeFiscalYear, selectedFiscalYear]);
   useEffect(() => () => window.clearTimeout(filterTransitionTimer.current), []);
+  useEffect(() => {
+    if (!isMobileFiltersOpen) return undefined;
+
+    previouslyFocusedRef.current = document.activeElement;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    mobileFilterCloseRef.current?.focus();
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") setIsMobileFiltersOpen(false);
+      if (event.key !== "Tab") return;
+
+      const focusable = Array.from(document.querySelectorAll(
+        "#mobile-filter-dialog button:not(:disabled), #mobile-filter-dialog select:not(:disabled)",
+      ));
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = previousOverflow;
+      previouslyFocusedRef.current?.focus?.();
+    };
+  }, [isMobileFiltersOpen]);
 
   const startFilterTransition = () => {
     window.clearTimeout(filterTransitionTimer.current);
@@ -440,6 +557,10 @@ export const SpendingExplorerPage = () => {
     setShareStatus("");
   };
   const updateFilter = (field, value) => commitFilters({ ...filters, [field]: value });
+  const removeFilter = (field) => {
+    updateFilter(field, "");
+    window.requestAnimationFrame(() => document.getElementById("your-selection-title")?.focus({ preventScroll: true }));
+  };
   const resetFilters = () => commitFilters(EMPTY_EXPLORER_FILTERS);
   const updateFiscalYear = (fiscalYear) => {
     startFilterTransition();
@@ -496,7 +617,7 @@ export const SpendingExplorerPage = () => {
       <div id="page-top" className="page-top-sentinel" aria-hidden="true" />
       <div id="back-to-top-sentinel" className="back-to-top-sentinel" aria-hidden="true" />
       <ExplorerHeader released />
-      <main>
+      <main ref={mainRef}>
         {error && <div className="spending-explorer-inline-warning">{error}</div>}
         <section id="spending-overview" className="spending-explorer-hero">
           <div className="spending-explorer-hero-copy">
@@ -542,16 +663,10 @@ export const SpendingExplorerPage = () => {
               <span><Filter size={18} aria-hidden="true" /> Filters {activeFilterCount > 0 && <strong>{activeFilterCount}</strong>}</span>
               <button type="button" onClick={resetFilters} disabled={!activeFilterCount}><RotateCcw size={16} aria-hidden="true" /> Reset all</button>
             </div>
-            <div className="spending-explorer-filter-grid">
-              <SelectFilter label="Public category" allLabel="All public categories" value={filters.public_category_id} options={optionSets.public_category_id} onChange={(value) => updateFilter("public_category_id", value)} />
-              <SelectFilter label="Official function" allLabel="All functions" value={filters.function_id} options={optionSets.function_id} onChange={(value) => updateFilter("function_id", value)} />
-              <SelectFilter label="Organisation" allLabel="All organisations" value={filters.organisation_id} options={optionSets.organisation_id} onChange={(value) => updateFilter("organisation_id", value)} />
-              <SelectFilter label="Programme" allLabel="All programmes" value={filters.programme_id} options={optionSets.programme_id} onChange={(value) => updateFilter("programme_id", value)} />
-              <SelectFilter label="Economic class" allLabel="All economic classes" value={filters.economic_id} options={optionSets.economic_id} onChange={(value) => updateFilter("economic_id", value)} />
-              <SelectFilter label="Budget type" allLabel="Recurrent and capital" value={filters.recurrent_or_capital} options={optionSets.recurrent_or_capital} onChange={(value) => updateFilter("recurrent_or_capital", value)} />
-              <SelectFilter label="Measure" allLabel="All approved measures" value={filters.measure_type} options={optionSets.measure_type} onChange={(value) => updateFilter("measure_type", value)} />
-            </div>
+            <FilterControls idPrefix="explorer-filter" filters={filters} optionSets={optionSets} onUpdate={updateFilter} />
           </div>
+
+          <ActiveFilterChips filters={filters} optionSets={optionSets} onRemove={removeFilter} />
 
           <div className="spending-explorer-filter-actions" aria-label="Share or download these results">
             <button type="button" onClick={copyShareLink}><Share2 size={17} aria-hidden="true" /> Copy link to this view</button>
@@ -561,7 +676,7 @@ export const SpendingExplorerPage = () => {
 
           <section className={`spending-explorer-your-selection explorer-result-surface ${isFilterTransitioning ? "is-filter-transitioning" : ""}`} aria-labelledby="your-selection-title" aria-busy={isFilterTransitioning}>
             <div className="spending-explorer-panel-heading">
-              <h3 id="your-selection-title">Your selection</h3>
+              <h3 id="your-selection-title" tabIndex="-1">Your selection</h3>
               <span>{activeFilterCount > 0 ? `${activeFilterCount} active ${activeFilterCount === 1 ? "filter" : "filters"}` : `All approved FY ${activeFiscalYear} records`}</span>
             </div>
             <div className="spending-explorer-selection-summary">
@@ -600,6 +715,25 @@ export const SpendingExplorerPage = () => {
           </div>
         </section>
       </main>
+      <button
+        type="button"
+        className="spending-explorer-mobile-filter-trigger"
+        aria-controls="mobile-filter-dialog"
+        aria-expanded={isMobileFiltersOpen}
+        onClick={() => setIsMobileFiltersOpen(true)}
+      >
+        <Filter size={18} aria-hidden="true" /> Filters {activeFilterCount > 0 && <strong>{activeFilterCount}</strong>}
+      </button>
+      <MobileFilterSheet
+        open={isMobileFiltersOpen}
+        closeRef={mobileFilterCloseRef}
+        filters={filters}
+        optionSets={optionSets}
+        onUpdate={updateFilter}
+        onReset={resetFilters}
+        onClose={() => setIsMobileFiltersOpen(false)}
+        activeFilterCount={activeFilterCount}
+      />
       <BackToTopButton />
       <PublicToolsFooter sourceHref="#spending-sources" />
     </div>
