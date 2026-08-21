@@ -63,3 +63,37 @@ test("preserves protected public-finance language", async () => {
   assert.match(explorer, /Estimates As Passed—not actual spending/);
   assert.match(explorer, /planned allocations—not reports of money already spent/);
 });
+
+test("completes the approved KPI, status-card, bar, chip, and section motion contract", async () => {
+  const overview = await readSource("../components/Overview.jsx");
+  const explorer = await readSource("../components/spending/SpendingExplorerPage.jsx");
+  const motion = await readSource("../hooks/useMotionPolish.js");
+  const styles = await readSource("../styles.css");
+
+  assert.match(overview, /useCountUp\(value, 600\)/);
+  assert.match(overview, /statusOrder=\{1\}/);
+  assert.match(overview, /statusOrder=\{2\}/);
+  assert.match(overview, /statusOrder=\{3\}/);
+  assert.match(styles, /@keyframes status-card-rise/);
+  assert.match(motion, /IntersectionObserver/);
+  assert.match(styles, /\.motion-reveal-section\.is-motion-revealed/);
+  assert.match(explorer, /className="is-progressive-fill"/);
+  assert.match(styles, /@keyframes spending-bar-progressive-fill/);
+  assert.match(styles, /\.spending-explorer-category-bar span \{[^}]*transition: width 480ms/);
+  assert.match(explorer, /spending-explorer-filter-chip/);
+  assert.match(explorer, /Included in the approved Explorer release/);
+});
+
+test("provides an accessible mobile filter sheet and preserves settled motion modes", async () => {
+  const explorer = await readSource("../components/spending/SpendingExplorerPage.jsx");
+  const styles = await readSource("../styles.css");
+
+  assert.match(explorer, /role="dialog" aria-modal="true"/);
+  assert.match(explorer, /event\.key === "Escape"/);
+  assert.match(explorer, /event\.key !== "Tab"/);
+  assert.match(explorer, /aria-controls="mobile-filter-dialog"/);
+  assert.match(styles, /\.spending-explorer-mobile-filter-trigger/);
+  assert.match(styles, /\.spending-explorer-filter-sheet:not\(\[hidden\]\)/);
+  assert.match(styles, /@media \(prefers-reduced-motion: reduce\)[\s\S]*\.motion-reveal-section \{ opacity: 1; transform: none; \}/);
+  assert.match(styles, /\.capture-page, \.capture-page \*/);
+});
