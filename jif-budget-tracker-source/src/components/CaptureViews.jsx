@@ -74,7 +74,7 @@ const KpiReadoutCards = ({ kpis = [] }) => {
 };
 
 export const HeroCaptureView = ({ currentMonth }) => (
-  <div className="capture-page capture-hero-page" data-testid="capture-hero-view" data-screenshot-mode="hero">
+  <div className="capture-page capture-hero-page" data-testid="capture-hero-view" data-screenshot-mode="hero" data-capture-mode="hero" data-capture-ready="true">
     <CaptureBrand monthLabel={currentMonth?.month_label} kicker="Selected tracker month" />
     <main className="capture-hero-grid">
       <section className="capture-hero-copy">
@@ -104,7 +104,7 @@ export const HeroCaptureView = ({ currentMonth }) => (
 );
 
 export const KpiCaptureView = ({ currentMonth, kpis }) => (
-  <div className="capture-page capture-kpi-page" data-testid="capture-kpi-view" data-screenshot-mode="kpi">
+  <div className="capture-page capture-kpi-page" data-testid="capture-kpi-view" data-screenshot-mode="kpi" data-capture-mode="kpi" data-capture-ready="true">
     <CaptureBrand monthLabel={currentMonth?.month_label} kicker="Key measures at a glance" />
     <main className="capture-kpi-layout">
       <section className="capture-kpi-intro">
@@ -132,7 +132,7 @@ export const KpiCaptureView = ({ currentMonth, kpis }) => (
 );
 
 export const SourcesCaptureView = ({ currentMonth }) => (
-  <div className="capture-page capture-sources-page" data-testid="capture-sources-view" data-screenshot-mode="sources">
+  <div className="capture-page capture-sources-page" data-testid="capture-sources-view" data-screenshot-mode="sources" data-capture-mode="sources" data-capture-ready="true">
     <CaptureBrand monthLabel={currentMonth?.month_label} kicker="Official source documents" />
     <main className="capture-sources-layout">
       <section className="capture-sources-intro">

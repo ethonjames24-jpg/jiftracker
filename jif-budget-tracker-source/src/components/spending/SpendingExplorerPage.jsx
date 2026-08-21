@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
   BadgeCheck,
@@ -13,7 +13,6 @@ import {
   Filter,
   GitCompareArrows,
   Landmark,
-  LoaderCircle,
   MinusCircle,
   RefreshCw,
   RotateCcw,
@@ -24,6 +23,7 @@ import {
 import { BackToTopButton } from "../Header.jsx";
 import { JifProductLockup } from "../JifProductLockup.jsx";
 import { PublicToolsFooter } from "../PublicToolsFooter.jsx";
+import { LoadingLine, LoadingSkeleton } from "../States.jsx";
 import { useSpendingExplorerData } from "../../hooks/useSpendingExplorerData.js";
 import {
   buildSpendingCsv,
@@ -83,18 +83,23 @@ const ExplorerHeader = ({ released = false }) => (
 
 const ExplorerState = ({ type, title, message, onRetry }) => (
   <div className="spending-explorer spending-explorer-state-page">
+    <LoadingLine active={type === "loading"} />
     <ExplorerHeader />
     <main className="spending-explorer-state-shell">
-      <article className={`spending-explorer-state-card is-${type}`}>
-        {type === "loading" ? <LoaderCircle className="spending-explorer-spinner" size={34} aria-hidden="true" /> : <ShieldCheck size={34} aria-hidden="true" />}
-        <p className="spending-explorer-kicker">Government Spending Explorer</p>
-        <h1>{title}</h1>
-        <p>{message}</p>
-        <div className="spending-explorer-state-actions">
-          {onRetry && <button type="button" onClick={onRetry}><RefreshCw size={17} aria-hidden="true" /> Try again</button>}
-          <a href="/"><ArrowLeft size={17} aria-hidden="true" /> Open monthly tracker</a>
-        </div>
-      </article>
+      {type === "loading" ? (
+        <LoadingSkeleton label={message} variant="explorer" />
+      ) : (
+        <article className={`spending-explorer-state-card is-${type}`}>
+          <ShieldCheck size={34} aria-hidden="true" />
+          <p className="spending-explorer-kicker">Government Spending Explorer</p>
+          <h1>{title}</h1>
+          <p>{message}</p>
+          <div className="spending-explorer-state-actions">
+            {onRetry && <button type="button" onClick={onRetry}><RefreshCw size={17} aria-hidden="true" /> Try again</button>}
+            <a href="/"><ArrowLeft size={17} aria-hidden="true" /> Open monthly tracker</a>
+          </div>
+        </article>
+      )}
     </main>
     <PublicToolsFooter sourceHref="#spending-sources" />
   </div>
@@ -399,6 +404,8 @@ export const SpendingExplorerPage = () => {
   ));
   const [page, setPage] = useState(1);
   const [shareStatus, setShareStatus] = useState("");
+  const [isFilterTransitioning, setIsFilterTransitioning] = useState(false);
+  const filterTransitionTimer = useRef(null);
 
   const fiscalYears = data?.fiscal_years || [];
   const activeFiscalYear = fiscalYears.includes(selectedFiscalYear) ? selectedFiscalYear : (data?.fiscal_year || fiscalYears[0] || "");
@@ -417,8 +424,16 @@ export const SpendingExplorerPage = () => {
   useEffect(() => {
     if (activeFiscalYear && activeFiscalYear !== selectedFiscalYear) setSelectedFiscalYear(activeFiscalYear);
   }, [activeFiscalYear, selectedFiscalYear]);
+  useEffect(() => () => window.clearTimeout(filterTransitionTimer.current), []);
+
+  const startFilterTransition = () => {
+    window.clearTimeout(filterTransitionTimer.current);
+    setIsFilterTransitioning(true);
+    filterTransitionTimer.current = window.setTimeout(() => setIsFilterTransitioning(false), 220);
+  };
 
   const commitFilters = (nextFilters) => {
+    startFilterTransition();
     setFilters(nextFilters);
     const nextSearch = searchWithExplorerFilters(window.location.search, nextFilters, activeFiscalYear);
     window.history.replaceState(null, "", `${window.location.pathname}${nextSearch}${window.location.hash}`);
@@ -427,6 +442,7 @@ export const SpendingExplorerPage = () => {
   const updateFilter = (field, value) => commitFilters({ ...filters, [field]: value });
   const resetFilters = () => commitFilters(EMPTY_EXPLORER_FILTERS);
   const updateFiscalYear = (fiscalYear) => {
+    startFilterTransition();
     setSelectedFiscalYear(fiscalYear);
     setFilters(EMPTY_EXPLORER_FILTERS);
     setPage(1);
@@ -476,6 +492,7 @@ export const SpendingExplorerPage = () => {
 
   return (
     <div className="spending-explorer" data-testid="spending-explorer-app">
+      <LoadingLine active={loading || isFilterTransitioning} />
       <div id="page-top" className="page-top-sentinel" aria-hidden="true" />
       <div id="back-to-top-sentinel" className="back-to-top-sentinel" aria-hidden="true" />
       <ExplorerHeader released />
@@ -500,7 +517,7 @@ export const SpendingExplorerPage = () => {
           </aside>
         </section>
 
-        <section className="spending-explorer-summary" aria-label="Approved budget summary">
+        <section className={`spending-explorer-summary explorer-result-surface ${isFilterTransitioning ? "is-filter-transitioning" : ""}`} aria-label="Approved budget summary" aria-busy={isFilterTransitioning}>
           <SummaryCard icon={Landmark} label="Approved net total" value={formatJmd(approvedNetTotal, true)} note="As Passed expenditure envelope" />
           <SummaryCard icon={CircleDollarSign} label="Appropriations-in-Aid" value={formatJmd(aiaOffset, true)} note="Shown separately in Every J$100" tone="is-offset" />
           <SummaryCard icon={BarChart3} label="Public categories" value={String(every100Rows.length)} note="Including the AIA offset" />
@@ -542,7 +559,7 @@ export const SpendingExplorerPage = () => {
             {shareStatus && <span role="status">{shareStatus}</span>}
           </div>
 
-          <section className="spending-explorer-your-selection" aria-labelledby="your-selection-title">
+          <section className={`spending-explorer-your-selection explorer-result-surface ${isFilterTransitioning ? "is-filter-transitioning" : ""}`} aria-labelledby="your-selection-title" aria-busy={isFilterTransitioning}>
             <div className="spending-explorer-panel-heading">
               <h3 id="your-selection-title">Your selection</h3>
               <span>{activeFilterCount > 0 ? `${activeFilterCount} active ${activeFilterCount === 1 ? "filter" : "filters"}` : `All approved FY ${activeFiscalYear} records`}</span>
@@ -555,7 +572,7 @@ export const SpendingExplorerPage = () => {
             <CategoryBreakdown rows={filteredRows} denominator={approvedNetTotal || 1} />
           </section>
 
-          <details className="spending-explorer-details">
+          <details className={`spending-explorer-details explorer-result-surface ${isFilterTransitioning ? "is-filter-transitioning" : ""}`} aria-busy={isFilterTransitioning}>
             <summary>
               <span>View detailed spending records</span>
               <small>{new Intl.NumberFormat("en-JM").format(filteredRows.length)} records match the current filters</small>

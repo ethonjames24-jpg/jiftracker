@@ -11,7 +11,7 @@ import { MonthComparison } from "./components/MonthComparison.jsx";
 import { CompactSubscribeCta, FloatingSubscribeButton, SubscriptionSection } from "./components/SubscriptionSection.jsx";
 import { AdminChecklist, isAdminChecklistRoute } from "./components/AdminChecklist.jsx";
 import { CaptureView, getCaptureMode } from "./components/CaptureViews.jsx";
-import { ErrorState, LoadingState } from "./components/States.jsx";
+import { ErrorState, LoadingLine, LoadingState } from "./components/States.jsx";
 import { useTrackerData } from "./hooks/useTrackerData.js";
 import { isSpendingExplorerRoute } from "./utils/appRoute.js";
 
@@ -34,6 +34,7 @@ const MonthlyTrackerApp = () => {
 
   return (
     <div className="app" data-testid="dashboard-app">
+      <LoadingLine active={loading} />
       <div id="page-top" className="page-top-sentinel" aria-hidden="true" />
       <div id="back-to-top-sentinel" className="back-to-top-sentinel" aria-hidden="true" />
       <Header months={data.available_months || []} selectedMonth={selectedMonth} onMonthChange={handleMonthChange} />
