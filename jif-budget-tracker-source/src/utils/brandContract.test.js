@@ -106,7 +106,7 @@ test("publishes complete source metadata and a truthful plain-text developer cre
   const loader = await readSource("../services/googleSheets.js");
   const footer = await readSource("../components/PublicToolsFooter.jsx");
 
-  for (const label of ["Source owner", "Publication date", "Period covered", "Used for tracker month"]) {
+  for (const label of ["Source owner", "Publication date", "Period covered", "Used for tracker month", "Verification status"]) {
     assert.match(source, new RegExp(label));
   }
   for (const field of ["source_document_1_owner", "source_document_1_publication_date", "source_document_1_period", "source_document_2_owner", "source_document_2_publication_date", "source_document_2_period"]) {
