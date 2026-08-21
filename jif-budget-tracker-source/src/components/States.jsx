@@ -11,12 +11,31 @@ export const LoadingLine = ({ active = false }) => {
   );
 };
 
-export const LoadingSkeleton = ({ label = "Loading live tracker data", variant = "tracker" }) => (
+export const DocumentLoader = ({ label, variant = "tracker" }) => (
+  <div className={`document-loader is-${variant}`} data-testid={`${variant}-document-loader`} aria-hidden="true">
+    <div className="document-loader-stage">
+      <span className="document-loader-sheet is-back" />
+      <span className="document-loader-sheet is-middle" />
+      <span className="document-loader-sheet is-front">
+        <span className="document-loader-heading">
+          <img src="/brand/jif-compact-monogram-web-v1.png" alt="" />
+          <span />
+        </span>
+        <span className="document-loader-rule is-wide" />
+        <span className="document-loader-rule" />
+        <span className="document-loader-rule is-short" />
+        <span className="document-loader-scan" />
+      </span>
+    </div>
+    <span className="document-loader-label">{label}</span>
+  </div>
+);
+
+export const LoadingSkeleton = ({ label = "Loading approved tracker data…", variant = "tracker" }) => (
   <div className={`loading-skeleton-shell is-${variant}`} aria-busy="true" data-testid={`${variant}-loading-skeleton`}>
     <span className="sr-only" role="status" aria-live="polite" data-testid="loading-state-text">{label}</span>
     <div className="loading-skeleton-hero" aria-hidden="true">
-      <span className="loading-skeleton-block is-kicker" />
-      <span className="loading-skeleton-block is-title" />
+      <DocumentLoader label={label} variant={variant} />
       <span className="loading-skeleton-block is-copy" />
       <span className="loading-skeleton-block is-copy-short" />
     </div>

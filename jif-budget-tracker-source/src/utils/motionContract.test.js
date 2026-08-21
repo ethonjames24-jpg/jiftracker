@@ -15,6 +15,19 @@ test("uses one accessible loading line and value-free skeleton structure", async
   assert.match(app, /<LoadingLine active=\{loading\} \/>/);
 });
 
+test("adds one delayed JIF document loader only to the initial loading skeleton", async () => {
+  const states = await readSource("../components/States.jsx");
+  const styles = await readSource("../styles.css");
+
+  assert.match(states, /export const DocumentLoader/);
+  assert.match(states, /jif-compact-monogram-web-v1\.png/);
+  assert.match(states, /Loading approved tracker data…/);
+  assert.match(states, /<DocumentLoader label=\{label\} variant=\{variant\} \/>/);
+  assert.match(styles, /\.document-loader \{[^}]*animation:[^;]*600ms both;/);
+  assert.match(styles, /@keyframes document-scan/);
+  assert.match(styles, /\.document-loader-scan \{[^}]*1\.8s[^;]*600ms infinite;/);
+});
+
 test("keeps Explorer filter motion brief and separate from data loading", async () => {
   const explorer = await readSource("../components/spending/SpendingExplorerPage.jsx");
   const styles = await readSource("../styles.css");
@@ -38,6 +51,7 @@ test("marks all existing capture routes ready and removes capture motion", async
   assert.match(styles, /\.capture-page, \.capture-page \*/);
   assert.match(styles, /animation: none !important; transition: none !important; scroll-behavior: auto !important;/);
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
+  assert.match(styles, /\.document-loader \{ opacity: 1; transform: none; \}/);
 });
 
 test("preserves protected public-finance language", async () => {
