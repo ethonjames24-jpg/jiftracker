@@ -4,6 +4,7 @@ import { PublicSummaryCard } from "./PublicSummaryCard.jsx";
 import { StatusBadge } from "./StatusBadge.jsx";
 import { WhatChangedCard } from "./WhatChangedCard.jsx";
 import { editorialHeadlineFor } from "../utils/brandContent.js";
+import { useCountUp } from "../hooks/useMotionPolish.js";
 
 const toneClasses = {
   green: "metric-green",
@@ -12,12 +13,24 @@ const toneClasses = {
   black: "metric-black",
 };
 
-const Metric = ({ label, value = 0, testId, tone = "black" }) => (
-  <div className="metric" data-testid={`${testId}-card`}>
-    <p data-testid={`${testId}-label`} className="metric-label">{label}</p>
-    <p data-testid={testId} className={`metric-value ${toneClasses[tone] || toneClasses.black}`}>{value}</p>
-  </div>
-);
+const Metric = ({ label, value = 0, testId, tone = "black", statusOrder = 0 }) => {
+  const animatedValue = useCountUp(value, 600);
+  const statusClass = statusOrder ? " status-metric-card" : "";
+
+  return (
+    <div
+      className={`metric${statusClass}`}
+      data-testid={`${testId}-card`}
+      style={statusOrder ? { "--status-order": statusOrder } : undefined}
+    >
+      <p data-testid={`${testId}-label`} className="metric-label">{label}</p>
+      <p data-testid={testId} className={`metric-value ${toneClasses[tone] || toneClasses.black}`} aria-label={String(value)}>
+        <span aria-hidden="true" data-animated-kpi="true">{animatedValue}</span>
+        <span className="sr-only">{value}</span>
+      </p>
+    </div>
+  );
+};
 
 const InfoCard = ({ icon: Icon, title, value, testId }) => (
   <article data-testid={testId} className="info-card">
@@ -50,9 +63,9 @@ export const Overview = ({ currentMonth }) => {
           <div className="scorecard-header"><p data-testid="scorecard-label">Current month overview</p></div>
           <div className="metrics-grid">
             <Metric label="KPIs Tracked" value={counts.kpis_tracked} testId="kpis-tracked-count" />
-            <Metric label="On Track" value={counts.on_track} testId="on-track-count" tone="green" />
-            <Metric label="Watch" value={counts.watch} testId="watch-count" tone="amber" />
-            <Metric label="Under Pressure" value={counts.under_pressure} testId="under-pressure-count" tone="red" />
+            <Metric label="On Track" value={counts.on_track} testId="on-track-count" tone="green" statusOrder={1} />
+            <Metric label="Watch" value={counts.watch} testId="watch-count" tone="amber" statusOrder={2} />
+            <Metric label="Under Pressure" value={counts.under_pressure} testId="under-pressure-count" tone="red" statusOrder={3} />
           </div>
         </article>
       </div>

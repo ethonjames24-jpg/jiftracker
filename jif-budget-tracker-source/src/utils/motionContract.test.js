@@ -1,0 +1,99 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+
+const readSource = (path) => readFile(new URL(path, import.meta.url), "utf8");
+
+test("uses one accessible loading line and value-free skeleton structure", async () => {
+  const states = await readSource("../components/States.jsx");
+  const app = await readSource("../App.jsx");
+
+  assert.match(states, /className="loading-line"/);
+  assert.match(states, /Updating this view/);
+  assert.match(states, /aria-busy="true"/);
+  assert.match(states, /Array\.from\(\{ length: 4 \}/);
+  assert.match(app, /<LoadingLine active=\{loading\} \/>/);
+});
+
+test("adds one delayed JIF document loader only to the initial loading skeleton", async () => {
+  const states = await readSource("../components/States.jsx");
+  const app = await readSource("../App.jsx");
+  const styles = await readSource("../styles.css");
+
+  assert.match(states, /export const DocumentLoader/);
+  assert.match(states, /jif-compact-monogram-web-v1\.png/);
+  assert.match(states, /Loading approved tracker data…/);
+  assert.match(states, /<DocumentLoader label=\{label\} variant=\{variant\} \/>/);
+  assert.match(styles, /\.document-loader \{[^}]*animation:[^;]*600ms both;/);
+  assert.match(styles, /@keyframes document-scan/);
+  assert.match(styles, /\.document-loader-scan \{[^}]*1\.8s[^;]*600ms infinite;/);
+  assert.match(app, /get\("preview"\) === "document-loader"/);
+  assert.match(app, /if \(isDocumentLoaderPreviewRoute\(\)\) return <LoadingState \/>/);
+});
+
+test("keeps Explorer filter motion brief and separate from data loading", async () => {
+  const explorer = await readSource("../components/spending/SpendingExplorerPage.jsx");
+  const styles = await readSource("../styles.css");
+
+  assert.match(explorer, /setIsFilterTransitioning\(true\)/);
+  assert.match(explorer, /setTimeout\(\(\) => setIsFilterTransitioning\(false\), 220\)/);
+  assert.match(explorer, /is-filter-transitioning/);
+  assert.match(styles, /--motion-standard: 220ms;/);
+  assert.match(styles, /@keyframes explorer-result-settle/);
+  assert.match(styles, /translateY\(6px\)/);
+});
+
+test("marks all existing capture routes ready and removes capture motion", async () => {
+  const capture = await readSource("../components/CaptureViews.jsx");
+  const styles = await readSource("../styles.css");
+
+  for (const mode of ["hero", "kpi", "sources"]) {
+    assert.match(capture, new RegExp(`data-capture-mode="${mode}" data-capture-ready="true"`));
+  }
+
+  assert.match(styles, /\.capture-page, \.capture-page \*/);
+  assert.match(styles, /animation: none !important; transition: none !important; scroll-behavior: auto !important;/);
+  assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
+  assert.match(styles, /\.document-loader \{ opacity: 1; transform: none; \}/);
+});
+
+test("preserves protected public-finance language", async () => {
+  const explorer = await readSource("../components/spending/SpendingExplorerPage.jsx");
+
+  assert.match(explorer, /Estimates As Passed—not actual spending/);
+  assert.match(explorer, /planned allocations—not reports of money already spent/);
+});
+
+test("completes the approved KPI, status-card, bar, chip, and section motion contract", async () => {
+  const overview = await readSource("../components/Overview.jsx");
+  const explorer = await readSource("../components/spending/SpendingExplorerPage.jsx");
+  const motion = await readSource("../hooks/useMotionPolish.js");
+  const styles = await readSource("../styles.css");
+
+  assert.match(overview, /useCountUp\(value, 600\)/);
+  assert.match(overview, /statusOrder=\{1\}/);
+  assert.match(overview, /statusOrder=\{2\}/);
+  assert.match(overview, /statusOrder=\{3\}/);
+  assert.match(styles, /@keyframes status-card-rise/);
+  assert.match(motion, /IntersectionObserver/);
+  assert.match(styles, /\.motion-reveal-section\.is-motion-revealed/);
+  assert.match(explorer, /className="is-progressive-fill"/);
+  assert.match(styles, /@keyframes spending-bar-progressive-fill/);
+  assert.match(styles, /\.spending-explorer-category-bar span \{[^}]*transition: width 480ms/);
+  assert.match(explorer, /spending-explorer-filter-chip/);
+  assert.match(explorer, /Included in the approved Explorer release/);
+});
+
+test("provides an accessible mobile filter sheet and preserves settled motion modes", async () => {
+  const explorer = await readSource("../components/spending/SpendingExplorerPage.jsx");
+  const styles = await readSource("../styles.css");
+
+  assert.match(explorer, /role="dialog" aria-modal="true"/);
+  assert.match(explorer, /event\.key === "Escape"/);
+  assert.match(explorer, /event\.key !== "Tab"/);
+  assert.match(explorer, /aria-controls="mobile-filter-dialog"/);
+  assert.match(styles, /\.spending-explorer-mobile-filter-trigger/);
+  assert.match(styles, /\.spending-explorer-filter-sheet:not\(\[hidden\]\)/);
+  assert.match(styles, /@media \(prefers-reduced-motion: reduce\)[\s\S]*\.motion-reveal-section \{ opacity: 1; transform: none; \}/);
+  assert.match(styles, /\.capture-page, \.capture-page \*/);
+});

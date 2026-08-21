@@ -68,12 +68,13 @@ const SourceLink = ({ link }) => (
   </a>
 );
 
-const SourceMetadata = ({ metadata }) => (
+const SourceMetadata = ({ metadata, verificationStatus }) => (
   <dl className="source-metadata" data-testid={metadata.testId}>
     <div><dt>Source owner</dt><dd>{metadata.owner || "Not stated in the public feed"}</dd></div>
     <div><dt>Publication date</dt><dd>{metadata.publicationDate || "Not stated in the public feed"}</dd></div>
     <div><dt>Period covered</dt><dd>{metadata.period || "Not stated in the public feed"}</dd></div>
     <div><dt>Used for tracker month</dt><dd>{metadata.trackerMonth || "Not stated in the public feed"}</dd></div>
+    <div><dt>Verification status</dt><dd>{verificationStatus}</dd></div>
   </dl>
 );
 
@@ -112,13 +113,13 @@ const PublicReceiptsPack = ({ currentMonth, monthlyOutturn, budgetBaseline }) =>
         <div className="receipts-pack-row" data-testid="receipts-pack-monthly-outturn-row">
           <p className="source-label">{monthlyOutturn.label}</p>
           <p>{monthlyOutturn.value || "Not reported in the sheet for this month."}</p>
-          <SourceMetadata metadata={monthlyOutturn.metadata} />
+          <SourceMetadata metadata={monthlyOutturn.metadata} verificationStatus={isReceiptsChecked ? "Receipts Checked" : "Official source record"} />
           {monthlyOutturn.link ? <SourceLink link={monthlyOutturn.link} /> : <p className="source-unavailable">Not available for this month</p>}
         </div>
         <div className="receipts-pack-row" data-testid="receipts-pack-budget-baseline-row">
           <p className="source-label">{budgetBaseline.label}</p>
           <p>{budgetBaseline.value || "Not reported in the sheet for this month."}</p>
-          <SourceMetadata metadata={budgetBaseline.metadata} />
+          <SourceMetadata metadata={budgetBaseline.metadata} verificationStatus={isReceiptsChecked ? "Receipts Checked" : "Official source record"} />
           {budgetBaseline.link ? <SourceLink link={budgetBaseline.link} /> : <p className="source-unavailable">Not available for this month</p>}
         </div>
         <div className="receipts-pack-row" data-testid="receipts-pack-link-row">
