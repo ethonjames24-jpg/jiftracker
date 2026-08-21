@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useRef } from "react";
 import { BackToTopButton, Header } from "./components/Header.jsx";
 import { PublicToolsFooter } from "./components/PublicToolsFooter.jsx";
 import { Overview } from "./components/Overview.jsx";
@@ -14,6 +14,7 @@ import { CaptureView, getCaptureMode } from "./components/CaptureViews.jsx";
 import { ErrorState, LoadingLine, LoadingState } from "./components/States.jsx";
 import { useTrackerData } from "./hooks/useTrackerData.js";
 import { isSpendingExplorerRoute } from "./utils/appRoute.js";
+import { useSectionReveals } from "./hooks/useMotionPolish.js";
 
 const SpendingExplorerPage = lazy(() => import("./components/spending/SpendingExplorerPage.jsx")
   .then((module) => ({ default: module.SpendingExplorerPage })));
@@ -28,6 +29,8 @@ const isDocumentLoaderPreviewRoute = () => (
 
 const MonthlyTrackerApp = () => {
   const { data, selectedMonth, loading, error, loadTracker, handleMonthChange } = useTrackerData();
+  const mainRef = useRef(null);
+  useSectionReveals(mainRef, Boolean(data));
   const captureMode = getCaptureMode();
   const showAdminChecklist = isAdminChecklistRoute();
 
@@ -43,7 +46,7 @@ const MonthlyTrackerApp = () => {
       <div id="back-to-top-sentinel" className="back-to-top-sentinel" aria-hidden="true" />
       <Header months={data.available_months || []} selectedMonth={selectedMonth} onMonthChange={handleMonthChange} />
       {error && <NonBlockingError message={error} />}
-      <main data-testid="dashboard-main-content">
+      <main ref={mainRef} data-testid="dashboard-main-content">
         <PublicWarnings data={data} />
         <Overview currentMonth={data.current_month} />
         <MonthComparison comparison={data.month_comparison} />
