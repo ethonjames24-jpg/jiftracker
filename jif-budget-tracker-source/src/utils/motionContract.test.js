@@ -17,6 +17,7 @@ test("uses one accessible loading line and value-free skeleton structure", async
 
 test("adds one delayed JIF document loader only to the initial loading skeleton", async () => {
   const states = await readSource("../components/States.jsx");
+  const app = await readSource("../App.jsx");
   const styles = await readSource("../styles.css");
 
   assert.match(states, /export const DocumentLoader/);
@@ -26,6 +27,8 @@ test("adds one delayed JIF document loader only to the initial loading skeleton"
   assert.match(styles, /\.document-loader \{[^}]*animation:[^;]*600ms both;/);
   assert.match(styles, /@keyframes document-scan/);
   assert.match(styles, /\.document-loader-scan \{[^}]*1\.8s[^;]*600ms infinite;/);
+  assert.match(app, /get\("preview"\) === "document-loader"/);
+  assert.match(app, /if \(isDocumentLoaderPreviewRoute\(\)\) return <LoadingState \/>/);
 });
 
 test("keeps Explorer filter motion brief and separate from data loading", async () => {

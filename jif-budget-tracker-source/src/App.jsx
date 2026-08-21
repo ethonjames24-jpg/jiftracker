@@ -22,6 +22,10 @@ const NonBlockingError = ({ message }) => (
   <div data-testid="nonblocking-error-banner" className="nonblocking-error">{message}</div>
 );
 
+const isDocumentLoaderPreviewRoute = () => (
+  new URLSearchParams(window.location.search).get("preview") === "document-loader"
+);
+
 const MonthlyTrackerApp = () => {
   const { data, selectedMonth, loading, error, loadTracker, handleMonthChange } = useTrackerData();
   const captureMode = getCaptureMode();
@@ -58,6 +62,7 @@ const MonthlyTrackerApp = () => {
 };
 
 export default function App() {
+  if (isDocumentLoaderPreviewRoute()) return <LoadingState />;
   if (isSpendingExplorerRoute()) {
     return (
       <Suspense fallback={<LoadingState />}>
