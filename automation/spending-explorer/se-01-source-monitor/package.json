@@ -1,0 +1,11 @@
+{
+  "name": "@jif/se-01-source-monitor",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:workflow": "node scripts/build-n8n-workflow.mjs",
+    "monitor": "node bin/run-monitor.mjs",
+    "test": "node --test tests/*.test.mjs"
+  }
+}
