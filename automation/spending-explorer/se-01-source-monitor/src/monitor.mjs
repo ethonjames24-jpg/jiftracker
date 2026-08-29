@@ -14,6 +14,35 @@ function canonicalHost(hostname) {
   return hostname.toLowerCase().replace(/\.$/, "");
 }
 
+function assertAllowedRuntimeUrl(rawUrl, allowedHosts, errorPrefix = "SOURCE") {
+  let parsed;
+  try {
+    parsed = new URL(rawUrl);
+  } catch {
+    throw Object.assign(new Error(`invalid runtime URL: ${rawUrl}`), {
+      code: `${errorPrefix}_URL_INVALID`,
+    });
+  }
+
+  if (parsed.protocol !== "https:") {
+    throw Object.assign(new Error(`runtime URL must use HTTPS: ${rawUrl}`), {
+      code: `${errorPrefix}_URL_NOT_HTTPS`,
+    });
+  }
+  if (parsed.username || parsed.password) {
+    throw Object.assign(new Error(`credentials are prohibited in runtime URLs: ${rawUrl}`), {
+      code: `${errorPrefix}_URL_CREDENTIALS_PROHIBITED`,
+    });
+  }
+  const allowed = new Set(allowedHosts.map(canonicalHost));
+  if (!allowed.has(canonicalHost(parsed.hostname))) {
+    throw Object.assign(new Error(`runtime host is not allowlisted: ${parsed.hostname}`), {
+      code: `${errorPrefix}_HOST_NOT_ALLOWED`,
+    });
+  }
+  return parsed;
+}
+
 export function normalizePublicUrl(rawUrl, baseUrl) {
   const parsed = new URL(rawUrl, baseUrl);
   parsed.hash = "";
@@ -30,6 +59,13 @@ export function validateCatalog(catalog) {
     failures.push("catalog status must be INACTIVE_READ_ONLY");
   }
   if (catalog?.network?.method !== "GET") failures.push("network method must be GET");
+  if (
+    !Number.isInteger(catalog?.network?.maxRedirects) ||
+    catalog.network.maxRedirects < 0 ||
+    catalog.network.maxRedirects > 5
+  ) {
+    failures.push("network maxRedirects must be an integer from 0 to 5");
+  }
   if (catalog?.outputContract?.persistence !== "NONE") {
     failures.push("output persistence must be NONE");
   }
@@ -161,22 +197,52 @@ function inspectBytes(bytes, source, responseContentType) {
   return contentType;
 }
 
-async function fetchSourceBytes(source, network, fetchFn) {
+async function fetchSourceBytes(source, network, allowedHosts, fetchFn) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), network.timeoutMs);
   try {
-    const response = await fetchFn(source.url, {
-      method: "GET",
-      redirect: "follow",
-      signal: controller.signal,
-      headers: {
-        Accept: source.expectedContentTypes.join(", "),
-        "User-Agent": network.userAgent,
-      },
-    });
-    if (!response.ok) {
-      throw Object.assign(new Error(`HTTP ${response.status}`), { code: "HTTP_FAILURE" });
+    let currentUrl = assertAllowedRuntimeUrl(source.url, allowedHosts).toString();
+    let response;
+    let redirectCount = 0;
+
+    while (true) {
+      response = await fetchFn(currentUrl, {
+        method: "GET",
+        redirect: "manual",
+        signal: controller.signal,
+        headers: {
+          Accept: source.expectedContentTypes.join(", "),
+          "User-Agent": network.userAgent,
+        },
+      });
+
+      if ([301, 302, 303, 307, 308].includes(response.status)) {
+        const location = response.headers.get("location");
+        if (!location) {
+          throw Object.assign(new Error("redirect response omitted Location"), {
+            code: "REDIRECT_LOCATION_MISSING",
+          });
+        }
+        redirectCount += 1;
+        if (redirectCount > network.maxRedirects) {
+          throw Object.assign(
+            new Error(`source exceeded ${network.maxRedirects} allowlisted redirects`),
+            { code: "REDIRECT_LIMIT_EXCEEDED" },
+          );
+        }
+        const nextUrl = new URL(location, currentUrl).toString();
+        currentUrl = assertAllowedRuntimeUrl(nextUrl, allowedHosts, "REDIRECT").toString();
+        continue;
+      }
+
+      if (!response.ok) {
+        throw Object.assign(new Error(`HTTP ${response.status}`), { code: "HTTP_FAILURE" });
+      }
+      break;
     }
+
+    const finalUrl = normalizePublicUrl(response.url || currentUrl, currentUrl);
+    assertAllowedRuntimeUrl(finalUrl, allowedHosts, "FINAL_RESPONSE");
 
     const declaredLength = Number(response.headers.get("content-length") ?? 0);
     const maximum = Math.min(
@@ -200,7 +266,7 @@ async function fetchSourceBytes(source, network, fetchFn) {
       contentType: response.headers.get("content-type") ?? "",
       etag: response.headers.get("etag"),
       lastModified: response.headers.get("last-modified"),
-      finalUrl: normalizePublicUrl(response.url || source.url, source.url),
+      finalUrl,
     };
   } catch (error) {
     if (error.name === "AbortError") {
@@ -343,7 +409,12 @@ export async function monitorSources(catalog, options = {}) {
   const sources = [catalog.discovery, ...catalog.artifacts];
   for (const source of sources) {
     try {
-      const fetched = await fetchSourceBytes(source, catalog.network, fetchFn);
+      const fetched = await fetchSourceBytes(
+        source,
+        catalog.network,
+        catalog.allowedHosts,
+        fetchFn,
+      );
       results.push(
         source.id === catalog.discovery.id
           ? discoveryResult(catalog, fetched)
