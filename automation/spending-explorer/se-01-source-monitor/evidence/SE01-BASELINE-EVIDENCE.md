@@ -4,13 +4,19 @@ Baseline observed: 28 August 2026 UTC
 Authority: Ministry of Finance & Public Service, Jamaica  
 Scope: FY2026/27 Central Government Estimates of Expenditure
 
-Live comparison completed at `2026-08-28T13:24:18.707Z`: `MONITORED_NO_CHANGE`.
+Final review-fix comparison completed at `2026-08-29T16:50:14.171Z`:
+`MONITORED_NO_CHANGE`.
 Five sources were checked; five were unchanged; zero changed; zero failed.
+
+Review-fix validation for package v1.0.1 passed 13 of 13 regression tests. The added gates verify
+that the local monitor rejects a redirect or final response outside the approved HTTPS host
+allowlist, and that the inactive n8n candidate fails closed for missing responses, HTTP failures,
+missing status codes and unexpected content types.
 
 Implementation package fingerprints:
 
-- Source catalogue: `749792978f0fbb4284d3c9356447799aa23638c19c47ed04d138ef648f266861`
-- Inactive n8n workflow export: `fa03f92fc9c2467e7dac759c60f5765838291fd3c98470a3a05b20d3d27ecf25`
+- Source catalogue: `f84921812c0950717879b528e57530a4c23f5c8e2bfb65b51b022f6c9b9fda29`
+- Inactive n8n workflow export: `fdc9930cacbcffaafc9f552519d31f09b48e5e7d58364a6608d029a02a0bc986`
 
 ## Discovery page
 
