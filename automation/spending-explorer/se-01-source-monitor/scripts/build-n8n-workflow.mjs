@@ -31,6 +31,9 @@ return sources.map((source) => ({ json: {
 
 const fingerprintCode = `const sourceItems = $('Load Approved Catalog').all();
 const fetchedItems = $input.all();
+const fail = (code, message = code) => {
+  throw Object.assign(new Error(message), { code });
+};
 const sha256 = async (bytes) => {
   const digest = await crypto.subtle.digest('SHA-256', bytes);
   return [...new Uint8Array(digest)].map((value) => value.toString(16).padStart(2, '0')).join('');
@@ -43,19 +46,43 @@ const normalizeUrl = (raw, base) => {
   return url.toString();
 };
 const results = [];
-for (let index = 0; index < fetchedItems.length; index += 1) {
+for (let index = 0; index < sourceItems.length; index += 1) {
   const source = sourceItems[index].json;
   try {
+    const fetchedItem = fetchedItems[index];
+    if (!fetchedItem) fail('SOURCE_RESPONSE_MISSING');
+    const responseError = fetchedItem.json?.error;
+    if (responseError) {
+      const message = typeof responseError === 'string'
+        ? responseError
+        : responseError.message || JSON.stringify(responseError);
+      fail('HTTP_REQUEST_FAILED', message);
+    }
+    const statusCode = Number(fetchedItem.json?.statusCode || 0);
+    if (!Number.isInteger(statusCode) || statusCode < 100) fail('HTTP_STATUS_MISSING');
+    if (statusCode < 200 || statusCode >= 300) fail('HTTP_FAILURE', 'HTTP ' + statusCode);
+    const responseHeaders = fetchedItem.json?.headers || {};
+    const contentTypeHeader = Object.entries(responseHeaders)
+      .find(([name]) => name.toLowerCase() === 'content-type')?.[1];
+    const contentType = String(contentTypeHeader || '')
+      .split(';', 1)[0]
+      .trim()
+      .toLowerCase();
+    const expectedContentTypes = (source.expectedContentTypes || [])
+      .map((value) => String(value).toLowerCase());
+    if (!contentType || !expectedContentTypes.includes(contentType)) {
+      fail('CONTENT_TYPE_MISMATCH', 'Unexpected content type: ' + (contentType || '<missing>'));
+    }
     const bytes = await this.helpers.getBinaryDataBuffer(index, 'data');
-    if (!bytes || bytes.length < (source.minimumBytes || 1)) throw new Error('SOURCE_BYTES_MISSING_OR_TOO_SMALL');
-    if (bytes.length > (source.maximumBytes || 50000000)) throw new Error('SOURCE_TOO_LARGE');
+    if (!bytes || bytes.length < (source.minimumBytes || 1)) fail('SOURCE_BYTES_MISSING_OR_TOO_SMALL');
+    if (bytes.length > (source.maximumBytes || 50000000)) fail('SOURCE_TOO_LARGE');
     if (source.requiredMagicHex) {
       const magic = bytes.subarray(0, source.requiredMagicHex.length / 2).toString('hex');
-      if (magic.toLowerCase() !== source.requiredMagicHex.toLowerCase()) throw new Error('FILE_SIGNATURE_MISMATCH');
+      if (magic.toLowerCase() !== source.requiredMagicHex.toLowerCase()) fail('FILE_SIGNATURE_MISMATCH');
     }
     const sample = bytes.subarray(0, Math.min(bytes.length, 131072)).toString('utf8');
     for (const token of source.requiredTextTokens || []) {
-      if (!sample.includes(token)) throw new Error('CONTENT_SIGNATURE_MISMATCH');
+      if (!sample.includes(token)) fail('CONTENT_SIGNATURE_MISMATCH');
     }
     if (source.kind === 'discovery') {
       const discoveryHtml = bytes.toString('utf8');
@@ -89,6 +116,8 @@ for (let index = 0; index < fetchedItems.length; index += 1) {
         addedLinks: observedLinks.filter((url) => !rules.expectedUrls.includes(url)),
         missingLinks: rules.expectedUrls.filter((url) => !observedLinks.includes(url)),
         observedBytes: bytes.length,
+        contentType,
+        statusCode,
       } });
     } else {
       const observedSha256 = await sha256(bytes);
@@ -101,6 +130,8 @@ for (let index = 0; index < fetchedItems.length; index += 1) {
         observedSha256,
         expectedBytes: source.expectedBytes,
         observedBytes: bytes.length,
+        contentType,
+        statusCode,
       } });
     }
   } catch (error) {
@@ -109,7 +140,8 @@ for (let index = 0; index < fetchedItems.length; index += 1) {
       sourceClass: source.sourceClass,
       url: source.url,
       outcome: 'FAILED',
-      errorCode: error.message || 'FAILED_CLOSED',
+      errorCode: error.code || 'FAILED_CLOSED',
+      errorMessage: error.message || 'FAILED_CLOSED',
     } });
   }
 }
@@ -180,8 +212,15 @@ const workflow = {
         url: "={{ $json.url }}",
         options: {
           allowUnauthorizedCerts: false,
-          redirect: { redirect: { followRedirects: true, maxRedirects: 3 } },
-          response: { response: { responseFormat: "file", outputPropertyName: "data" } },
+          redirect: { redirect: { followRedirects: false } },
+          response: {
+            response: {
+              fullResponse: true,
+              neverError: true,
+              responseFormat: "file",
+              outputPropertyName: "data",
+            },
+          },
           timeout: 90000,
         },
       },
@@ -191,7 +230,10 @@ const workflow = {
       typeVersion: 4.2,
       position: [-240, 20],
       notesInFlow: true,
-      notes: "Read-only GET. Any non-2xx response fails closed.",
+      notes:
+        "Read-only GET. Redirects are not followed. Status, type or request failures continue only to the FAILED_CLOSED receipt.",
+      alwaysOutputData: true,
+      onError: "continueRegularOutput",
     },
     {
       parameters: { mode: "runOnceForAllItems", jsCode: fingerprintCode },
