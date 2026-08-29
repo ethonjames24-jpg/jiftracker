@@ -20,7 +20,7 @@
   ],
   "properties": {
     "$schema": { "type": "string" },
-    "catalogVersion": { "type": "string", "const": "1.0.0" },
+    "catalogVersion": { "type": "string", "const": "1.0.1" },
     "workflowId": { "type": "string", "const": "SE-01" },
     "workflowName": { "type": "string" },
     "status": { "type": "string", "const": "INACTIVE_READ_ONLY" },
@@ -32,7 +32,18 @@
       "items": { "type": "string" },
       "uniqueItems": true
     },
-    "network": { "type": "object" },
+    "network": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method", "timeoutMs", "maxRedirects", "maxBytesPerSource", "userAgent"],
+      "properties": {
+        "method": { "type": "string", "const": "GET" },
+        "timeoutMs": { "type": "integer", "minimum": 1 },
+        "maxRedirects": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "maxBytesPerSource": { "type": "integer", "minimum": 1 },
+        "userAgent": { "type": "string", "minLength": 1 }
+      }
+    },
     "discovery": { "type": "object" },
     "artifacts": {
       "type": "array",
