@@ -1,6 +1,6 @@
 {
   "$schema": "../schemas/source-catalog.schema.json",
-  "catalogVersion": "1.0.0",
+  "catalogVersion": "1.0.1",
   "workflowId": "SE-01",
   "workflowName": "JIF | SE-01 Spending Explorer Source Monitor | INACTIVE",
   "status": "INACTIVE_READ_ONLY",
@@ -17,6 +17,7 @@
   "network": {
     "method": "GET",
     "timeoutMs": 90000,
+    "maxRedirects": 3,
     "maxBytesPerSource": 50000000,
     "userAgent": "JIF-SE-01-ReadOnly-Source-Monitor/1.0"
   },
