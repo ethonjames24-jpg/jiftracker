@@ -9,7 +9,7 @@ function baseCatalog() {
     "https://www.mof.gov.jm/wp-content/uploads/2026-2027-Estimates-of-Expenditure-As-Passed.pdf",
   ];
   return {
-    catalogVersion: "1.0.0",
+    catalogVersion: "1.0.1",
     workflowId: "SE-01",
     workflowName: "JIF | SE-01 Spending Explorer Source Monitor | INACTIVE",
     status: "INACTIVE_READ_ONLY",
@@ -18,6 +18,7 @@ function baseCatalog() {
     network: {
       method: "GET",
       timeoutMs: 1000,
+      maxRedirects: 2,
       maxBytesPerSource: 100000,
       userAgent: "SE-01-Test",
     },
@@ -151,6 +152,40 @@ test("fails closed for an unavailable official source", async () => {
   const receipt = await monitorSources(catalog, { fetchFn: fakeFetch(responses) });
   assert.equal(receipt.state, "FAILED_CLOSED");
   assert.equal(receipt.results[1].errorCode, "HTTP_FAILURE");
+});
+
+test("fails closed before following a redirect to a non-allowlisted host", async () => {
+  const catalog = baseCatalog();
+  const responses = noChangeResponses(catalog);
+  responses.set(catalog.discovery.url, {
+    body: Buffer.from("redirect"),
+    contentType: "text/html",
+    status: 302,
+    headers: { location: "https://example.com/2026-2027-Estimates.pdf" },
+  });
+  const receipt = await monitorSources(catalog, { fetchFn: fakeFetch(responses) });
+  assert.equal(receipt.state, "FAILED_CLOSED");
+  assert.equal(receipt.results[0].errorCode, "REDIRECT_HOST_NOT_ALLOWED");
+});
+
+test("fails closed when a successful fetch reports a non-allowlisted final URL", async () => {
+  const catalog = baseCatalog();
+  const responses = noChangeResponses(catalog);
+  const baseFetch = fakeFetch(responses);
+  const fetchFn = async (url, options) => {
+    const response = await baseFetch(url, options);
+    if (url !== catalog.discovery.url) return response;
+    return {
+      ok: response.ok,
+      status: response.status,
+      headers: response.headers,
+      url: "https://example.com/redirected",
+      arrayBuffer: () => response.arrayBuffer(),
+    };
+  };
+  const receipt = await monitorSources(catalog, { fetchFn });
+  assert.equal(receipt.state, "FAILED_CLOSED");
+  assert.equal(receipt.results[0].errorCode, "FINAL_RESPONSE_HOST_NOT_ALLOWED");
 });
 
 test("discovery excludes consolidated and unrelated-year links", () => {
