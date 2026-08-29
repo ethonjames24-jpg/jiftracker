@@ -2,6 +2,8 @@
 
 Status: **inactive, read-only implementation package**
 
+Package version: **1.0.1**
+
 This package implements the first workflow in the controlled JIF Spending Explorer update
 system. It checks approved Ministry of Finance & Public Service locations, fingerprints the
 official source bytes and relevant source-link inventory, and returns one receipt:
@@ -43,6 +45,11 @@ npm run monitor
 
 Exit codes are `0` for no change, `10` for a detected change, and `20` for failed closed. The
 command prints the full JSON receipt and does not create a file or external record.
+
+Redirect policy is fail-safe. The local verifier follows at most three redirects and validates
+every destination as HTTPS on the approved MOFPS allowlist. The inactive n8n candidate follows no
+redirects; any redirect, HTTP error, missing response, or unexpected content type is converted to
+a terminal `FAILED_CLOSED` receipt.
 
 ## Non-authorization notice
 
