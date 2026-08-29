@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tracker.infocusja.com/schemas/se01-source-catalog-v1.json",
+  "title": "JIF SE-01 Source Catalog",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "catalogVersion",
+    "workflowId",
+    "workflowName",
+    "status",
+    "fiscalYear",
+    "authority",
+    "allowedHosts",
+    "network",
+    "discovery",
+    "artifacts",
+    "outputContract",
+    "prohibitedCapabilities"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "catalogVersion": { "type": "string", "const": "1.0.1" },
+    "workflowId": { "type": "string", "const": "SE-01" },
+    "workflowName": { "type": "string" },
+    "status": { "type": "string", "const": "INACTIVE_READ_ONLY" },
+    "fiscalYear": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{4}$" },
+    "authority": { "type": "object" },
+    "allowedHosts": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "network": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method", "timeoutMs", "maxRedirects", "maxBytesPerSource", "userAgent"],
+      "properties": {
+        "method": { "type": "string", "const": "GET" },
+        "timeoutMs": { "type": "integer", "minimum": 1 },
+        "maxRedirects": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "maxBytesPerSource": { "type": "integer", "minimum": 1 },
+        "userAgent": { "type": "string", "minLength": 1 }
+      }
+    },
+    "discovery": { "type": "object" },
+    "artifacts": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "object" }
+    },
+    "outputContract": { "type": "object" },
+    "prohibitedCapabilities": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}
