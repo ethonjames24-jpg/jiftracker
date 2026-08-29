@@ -26,6 +26,11 @@ test("n8n package is inactive and contains only read-only node types", async () 
     assert.equal(Object.hasOwn(node, "credentials"), false, `${node.name} must not use credentials`);
     if (node.type === "n8n-nodes-base.httpRequest") {
       assert.equal(node.parameters.method, "GET");
+      assert.equal(node.parameters.options.redirect.redirect.followRedirects, false);
+      assert.equal(node.parameters.options.response.response.fullResponse, true);
+      assert.equal(node.parameters.options.response.response.neverError, true);
+      assert.equal(node.alwaysOutputData, true);
+      assert.equal(node.onError, "continueRegularOutput");
     }
   }
 });
@@ -56,4 +61,16 @@ test("workflow embeds every approved catalog checksum and source URL", async () 
   }
   assert.equal(workflowText.includes(catalog.discovery.linkInventory.expectedSha256), true);
   assert.equal(workflowText.includes("const discoveryHtml = bytes.toString('utf8')"), true);
+});
+
+test("n8n fingerprint step fails closed on missing responses, HTTP status and content type", async () => {
+  const workflow = JSON.parse(await readFile(workflowUrl, "utf8"));
+  const code = workflow.nodes.find((node) => node.name === "Fingerprint and Compare")?.parameters
+    ?.jsCode;
+  assert.match(code, /sourceItems\.length/);
+  assert.match(code, /SOURCE_RESPONSE_MISSING/);
+  assert.match(code, /HTTP_STATUS_MISSING/);
+  assert.match(code, /HTTP_FAILURE/);
+  assert.match(code, /expectedContentTypes/);
+  assert.match(code, /CONTENT_TYPE_MISMATCH/);
 });
