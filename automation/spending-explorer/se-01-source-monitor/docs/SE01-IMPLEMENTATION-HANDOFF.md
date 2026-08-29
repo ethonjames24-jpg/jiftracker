@@ -1,6 +1,6 @@
 # JIF SE-01 — Spending Explorer Source Monitor Implementation Handoff
 
-Version 1.0.0  
+Version 1.0.1
 Implementation state: Built and verified locally; inactive; not imported; not activated  
 Owner: Jamaica in Focus  
 Public product: JIF Government Spending Explorer and Every J$100
@@ -53,12 +53,15 @@ social posts, mirrors and unrelated fiscal years are excluded.
 
 1. Validate that the catalogue is explicitly `INACTIVE_READ_ONLY`.
 2. Reject non-HTTPS or non-allowlisted source URLs.
-3. Fetch each public source with `GET` only and a finite timeout/byte limit.
-4. Fail closed on HTTP, type, size, signature or required-token errors.
-5. For artifact files, hash the exact response bytes and compare the approved SHA-256 value.
-6. For the discovery page, normalize and filter relevant FY2026/27 upload links, sort them and hash
+3. The local verifier follows at most three redirects and validates every destination as HTTPS on
+   the approved MOFPS allowlist. The inactive n8n candidate follows no redirects.
+4. Fetch each public source with `GET` only and a finite timeout/byte limit.
+5. Retain HTTP status and response headers and fail closed on redirects, missing responses, HTTP,
+   type, size, signature or required-token errors.
+6. For artifact files, hash the exact response bytes and compare the approved SHA-256 value.
+7. For the discovery page, normalize and filter relevant FY2026/27 upload links, sort them and hash
    the newline-separated inventory.
-7. Return exactly one terminal receipt with no downstream connection.
+8. Return exactly one terminal receipt with no downstream connection.
 
 ## 5. State rules
 
@@ -83,13 +86,18 @@ It contains only:
 - an inactive daily schedule trigger;
 - a manual review trigger;
 - a catalogue-loading Code node;
-- one read-only HTTP Request node using `GET`;
+- one read-only HTTP Request node using `GET`, with redirects disabled and status/header retention;
 - fingerprint/comparison Code;
 - one terminal receipt Code node.
 
 There are no credentials and no Google Sheets, Drive, Telegram, webhook, Execute Workflow,
 subscriber, social, capture or publishing nodes. The workflow export sets `active: false`,
 `importAuthorized: false` and `activationAuthorized: false`.
+
+The HTTP node uses n8n's full-response and never-error controls plus continue-on-error routing.
+The comparison node iterates the approved source catalogue, so a missing response, request error,
+non-2xx status, redirect or unexpected content type becomes a `FAILED_CLOSED` result and still
+reaches the terminal receipt.
 
 Runtime compatibility note: the fingerprint node uses Web Crypto plus n8n binary-data helpers.
 Before any import is authorized, the exact production n8n version must be checked in an isolated
@@ -102,11 +110,14 @@ inactive import and the workflow must remain disconnected from every later SE wo
 - changed-byte detection test;
 - new supplementary-link detection test;
 - non-allowlisted host rejection;
+- non-allowlisted redirect rejection before the redirected request;
+- non-allowlisted final-response URL rejection;
 - unavailable-source failed-closed test;
 - Central Government scope filtering;
 - n8n inactive-state and node allowlist test;
 - credential and prohibited-integration scan;
 - generated workflow/catalog parity test;
+- n8n missing-response, HTTP-status and content-type failed-closed contract test;
 - live public-source comparison against the approved baseline.
 
 ## 8. Future gated deployment sequence
