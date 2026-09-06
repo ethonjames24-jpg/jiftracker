@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tracker.infocusja.com/schemas/se01-monitor-receipt-v1.json",
+  "title": "JIF SE-01 Monitor Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "workflowId",
+    "workflowName",
+    "catalogVersion",
+    "fiscalYear",
+    "checkedAt",
+    "inactive",
+    "readOnly",
+    "state",
+    "summary",
+    "results",
+    "nextAction"
+  ],
+  "properties": {
+    "schemaVersion": { "type": "string", "const": "1.0.0" },
+    "workflowId": { "type": "string", "const": "SE-01" },
+    "workflowName": { "type": "string" },
+    "catalogVersion": { "type": "string" },
+    "fiscalYear": { "type": "string" },
+    "checkedAt": { "type": "string", "format": "date-time" },
+    "inactive": { "type": "boolean", "const": true },
+    "readOnly": { "type": "boolean", "const": true },
+    "state": {
+      "type": "string",
+      "enum": [
+        "MONITORED_NO_CHANGE",
+        "SOURCE_CHANGE_DETECTED",
+        "FAILED_CLOSED"
+      ]
+    },
+    "summary": {
+      "type": "object",
+      "required": ["sourcesChecked", "unchanged", "changed", "failed"],
+      "properties": {
+        "sourcesChecked": { "type": "integer", "minimum": 0 },
+        "unchanged": { "type": "integer", "minimum": 0 },
+        "changed": { "type": "integer", "minimum": 0 },
+        "failed": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "results": { "type": "array", "items": { "type": "object" } },
+    "nextAction": { "type": "string" }
+  }
+}
