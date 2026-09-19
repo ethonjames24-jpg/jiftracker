@@ -1,0 +1,162 @@
+{
+  "$schema": "../schemas/source-catalog.schema.json",
+  "catalogVersion": "1.0.1",
+  "workflowId": "SE-01",
+  "workflowName": "JIF | SE-01 Spending Explorer Source Monitor | INACTIVE",
+  "status": "INACTIVE_READ_ONLY",
+  "fiscalYear": "2026-2027",
+  "authority": {
+    "publisher": "Ministry of Finance & Public Service, Jamaica",
+    "scope": "Central Government annual and supplementary Estimates of Expenditure",
+    "officialDomain": "www.mof.gov.jm"
+  },
+  "allowedHosts": [
+    "www.mof.gov.jm",
+    "mof.gov.jm"
+  ],
+  "network": {
+    "method": "GET",
+    "timeoutMs": 90000,
+    "maxRedirects": 3,
+    "maxBytesPerSource": 50000000,
+    "userAgent": "JIF-SE-01-ReadOnly-Source-Monitor/1.0"
+  },
+  "discovery": {
+    "id": "annual_and_supplementary_estimates_index",
+    "sourceClass": "primary_discovery",
+    "url": "https://www.mof.gov.jm/resources-annual-and-supplementary-estimates/",
+    "expectedContentTypes": [
+      "text/html"
+    ],
+    "minimumBytes": 10000,
+    "requiredTextTokens": [
+      "Annual and Supplementary Estimates"
+    ],
+    "linkInventory": {
+      "requiredPathPrefix": "/wp-content/uploads/",
+      "fiscalYearTokens": [
+        "2026-2027",
+        "2026-27"
+      ],
+      "includeTokens": [
+        "estimates",
+        "supplementary"
+      ],
+      "excludeTokens": [
+        "public-sector",
+        "consolidated",
+        "public-bodies",
+        "revenue"
+      ],
+      "expectedUrls": [
+        "https://www.mof.gov.jm/wp-content/uploads/2026-2027-Approved-Estimates.csv",
+        "https://www.mof.gov.jm/wp-content/uploads/2026-2027-As-Presented-Estimates.csv",
+        "https://www.mof.gov.jm/wp-content/uploads/2026-2027-Estimates-of-Expenditure-As-Passed.pdf",
+        "https://www.mof.gov.jm/wp-content/uploads/2026-2027-Estimates-of-Expenditures.pdf"
+      ],
+      "expectedSha256": "92a6622d95e582f25d60c726ee6c996cdcf364f2efc0acc67103518ca36e24a2"
+    }
+  },
+  "artifacts": [
+    {
+      "id": "fy2026_27_estimates_as_passed_pdf",
+      "sourceClass": "primary_controlling",
+      "title": "2026-2027 Estimates of Expenditure As Passed",
+      "releaseDate": "2026-04-02",
+      "url": "https://www.mof.gov.jm/wp-content/uploads/2026-2027-Estimates-of-Expenditure-As-Passed.pdf",
+      "fileName": "2026-2027-Estimates-of-Expenditure-As-Passed.pdf",
+      "expectedContentTypes": [
+        "application/pdf",
+        "application/octet-stream"
+      ],
+      "minimumBytes": 1000000,
+      "maximumBytes": 50000000,
+      "requiredMagicHex": "255044462d",
+      "expectedBytes": 23172267,
+      "expectedSha256": "32ef2cb30c9498d2c8d9d4597fcaadce9823c13a97fe199acec19247664a3bd6"
+    },
+    {
+      "id": "fy2026_27_approved_estimates_csv",
+      "sourceClass": "primary_machine_readable",
+      "title": "2026-2027 Approved Estimates Open Data",
+      "releaseDate": "2026-07-23",
+      "url": "https://www.mof.gov.jm/wp-content/uploads/2026-2027-Approved-Estimates.csv",
+      "fileName": "2026-2027-Approved-Estimates.csv",
+      "expectedContentTypes": [
+        "text/csv",
+        "application/csv",
+        "application/octet-stream"
+      ],
+      "minimumBytes": 1000000,
+      "maximumBytes": 50000000,
+      "requiredTextTokens": [
+        "Coding Block",
+        "Org Desc",
+        "2026-2027"
+      ],
+      "expectedBytes": 10891264,
+      "expectedSha256": "cdb6ce99c678feabb3c3c48cf2bcc06d756762a8240c302f82719cabecb4e7ab"
+    },
+    {
+      "id": "fy2026_27_estimates_as_presented_pdf",
+      "sourceClass": "supporting_active",
+      "title": "2026-2027 Estimates of Expenditure As Presented",
+      "releaseDate": "2026-02-12",
+      "url": "https://www.mof.gov.jm/wp-content/uploads/2026-2027-Estimates-of-Expenditures.pdf",
+      "fileName": "2026-2027-Estimates-of-Expenditures.pdf",
+      "expectedContentTypes": [
+        "application/pdf",
+        "application/octet-stream"
+      ],
+      "minimumBytes": 1000000,
+      "maximumBytes": 50000000,
+      "requiredMagicHex": "255044462d",
+      "expectedBytes": 30471481,
+      "expectedSha256": "792ab9cbd822c112f19480b6133f6bdeb2d980a4d72710390c36e720c7ffa7af"
+    },
+    {
+      "id": "fy2026_27_as_presented_estimates_csv",
+      "sourceClass": "supporting_machine_readable",
+      "title": "2026-2027 As Presented Estimates Open Data",
+      "releaseDate": "2026-07-23",
+      "url": "https://www.mof.gov.jm/wp-content/uploads/2026-2027-As-Presented-Estimates.csv",
+      "fileName": "2026-2027-As-Presented-Estimates.csv",
+      "expectedContentTypes": [
+        "text/csv",
+        "application/csv",
+        "application/octet-stream"
+      ],
+      "minimumBytes": 1000000,
+      "maximumBytes": 50000000,
+      "requiredTextTokens": [
+        "Coding Block",
+        "Org Desc",
+        "2026-2027 As Presented"
+      ],
+      "expectedBytes": 12262651,
+      "expectedSha256": "d480726d35bb1d694f4f0a48e2fab3038c5968d335dc45b00ab5f51bfb497f1a"
+    }
+  ],
+  "outputContract": {
+    "allowedStates": [
+      "MONITORED_NO_CHANGE",
+      "SOURCE_CHANGE_DETECTED",
+      "FAILED_CLOSED"
+    ],
+    "persistence": "NONE",
+    "notification": "NONE",
+    "downstreamExecution": "NONE"
+  },
+  "prohibitedCapabilities": [
+    "Google Sheets writes",
+    "Drive writes",
+    "n8n workflow activation",
+    "Execute Workflow calls",
+    "webhooks",
+    "subscriber communications",
+    "Telegram messages",
+    "social posting",
+    "video capture or publication",
+    "public feed promotion"
+  ]
+}
