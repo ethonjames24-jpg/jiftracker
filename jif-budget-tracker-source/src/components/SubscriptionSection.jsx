@@ -184,7 +184,8 @@ export const SubscriptionSection = ({ monthSort }) => {
           </button>
 
           <p id="subscribe-privacy-notice" data-testid="subscribe-privacy-notice" className="privacy-notice">
-            Privacy notice: Your email will be used only to send JIF Budget Tracker updates. We will not sell or share your information, and you can unsubscribe at any time.
+            Privacy notice: Your email will be used only to send JIF Budget Tracker updates. We will not sell your information, and you can unsubscribe at any time.
+            {" "}<a href="/privacy.html">Read the privacy policy.</a>
           </p>
 
           {!isConfigured && !message && (

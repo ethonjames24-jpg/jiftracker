@@ -14,6 +14,7 @@ This is the current operational handoff for the public Jamaica In Focus Budget T
 - Government Spending Explorer route: `/?view=spending`
 - Admin checklist route: `/?admin=checklist&month=YYYY-MM`
 - Capture routes: `/?month=YYYY-MM&capture=hero|kpi|sources`
+- Privacy policy: `/privacy.html`, with links in the shared footer and subscription notice. The static page and its stylesheet are copied from `public/` by Vite and load without JavaScript, Google authorization, or a tracker data request. Keep the Google OAuth consent-screen privacy URL aligned with this page after deployment.
 
 Route precedence is intentional: capture and admin views take priority over the additive Spending Explorer query. Do not change that ordering without regression tests for every public route.
 

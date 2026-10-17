@@ -15,6 +15,7 @@ export const PublicToolsFooter = ({ sourceHref = "#source-documents" }) => (
         <a href="/">Budget Tracker</a>
         <a href="/?view=spending">Spending Explorer</a>
         <a href={sourceHref}>Official Sources</a>
+        <a href="/privacy.html">Privacy policy</a>
       </nav>
 
       <div className="public-tools-footer-meta">
