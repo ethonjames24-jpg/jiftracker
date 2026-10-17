@@ -1,5 +1,15 @@
 # JIF Budget Tracker and Spending Explorer Engineering Handoff
 
+## 2026-10-17 — Capture completeness repair (PR; not deployed)
+
+Owner screenshots from the native screenshot-only run show correct August counts, but the KPI image contains only six indicators and the fixed 1440×1200 sources image cuts off the lower source records. CaptureViews explicitly sliced the KPI array to six; this is a website capture-view defect rather than missing n8n input.
+
+The capture view now renders all supplied KPI records. Capture-only desktop geometry uses two KPI columns and two narrative columns, and puts the three existing source records side by side with compact source headings and metadata. The regular tracker, hero, source content/warnings/links, approved figures/copy, receipts PDF, data loader and workflow are unchanged. The missing-source warning and unstated metadata remain truthful existing data gaps; this patch does not suppress or invent them.
+
+Validation: 51 tests pass, including a rendered-component regression for all eight KPIs (Capital Expenditure and Interest included); production build and git diff --check pass. Local browser visual/bounds validation could not run because no browser executable was installed and the browser download returned invalid/truncated archives. CSS fit at 1080×1920 and 1440×1200 therefore remains unverified until the PR preview or deployed capture service is inspected. Do not describe successful metadata/log readback as visual acceptance.
+
+After separate merge/deployment approval and the exact deployment succeeds, capture the same three views again and confirm all eight KPI cards and the complete outturn/budget/receipts records appear within the image. Do not rerun the monthly publication or approval. Rollback is the focused capture-view/style/test commit; preserve all source/data/approval/publication records. Screenshot Drive storage and publisher continuation remain separate pending workflow integrations.
+
 Last reviewed: 2026-07-31
 
 This is the current operational handoff for the public Jamaica In Focus Budget Tracker and Government Spending Explorer. It is authoritative for the standalone Vite application in `jif-budget-tracker-source/`. The older `memory/PRD.md` records useful project history, but some early FastAPI references there describe a retired prototype rather than the current production architecture.

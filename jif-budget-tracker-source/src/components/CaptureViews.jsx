@@ -54,13 +54,11 @@ const CaptureMetric = ({ item }) => (
 );
 
 const KpiReadoutCards = ({ kpis = [] }) => {
-  const visibleKpis = kpis.slice(0, 6);
-
-  if (!visibleKpis.length) return null;
+  if (!kpis.length) return null;
 
   return (
     <div className="capture-kpi-readouts" data-testid="capture-kpi-readout-cards">
-      {visibleKpis.map((kpi, index) => (
+      {kpis.map((kpi, index) => (
         <article key={`${kpi.kpi_label}-${index}`} className="capture-kpi-card" data-testid={`capture-kpi-readout-${index}`}>
           <div>
             <p className="source-label">{kpi.kpi_label || "KPI not reported"}</p>
