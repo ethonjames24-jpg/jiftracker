@@ -1,4 +1,5 @@
 import { SHEET_ID, SHEET_TABS, SHEET_TAB_IDS } from "../config.js";
+import { applyRecordedPublicCopy } from "../content/publicCopyCorrections.js";
 
 const FALLBACK_DISPLAY_ORDER = 999;
 const CSV_BASE_URL = "https://docs.google.com/spreadsheets/d";
@@ -334,7 +335,7 @@ export const fetchTrackerData = async (requestedMonth = "", fetchImpl = fetch) =
   const extras = findMonthlyExtras(monthlyExtrasRows, selectedGroup.month_sort);
   const archiveMonthLookup = new Map(monthGroups.map((group) => [group.month_sort, monthSummary(group)]));
 
-  return {
+  return applyRecordedPublicCopy({
     spreadsheet_id: SHEET_ID,
     last_loaded_at: new Date().toISOString(),
     available_months: [...monthGroups].reverse().map((group) => ({ month_sort: group.month_sort, month_label: group.month_label })),
@@ -385,5 +386,5 @@ export const fetchTrackerData = async (requestedMonth = "", fetchImpl = fetch) =
     kpis,
     month_comparison: buildMonthComparison(monthGroups, selectedGroup),
     archive: archiveRows.map((row) => normaliseArchiveRow(row, archiveMonthLookup)),
-  };
+  });
 };
