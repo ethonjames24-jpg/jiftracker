@@ -458,6 +458,39 @@ tbody tr:nth-child(even) { background: var(--paper); }
 .capture-sources-layout .source-section::before { opacity: .04; }
 .capture-sources-layout .source-basis { font-size: 1.05rem; }
 
+/* The fixed capture canvases must contain every KPI and all source records.
+   Scope this geometry to capture pages; the public tracker keeps its layout. */
+@media (min-width: 901px) {
+  .capture-kpi-page .capture-kpi-notes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .capture-kpi-page .capture-kpi-notes .public-summary-card { grid-column: 1 / -1; }
+  .capture-kpi-page .capture-kpi-readouts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .capture-kpi-page .capture-kpi-card { min-width: 0; }
+  .capture-kpi-page .capture-kpi-notes .info-card { padding: 22px; }
+  .capture-kpi-page .capture-kpi-notes .info-card > p { font-size: 1.05rem; line-height: 1.5; }
+
+  .capture-sources-page { padding: 28px 36px; }
+  .capture-sources-page .capture-brand { margin-bottom: 22px; padding: 14px 20px; }
+  .capture-sources-page .capture-sources-intro { grid-template-columns: 1fr auto; gap: 10px 22px; padding-bottom: 14px; }
+  .capture-sources-page .capture-sources-intro > .eyebrow { grid-column: 1 / -1; margin: 0; }
+  .capture-sources-page .capture-sources-intro h1 { font-size: 3.25rem; line-height: 1; margin: 0; }
+  .capture-sources-page .capture-source-icons svg { width: 42px; height: 42px; padding: 7px; }
+  .capture-sources-page .source-grid { padding: 20px; gap: 16px; }
+  .capture-sources-page .source-intro { grid-template-columns: 1fr; gap: 8px; }
+  .capture-sources-page .source-intro .eyebrow { margin-bottom: 0; }
+  .capture-sources-page .source-intro h2 { font-size: 1.7rem; margin: 0; }
+  .capture-sources-page .source-basis { font-size: .95rem; margin: 0; }
+  .capture-sources-page .source-card-stack { grid-template-columns: 1fr; gap: 16px; }
+  .capture-sources-page .public-receipts-pack-card { padding: 18px; }
+  .capture-sources-page .public-receipts-pack-header { margin-bottom: 8px; }
+  .capture-sources-page .public-receipts-pack-explainer { margin-bottom: 10px; }
+  .capture-sources-page .receipts-pack-list { grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; }
+  .capture-sources-page .receipts-pack-row { min-width: 0; padding: 14px; }
+  .capture-sources-page .receipts-pack-row p { font-size: .95rem; line-height: 1.4; overflow-wrap: anywhere; }
+  .capture-sources-page .source-metadata { grid-template-columns: 1fr; gap: 8px; margin-top: 10px; padding-top: 10px; }
+  .capture-sources-page .source-card { padding: 14px; }
+  .capture-sources-page .source-card p { margin: 0; }
+}
+
 @media (max-width: 900px) {
   .capture-page { padding: 24px 18px; }
   .capture-brand, .capture-hero-grid, .capture-kpi-layout, .capture-kpi-notes, .capture-kpi-readouts, .capture-sources-intro { grid-template-columns: 1fr; }
