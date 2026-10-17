@@ -203,3 +203,14 @@ Every completed work package must update this handoff or an equally specific adj
 - known limitations and next safe task.
 
 Code is not considered fully handed off when only the implementation exists.
+
+
+## 2026-10-17 — August public-feed repair (pending deployment)
+
+Native publisher execution 2525 saved and verified August’s approved public records, but anonymous GVIZ CSV inferred date types from older rows and returned blank August text labels. Monthly extras also lost its August month key. The existing loader consequently kept July as its latest month. This is a frontend feed compatibility defect; it does not require another approval or public-row rewrite.
+
+The monthly loader now uses direct CSV export with the three stable public tab IDs in `SHEET_TAB_IDS`. Workbook/tab environment overrides are documented together. Existing scoring, data rows, receipts PDF, public layout, Spending Explorer, and n8n workflow are unchanged.
+
+Verification: 45 Node tests pass; Vite production build and `git diff --check` pass. A comparison using fresh anonymous live snapshots reproduced July with the original loader/GVIZ feed, then selected August with the repaired loader/direct export: eight KPIs, Watch counts 3 On Track / 3 Watch / 2 Under Pressure, correct August receipts URL, and selectable July. All three direct exports returned HTTP 200 with cross-origin access. Later-month selection is covered by a September regression fixture. This verifies the loader with public feed bytes; production deployment and browser-rendered verification remain pending.
+
+After owner merge/deployment approval, verify the exact merged commit’s Cloudflare Pages deployment, then check the public default route and `?month=2026-08`, July selection, and the receipts link. Monthly publication readback should include the actual anonymous website feed contract in future integration work. Corrected Checkpoint C remains paused.
