@@ -74,6 +74,9 @@ Variables:
 
 ```bash
 VITE_GOOGLE_SHEET_ID=13npg-j5jjMzE115EOkkBdq7Rav1L5-RUPl1rza5e_v0
+VITE_TRACKER_SHEET_GID=366568461
+VITE_ARCHIVE_SHEET_GID=1176061617
+VITE_MONTHLY_EXTRAS_SHEET_GID=1322269186
 VITE_SPENDING_EXPLORER_SHEET_ID=1SWibIHNJzgkWRPb57YiBvV3QHXKwrRrgXzG0fKdvv80
 VITE_TRACKER_SUBSCRIBE_WEBHOOK_URL=
 VITE_MASTER_BADGE_URL=
@@ -90,7 +93,7 @@ If `VITE_TRACKER_SUBSCRIBE_WEBHOOK_URL` is blank, the subscription form shows a 
 The app uses Google Sheets' public CSV export endpoint:
 
 ```text
-https://docs.google.com/spreadsheets/d/{SHEET_ID}/gviz/tq?tqx=out:csv&sheet={TAB_NAME}
+https://docs.google.com/spreadsheets/d/{SHEET_ID}/export?format=csv&gid={TAB_GID}
 ```
 
 It reads these tabs:
@@ -99,7 +102,9 @@ It reads these tabs:
 - `DS_PublicMonthlyExtras`
 - `archive`
 
-The app fetches CSV data in the browser, parses it, cleans it, and renders the dashboard.
+The app fetches CSV data in the browser, parses it, cleans it, and renders the dashboard. Monthly tab IDs are configured in `SHEET_TAB_IDS`, with the three environment overrides above. When changing `VITE_GOOGLE_SHEET_ID`, update the tab IDs for that workbook as well.
+
+Use the direct CSV export for these monthly tabs. The GVIZ query endpoint infers a single type per column and can omit text month labels or keys when older cells are dates. This hid August 2026 despite successful publication readback. The direct export preserves the displayed values and lets monthly extras and receipts join to the correct month. The Spending Explorer loader is separate and unchanged.
 
 ## Government Spending Explorer
 

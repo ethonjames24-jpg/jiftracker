@@ -22,6 +22,13 @@ export const SHEET_TABS = {
   monthlyExtras: "DS_PublicMonthlyExtras",
 };
 
+// Stable public tab IDs keep mixed date/text values intact in CSV exports.
+export const SHEET_TAB_IDS = {
+  [SHEET_TABS.tracker]: ENV.VITE_TRACKER_SHEET_GID || "366568461",
+  [SHEET_TABS.archive]: ENV.VITE_ARCHIVE_SHEET_GID || "1176061617",
+  [SHEET_TABS.monthlyExtras]: ENV.VITE_MONTHLY_EXTRAS_SHEET_GID || "1322269186",
+};
+
 export const SPENDING_EXPLORER_SHEET_TABS = {
   controls: "README_Control_v1_1",
   spending: "DS_SpendingExplorer_v1_1",

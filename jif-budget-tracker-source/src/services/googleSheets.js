@@ -1,9 +1,9 @@
-import { SHEET_ID, SHEET_TABS } from "../config.js";
+import { SHEET_ID, SHEET_TABS, SHEET_TAB_IDS } from "../config.js";
 
 const FALLBACK_DISPLAY_ORDER = 999;
 const CSV_BASE_URL = "https://docs.google.com/spreadsheets/d";
 
-const csvUrlForTab = (tabName) => `${CSV_BASE_URL}/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tabName)}`;
+const csvUrlForTab = (tabName) => `${CSV_BASE_URL}/${SHEET_ID}/export?format=csv&gid=${encodeURIComponent(SHEET_TAB_IDS[tabName])}`;
 
 const cleanValue = (value) => (value === null || value === undefined ? "" : String(value).trim());
 
@@ -64,15 +64,15 @@ const rowsToObjects = (rows) => {
   }).filter((record) => Object.values(record).some(Boolean));
 };
 
-const fetchSheetTab = async (tabName) => {
-  const response = await fetch(csvUrlForTab(tabName));
+const fetchSheetTab = async (tabName, fetchImpl) => {
+  const response = await fetchImpl(csvUrlForTab(tabName));
   if (!response.ok) throw new Error(`Could not load Google Sheet tab: ${tabName}`);
   return rowsToObjects(parseCsv(await response.text()));
 };
 
-const fetchOptionalSheetTab = async (tabName) => {
+const fetchOptionalSheetTab = async (tabName, fetchImpl) => {
   try {
-    return await fetchSheetTab(tabName);
+    return await fetchSheetTab(tabName, fetchImpl);
   } catch (error) {
     console.warn(`Optional Google Sheet tab could not be loaded: ${tabName}`, error);
     return [];
@@ -315,11 +315,11 @@ const buildGeneratedWhatChanged = (selectedGroup, first, counts, kpis) => {
   return bullets.join("|");
 };
 
-export const fetchTrackerData = async (requestedMonth = "") => {
+export const fetchTrackerData = async (requestedMonth = "", fetchImpl = fetch) => {
   const [trackerRows, archiveRows, monthlyExtrasRows] = await Promise.all([
-    fetchSheetTab(SHEET_TABS.tracker),
-    fetchSheetTab(SHEET_TABS.archive),
-    fetchOptionalSheetTab(SHEET_TABS.monthlyExtras),
+    fetchSheetTab(SHEET_TABS.tracker, fetchImpl),
+    fetchSheetTab(SHEET_TABS.archive, fetchImpl),
+    fetchOptionalSheetTab(SHEET_TABS.monthlyExtras, fetchImpl),
   ]);
 
   const validRows = validTrackerRows(trackerRows);
