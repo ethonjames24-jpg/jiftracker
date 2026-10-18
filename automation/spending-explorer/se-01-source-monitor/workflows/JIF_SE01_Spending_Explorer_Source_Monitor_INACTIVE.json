@@ -8,7 +8,7 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -760,
+        -860,
         120
       ]
     },
@@ -31,7 +31,7 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -760,
+        -860,
         -60
       ]
     },
@@ -45,11 +45,29 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -500,
+        -600,
         20
       ],
       "notesInFlow": true,
       "notes": "Public MOFPS URLs only. No credentials, private workbook IDs or write targets."
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {
+          "reset": false
+        }
+      },
+      "id": "0a4f32d1-1fe4-42c5-a2f7-20158ef3a007",
+      "name": "Loop Official Sources",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -350,
+        20
+      ],
+      "notesInFlow": true,
+      "notes": "One in-flight public source request. Done collects all five results, including failures, before comparison."
     },
     {
       "parameters": {
@@ -73,7 +91,7 @@
               "outputPropertyName": "data"
             }
           },
-          "timeout": 90000
+          "timeout": 180000
         }
       },
       "id": "0a4f32d1-1fe4-42c5-a2f7-20158ef3a004",
@@ -81,8 +99,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        -240,
-        20
+        -100,
+        100
       ],
       "notesInFlow": true,
       "notes": "Read-only GET. Redirects are not followed. Status, type or request failures continue only to the FAILED_CLOSED receipt.",
@@ -100,8 +118,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        20,
-        20
+        160,
+        -80
       ]
     },
     {
@@ -114,8 +132,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        280,
-        20
+        420,
+        -80
       ],
       "notesInFlow": true,
       "notes": "Terminal node. No persistence, notification, downstream execution or publication node follows."
@@ -148,6 +166,24 @@
       "main": [
         [
           {
+            "node": "Loop Official Sources",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Official Sources": {
+      "main": [
+        [
+          {
+            "node": "Fingerprint and Compare",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
             "node": "GET Official Source Bytes",
             "type": "main",
             "index": 0
@@ -159,7 +195,7 @@
       "main": [
         [
           {
-            "node": "Fingerprint and Compare",
+            "node": "Loop Official Sources",
             "type": "main",
             "index": 0
           }
@@ -191,7 +227,7 @@
     "sourceCatalogDigest": "f84921812c0950717879b528e57530a4c23f5c8e2bfb65b51b022f6c9b9fda29",
     "importAuthorized": false,
     "runtimeCompatibility": {
-      "candidateVersion": "1.0.2",
+      "candidateVersion": "1.0.3",
       "target": "n8n 2.25.7",
       "nativeTested": false
     },

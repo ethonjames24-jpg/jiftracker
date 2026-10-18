@@ -89,3 +89,19 @@ test('pre-network source loader rejects a foreign catalogue URL',async()=>{
  const code=body('Load Approved Catalog').replace('https://www.mof.gov.jm/resources-annual-and-supplementary-estimates/','https://example.invalid/');
  await assert.rejects(runInNewContext(wrap(code),{Buffer}),/SOURCE_BASE_URL_INVALID/);
 });
+
+
+test('generated graph serializes source requests and only compares the collected done output',()=>{
+ const loop=workflow.nodes.find(n=>n.name==='Loop Official Sources');
+ assert.equal(workflow.nodes.length,7);
+ assert.equal(loop.type,'n8n-nodes-base.splitInBatches');assert.equal(loop.typeVersion,3);
+ assert.equal(loop.parameters.batchSize,1);assert.equal(loop.parameters.options.reset,false);
+ assert.equal(workflow.connections['Load Approved Catalog'].main[0][0].node,loop.name);
+ assert.equal(workflow.connections[loop.name].main[0][0].node,'Fingerprint and Compare');
+ assert.equal(workflow.connections[loop.name].main[1][0].node,'GET Official Source Bytes');
+ assert.equal(workflow.connections['GET Official Source Bytes'].main[0][0].node,loop.name);
+ const http=workflow.nodes.find(n=>n.name==='GET Official Source Bytes');
+ assert.equal(http.parameters.options.timeout,180000);assert.equal(http.retryOnFail,false);
+ assert.equal(http.parameters.options.redirect.redirect.followRedirects,false);
+ assert.equal(http.parameters.method,'GET');
+});

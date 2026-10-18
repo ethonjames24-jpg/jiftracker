@@ -20,6 +20,7 @@ test("n8n package is inactive and contains only read-only node types", async () 
     "n8n-nodes-base.scheduleTrigger",
     "n8n-nodes-base.code",
     "n8n-nodes-base.httpRequest",
+    "n8n-nodes-base.splitInBatches",
   ]);
   for (const node of workflow.nodes) {
     assert.equal(allowedNodeTypes.has(node.type), true, `unexpected node type: ${node.type}`);

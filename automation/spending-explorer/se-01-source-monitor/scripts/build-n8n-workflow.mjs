@@ -181,7 +181,7 @@ const workflow = {
       name: "Manual Review Trigger",
       type: "n8n-nodes-base.manualTrigger",
       typeVersion: 1,
-      position: [-760, 120],
+      position: [-860, 120],
     },
     {
       parameters: {
@@ -194,7 +194,7 @@ const workflow = {
       disabled: true,
       type: "n8n-nodes-base.scheduleTrigger",
       typeVersion: 1.2,
-      position: [-760, -60],
+      position: [-860, -60],
     },
     {
       parameters: { mode: "runOnceForAllItems", jsCode: loadCatalogCode },
@@ -202,9 +202,19 @@ const workflow = {
       name: "Load Approved Catalog",
       type: "n8n-nodes-base.code",
       typeVersion: 2,
-      position: [-500, 20],
+      position: [-600, 20],
       notesInFlow: true,
       notes: "Public MOFPS URLs only. No credentials, private workbook IDs or write targets.",
+    },
+    {
+      parameters: { batchSize: 1, options: { reset: false } },
+      id: "0a4f32d1-1fe4-42c5-a2f7-20158ef3a007",
+      name: "Loop Official Sources",
+      type: "n8n-nodes-base.splitInBatches",
+      typeVersion: 3,
+      position: [-350, 20],
+      notesInFlow: true,
+      notes: "One in-flight public source request. Done collects all five results, including failures, before comparison.",
     },
     {
       parameters: {
@@ -223,14 +233,14 @@ const workflow = {
               outputPropertyName: "data",
             },
           },
-          timeout: 90000,
+          timeout: 180000,
         },
       },
       id: "0a4f32d1-1fe4-42c5-a2f7-20158ef3a004",
       name: "GET Official Source Bytes",
       type: "n8n-nodes-base.httpRequest",
       typeVersion: 4.4,
-      position: [-240, 20],
+      position: [-100, 100],
       notesInFlow: true,
       notes:
         "Read-only GET. Redirects are not followed. Status, type or request failures continue only to the FAILED_CLOSED receipt.",
@@ -244,7 +254,7 @@ const workflow = {
       name: "Fingerprint and Compare",
       type: "n8n-nodes-base.code",
       typeVersion: 2,
-      position: [20, 20],
+      position: [160, -80],
     },
     {
       parameters: { mode: "runOnceForAllItems", jsCode: receiptCode },
@@ -252,7 +262,7 @@ const workflow = {
       name: "Return Read-Only Receipt",
       type: "n8n-nodes-base.code",
       typeVersion: 2,
-      position: [280, 20],
+      position: [420, -80],
       notesInFlow: true,
       notes: "Terminal node. No persistence, notification, downstream execution or publication node follows.",
     },
@@ -263,10 +273,16 @@ const workflow = {
       main: [[{ node: "Load Approved Catalog", type: "main", index: 0 }]],
     },
     "Load Approved Catalog": {
-      main: [[{ node: "GET Official Source Bytes", type: "main", index: 0 }]],
+      main: [[{ node: "Loop Official Sources", type: "main", index: 0 }]],
+    },
+    "Loop Official Sources": {
+      main: [
+        [{ node: "Fingerprint and Compare", type: "main", index: 0 }],
+        [{ node: "GET Official Source Bytes", type: "main", index: 0 }],
+      ],
     },
     "GET Official Source Bytes": {
-      main: [[{ node: "Fingerprint and Compare", type: "main", index: 0 }]],
+      main: [[{ node: "Loop Official Sources", type: "main", index: 0 }]],
     },
     "Fingerprint and Compare": {
       main: [[{ node: "Return Read-Only Receipt", type: "main", index: 0 }]],
@@ -284,7 +300,7 @@ const workflow = {
     packageStatus: "INACTIVE_READ_ONLY",
     sourceCatalogDigest: catalogDigest,
     importAuthorized: false,
-    runtimeCompatibility: {candidateVersion: "1.0.2", target: "n8n 2.25.7", nativeTested: false},
+    runtimeCompatibility: {candidateVersion: "1.0.3", target: "n8n 2.25.7", nativeTested: false},
     activationAuthorized: false,
   },
   tags: [],
