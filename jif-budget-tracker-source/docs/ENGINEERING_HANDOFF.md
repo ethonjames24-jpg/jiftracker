@@ -1,6 +1,6 @@
 # JIF Budget Tracker and Spending Explorer Engineering Handoff
 
-## 2026-10-17 — Capture completeness repair (PR; not deployed)
+## 2026-10-17 — Capture completeness repair (PR 36 deployed; spacing follow-up pending)
 
 Owner screenshots from the native screenshot-only run show correct August counts, but the KPI image contains only six indicators and the fixed 1440×1200 sources image cuts off the lower source records. CaptureViews explicitly sliced the KPI array to six; this is a website capture-view defect rather than missing n8n input.
 
@@ -9,6 +9,10 @@ The capture view now renders all supplied KPI records. Capture-only desktop geom
 Validation: 51 tests pass, including a rendered-component regression for all eight KPIs (Capital Expenditure and Interest included); production build and git diff --check pass. Local browser visual/bounds validation could not run because no browser executable was installed and the browser download returned invalid/truncated archives. CSS fit at 1080×1920 and 1440×1200 therefore remains unverified until the PR preview or deployed capture service is inspected. Do not describe successful metadata/log readback as visual acceptance.
 
 After separate merge/deployment approval and the exact deployment succeeds, capture the same three views again and confirm all eight KPI cards and the complete outturn/budget/receipts records appear within the image. Do not rerun the monthly publication or approval. Rollback is the focused capture-view/style/test commit; preserve all source/data/approval/publication records. Screenshot Drive storage and publisher continuation remain separate pending workflow integrations.
+
+Owner approved PR 36 and deployment on October 17. Merge commit `3917d1d49b23b706e3a612c6fbcddaf89635a1ba` completed its Cloudflare Pages check successfully at 22:59:33 UTC. Fresh production HTML referenced `index-CR3ihj4k.css` and contained eight rendered KPI-card markers. Remote browser captures at the exact 1080×1920 and 1440×1200 workflow dimensions verified all eight KPI cards and the full outturn/budget/receipts records. The additional official-context card still began below the source image's lower boundary, so complete source-view visual acceptance remains open.
+
+The isolated spacing follow-up uses two metadata columns, a compact two-column source introduction and smaller capture-only gaps. It keeps every record, note and warning, without changing the ordinary tracker or workflow. The follow-up passes the same 51 tests and production build; its own preview visual acceptance and separate merge/deployment approval remain required. This record distinguishes the successful deployed PR 36 from the unmerged follow-up rather than claiming the original visual check was complete.
 
 Last reviewed: 2026-07-31
 
