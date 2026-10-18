@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { sha256Bytes, canonicalMofUrl } from "../src/n8n-runtime-compat.mjs";
 
 const packageRoot = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const catalogPath = resolve(packageRoot, "config/source-catalog.v1.json");
@@ -13,11 +14,13 @@ const catalogText = await readFile(catalogPath, "utf8");
 const catalog = JSON.parse(catalogText);
 const catalogDigest = createHash("sha256").update(catalogText).digest("hex");
 
-const loadCatalogCode = `const catalog = ${JSON.stringify(catalog)};
+const loadCatalogCode = `${canonicalMofUrl.toString()}\nconst catalog = ${JSON.stringify(catalog)};
 const sources = [
   { ...catalog.discovery, kind: 'discovery' },
   ...catalog.artifacts.map((source) => ({ ...source, kind: 'artifact' })),
 ];
+if(catalog.status!=="INACTIVE_READ_ONLY"||catalog.network.method!=="GET"||sources.length!==5)throw new Error("SE01_CATALOG_INVALID");
+for(const source of sources) canonicalMofUrl(source.url, source.url);
 return sources.map((source) => ({ json: {
   ...source,
   workflowId: catalog.workflowId,
@@ -29,22 +32,14 @@ return sources.map((source) => ({ json: {
   inactive: true,
 } }));`;
 
-const fingerprintCode = `const sourceItems = $('Load Approved Catalog').all();
+const fingerprintCode = `${sha256Bytes.toString()}
+${canonicalMofUrl.toString()}
+const sourceItems = $('Load Approved Catalog').all();
 const fetchedItems = $input.all();
 const fail = (code, message = code) => {
   throw Object.assign(new Error(message), { code });
 };
-const sha256 = async (bytes) => {
-  const digest = await crypto.subtle.digest('SHA-256', bytes);
-  return [...new Uint8Array(digest)].map((value) => value.toString(16).padStart(2, '0')).join('');
-};
-const normalizeUrl = (raw, base) => {
-  const url = new URL(raw, base);
-  url.hash = '';
-  url.search = '';
-  if (url.hostname === 'mof.gov.jm') url.hostname = 'www.mof.gov.jm';
-  return url.toString();
-};
+const sha256 = async (bytes) => sha256Bytes(bytes);
 const results = [];
 for (let index = 0; index < sourceItems.length; index += 1) {
   const source = sourceItems[index].json;
@@ -91,8 +86,8 @@ for (let index = 0; index < sourceItems.length; index += 1) {
       const links = new Set();
       for (const match of discoveryHtml.matchAll(/href\\s*=\\s*["']([^"']+)["']/giu)) {
         try {
-          const normalized = normalizeUrl(match[1], source.url);
-          const parsed = new URL(normalized);
+          const parsed = canonicalMofUrl(match[1].replace(/&amp;/g, "&"), source.url);
+          const normalized = parsed.url;
           const searchable = parsed.pathname.toLowerCase();
           if (!allowed.has(parsed.hostname)) continue;
           if (!parsed.pathname.startsWith(rules.requiredPathPrefix)) continue;
@@ -148,6 +143,10 @@ for (let index = 0; index < sourceItems.length; index += 1) {
 return results;`;
 
 const receiptCode = `const results = $input.all().map((item) => item.json);
+const expectedIds = ${JSON.stringify([catalog.discovery.id, ...catalog.artifacts.map(s => s.id)])};
+if(results.length!==expectedIds.length||new Set(results.map(r=>r.sourceId)).size!==expectedIds.length||results.some(r=>!expectedIds.includes(r.sourceId)||!['UNCHANGED','CHANGED','FAILED'].includes(r.outcome))){
+  results.push({sourceId:'receipt_contract',outcome:'FAILED',errorCode:'SOURCE_RESULT_SET_INVALID',errorMessage:'Expected exactly one recognized result for each approved source'});
+}
 const failed = results.filter((result) => result.outcome === 'FAILED').length;
 const changed = results.filter((result) => result.outcome === 'CHANGED').length;
 const unchanged = results.filter((result) => result.outcome === 'UNCHANGED').length;
@@ -192,6 +191,7 @@ const workflow = {
       },
       id: "0a4f32d1-1fe4-42c5-a2f7-20158ef3a002",
       name: "Daily Schedule — INACTIVE",
+      disabled: true,
       type: "n8n-nodes-base.scheduleTrigger",
       typeVersion: 1.2,
       position: [-760, -60],
@@ -209,10 +209,12 @@ const workflow = {
     {
       parameters: {
         method: "GET",
+        sendBody: false,
+        authentication: "none",
         url: "={{ $json.url }}",
         options: {
           allowUnauthorizedCerts: false,
-          redirect: { redirect: { followRedirects: false } },
+          redirect: { redirect: { followRedirects: false, maxRedirects: 0 } },
           response: {
             response: {
               fullResponse: true,
@@ -227,11 +229,12 @@ const workflow = {
       id: "0a4f32d1-1fe4-42c5-a2f7-20158ef3a004",
       name: "GET Official Source Bytes",
       type: "n8n-nodes-base.httpRequest",
-      typeVersion: 4.2,
+      typeVersion: 4.4,
       position: [-240, 20],
       notesInFlow: true,
       notes:
         "Read-only GET. Redirects are not followed. Status, type or request failures continue only to the FAILED_CLOSED receipt.",
+      retryOnFail: false,
       alwaysOutputData: true,
       onError: "continueRegularOutput",
     },
@@ -281,6 +284,7 @@ const workflow = {
     packageStatus: "INACTIVE_READ_ONLY",
     sourceCatalogDigest: catalogDigest,
     importAuthorized: false,
+    runtimeCompatibility: {candidateVersion: "1.0.2", target: "n8n 2.25.7", nativeTested: false},
     activationAuthorized: false,
   },
   tags: [],

@@ -2,7 +2,14 @@
 
 Status: **inactive, read-only implementation package**
 
-Package version: **1.0.1**
+Package version: **1.0.2 — n8n 2.25.7 compatibility candidate**
+
+The generated Code nodes no longer depend on the host `crypto` or `URL` globals,
+which are not exposed by n8n 2.25.7's task-runner VM. The candidate retains the
+approved v1.0.1 source catalogue and expected fingerprints. Its daily schedule is
+explicitly disabled, and the workflow stays inactive. Local sandbox/fixture checks
+pass; this does **not** establish a native n8n run or current official-source status.
+See `docs/SE01-N8N-2257-COMPATIBILITY.md` for the import boundary and evidence.
 
 This package implements the first workflow in the controlled JIF Spending Explorer update
 system. It checks approved Ministry of Finance & Public Service locations, fingerprints the
