@@ -1,0 +1,1258 @@
+{
+  "name": "JIF | SE-02 Acquire and Archive | REPORT ONLY v0.1",
+  "active": false,
+  "nodes": [
+    {
+      "id": "748de571-bd26-a985-5189-5c5bae025eea",
+      "name": "SE02 | Manual Preflight",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "parameters": {},
+      "position": [
+        -700,
+        0
+      ],
+      "retryOnFail": false
+    },
+    {
+      "id": "2422eb38-8fd7-8008-c3a1-1d1307c9c8ff",
+      "name": "SE02 | Future Child Input",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "position": [
+        -700,
+        180
+      ],
+      "retryOnFail": false
+    },
+    {
+      "id": "5a6d8c7b-9bc3-d49a-7809-bc8b772cd020",
+      "name": "SE02 | Settings",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "jsCode": "const config={\n  \"mode\": \"REPORT_ONLY\",\n  \"archiveRootId\": \"1zJVOBm8PxF8ontZzHS5udYMIBke1lUBB\",\n  \"guardTableId\": \"\",\n  \"guardRowId\": 1,\n  \"ledgerTableId\": \"\",\n  \"scannerUrl\": \"\",\n  \"caseInput\": null,\n  \"transportEnabled\": false\n};\nconst input=config.caseInput ?? ($input.first()?.json?.monitorReceipt ? $input.first().json : null);\nreturn [{json:{config,input}}];\n"
+      },
+      "position": [
+        -460,
+        0
+      ],
+      "retryOnFail": false
+    },
+    {
+      "id": "20f81816-e191-b4e7-c024-099125b3700c",
+      "name": "SE02 | Engine",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "jsCode": "function sha256Bytes(input) {\n  const bytes = Buffer.isBuffer(input) ? input : Buffer.from(input);\n  const k = [1116352408,1899447441,3049323471,3921009573,961987163,1508970993,2453635748,2870763221,3624381080,310598401,607225278,1426881987,1925078388,2162078206,2614888103,3248222580,3835390401,4022224774,264347078,604807628,770255983,1249150122,1555081692,1996064986,2554220882,2821834349,2952996808,3210313671,3336571891,3584528711,113926993,338241895,666307205,773529912,1294757372,1396182291,1695183700,1986661051,2177026350,2456956037,2730485921,2820302411,3259730800,3345764771,3516065817,3600352804,4094571909,275423344,430227734,506948616,659060556,883997877,958139571,1322822218,1537002063,1747873779,1955562222,2024104815,2227730452,2361852424,2428436474,2756734187,3204031479,3329325298];\n  const h = [1779033703,3144134277,1013904242,2773480762,1359893119,2600822924,528734635,1541459225];\n  const w = new Uint32Array(64);\n  function chunk(block, offset) {\n    for(let j=0;j<16;j++){const i=offset+j*4;w[j]=((block[i]<<24)|(block[i+1]<<16)|(block[i+2]<<8)|block[i+3])>>>0;}\n    for(let j=16;j<64;j++){const a=w[j-15],b=w[j-2],s0=((a>>>7)|(a<<25))^((a>>>18)|(a<<14))^(a>>>3),s1=((b>>>17)|(b<<15))^((b>>>19)|(b<<13))^(b>>>10);w[j]=(w[j-16]+s0+w[j-7]+s1)>>>0;}\n    let [a,b,c,d,e,f,g,z]=h;\n    for(let j=0;j<64;j++){const s1=((e>>>6)|(e<<26))^((e>>>11)|(e<<21))^((e>>>25)|(e<<7)),ch=(e&f)^(~e&g),t1=(z+s1+ch+k[j]+w[j])>>>0,s0=((a>>>2)|(a<<30))^((a>>>13)|(a<<19))^((a>>>22)|(a<<10)),maj=(a&b)^(a&c)^(b&c),t2=(s0+maj)>>>0;z=g;g=f;f=e;e=(d+t1)>>>0;d=c;c=b;b=a;a=(t1+t2)>>>0;}\n    const v=[a,b,c,d,e,f,g,z];for(let j=0;j<8;j++)h[j]=(h[j]+v[j])>>>0;\n  }\n  const full=bytes.length-bytes.length%64;\n  for(let i=0;i<full;i+=64)chunk(bytes,i);\n  const tail=Buffer.alloc(bytes.length-full<56?64:128);\n  bytes.copy(tail,0,full);tail[bytes.length-full]=128;\n  const bits=bytes.length*8;\n  tail.writeUInt32BE(Math.floor(bits/0x100000000),tail.length-8);\n  tail.writeUInt32BE(bits>>>0,tail.length-4);\n  for(let i=0;i<tail.length;i+=64)chunk(tail,i);\n  return h.map(v=>v.toString(16).padStart(8,'0')).join('');\n}\nfunction makeArchive({ hash, now, catalog, catalogDigest }) {\n  const DRIVE = 'https://www.googleapis.com/drive/v3/files';\n  const META = 'id,name,mimeType,size,parents,appProperties,trashed';\n  const VERSION = 'jif-se02-archive-v1';\n  const GUARD = 'JIF_SE02_ARCHIVE_GLOBAL';\n  const fail = m => { throw new Error('JIF_SE02_BLOCKED: ' + m); };\n  const stable = v => Array.isArray(v) ? '[' + v.map(stable).join(',') + ']' : v && typeof v === 'object' ? '{' + Object.keys(v).sort().map(k => JSON.stringify(k) + ':' + stable(v[k])).join(',') + '}' : JSON.stringify(v);\n  const digest = v => hash(Buffer.from(stable(v)));\n  const validId = v => typeof v === 'string' && /^[A-Za-z0-9_-]{8,200}$/.test(v);\n  const validHash = v => typeof v === 'string' && /^[a-f0-9]{64}$/.test(v);\n  const json = r => { if (r.status !== 200) fail('HTTP ' + r.status); if (!Buffer.isBuffer(r.bytes) || r.bytes.length > 1000000) fail('JSON response size differs'); try { return JSON.parse(r.bytes.toString('utf8')); } catch { fail('invalid JSON response'); } };\n  const issue = (s, phase, request) => { s.phase = phase; s.request = request; return s; };\n  const get = (s, phase, url, route = 'drive') => issue(s, phase, { route, method: 'GET', url });\n  const props = (s, kind) => ({ jif_se02_batch: s.batchKey, jif_se02_kind: kind, jif_se02_version: '1' });\n  const metaUrl = id => DRIVE + '/' + id + '?fields=' + META + '&supportsAllDrives=true';\n  const mediaUrl = id => DRIVE + '/' + id + '?alt=media&supportsAllDrives=true';\n  function guarded(s, phase, request) {\n    s.pending = { phase, request };\n    return issue(s, 'GUARD_BEFORE_WRITE', { route: 'guard_read' });\n  }\n  function rows(r) {\n    if (!Array.isArray(r.rows) || r.rows.some(x => x.error)) fail('native table read failed');\n    return r.rows.filter(x => Object.keys(x).length);\n  }\n  function guard(s, r, idle) {\n    s.uncertain = true;\n    const all = rows(r);\n    if (all.length !== 1) fail('exactly one guard row required');\n    const g = all[0];\n    if (String(g.id) !== String(s.config.guardRowId) || g.guard_key !== GUARD || g.schema_version !== VERSION) fail('guard identity differs');\n    const expected = idle ? { lock_token: 'UNLOCKED', holder_execution_id: 'NONE', holder_workflow_id: 'NONE', acquired_at: 'NONE' } : s.claim;\n    for (const [k, v] of Object.entries(expected)) if (g[k] !== v) fail(idle ? 'archive guard is held; do not reset it' : 'current execution guard ownership differs');\n    s.uncertain = false;\n  }\n  function scan(report, s, byteCount, retrievedAt = s.retrievedAt) {\n    if (!report || report.status !== 'CLEAN' || report.sha256 !== s.observedSha256 || report.bytes !== byteCount || !Number.isFinite(Date.parse(report.scannedAt || '')) || Date.parse(report.scannedAt) > Date.parse(now())) fail('malware scan does not cover the exact bytes');\n    for (const field of ['engine', 'engineVersion', 'signatureVersion']) if (typeof report[field] !== 'string' || !report[field].trim() || report[field].length > 200) fail('scanner evidence missing ' + field);\n    if (Object.keys(report).sort().join(',') !== ['status', 'sha256', 'bytes', 'engine', 'engineVersion', 'signatureVersion', 'scannedAt'].sort().join(',') || Date.parse(report.scannedAt) < Date.parse(retrievedAt)) fail('scanner evidence fields or timestamp differ');\n    return report;\n  }\n  function sourceBytes(s, bytes, contentType, expectedSize = s.observedBytes) {\n    const a = s.source;\n    if (!Buffer.isBuffer(bytes) || bytes.length < a.minimumBytes || bytes.length > a.maximumBytes || bytes.length !== expectedSize) fail('source byte size differs');\n    const mime = String(contentType || '').toLowerCase().split(';')[0].trim();\n    if (!a.expectedContentTypes.includes(mime)) fail('source content type differs');\n    if (a.requiredMagicHex && bytes.subarray(0, a.requiredMagicHex.length / 2).toString('hex') !== a.requiredMagicHex) fail('source signature differs');\n    if (a.requiredTextTokens?.some(token => !bytes.toString('utf8').includes(token))) fail('source required tokens missing');\n    if (hash(bytes) !== s.observedSha256) fail('source changed after monitoring or stored bytes differ');\n  }\n  function checkMeta(s, f, kind) {\n    const folder = kind === 'folder', parent = folder ? s.config.archiveRootId : s.reservation.folderId;\n    const expectedId = s.reservation[kind + 'Id'];\n    const name = folder ? 'SE02-' + s.batchKey : kind === 'source' ? s.reservation.manifest.file_name : 'source-manifest.json';\n    const mime = folder ? 'application/vnd.google-apps.folder' : kind === 'source' ? s.reservation.manifest.mime_type : 'application/json';\n    if (f.id !== expectedId || f.name !== name || f.mimeType !== mime || f.trashed || !f.parents?.includes(parent) || stable(f.appProperties) !== stable(props(s, kind))) fail('stored ' + kind + ' metadata differs');\n    if (kind === 'source' && Number(f.size) !== s.observedBytes) fail('stored source size differs');\n  }\n  function validateReservation(s, v) {\n    const m = v?.manifest;\n    if (v?.version !== VERSION || v.batchKey !== s.batchKey || v.rootId !== s.config.archiveRootId || !validId(v.folderId) || !validId(v.sourceId) || !validId(v.manifestId) || new Set([v.folderId, v.sourceId, v.manifestId]).size !== 3) fail('reservation identity differs');\n    if (!m || m.batch_id !== s.batchKey || m.checksum_sha256 !== s.observedSha256 || m.byte_size !== s.observedBytes || m.source_id !== s.source.id || m.fiscal_year !== catalog.fiscalYear || m.publisher !== catalog.authority.publisher || m.source_class !== s.source.sourceClass || m.file_name !== s.source.fileName || m.status !== 'ACQUIRED' || m.release_date !== null || m.release_date_status !== 'NOT_VERIFIED_FOR_CHANGED_BYTES' || !/^\\d{4}-\\d{2}-\\d{2}$/.test(m.catalogue_release_date || '') || m.parser_version !== 'NOT_EXTRACTED' || m.contract_version !== VERSION || m.archive_file_id !== v.sourceId || m.archive_folder_id !== v.folderId || !Number.isFinite(Date.parse(m.retrieved_at || ''))) fail('reservation manifest differs');\n    // The original URL/date remains evidence on replays; the current observation cannot rewrite it.\n    if (!/^https:\\/\\/www\\.mof\\.gov\\.jm\\/wp-content\\/uploads\\/[^?#]+$/.test(m.source_url || '') || !validHash(m.catalog_digest) || m.extraction_authorized !== false || m.publication_authorized !== false) fail('reserved source authority or release boundary differs');\n    if (m.mime_type !== (s.source.fileName.endsWith('.pdf') ? 'application/pdf' : 'text/csv')) fail('reserved MIME differs');\n    scan(m.malware_scan, s, m.byte_size, m.retrieved_at);\n    if (digest(m) !== v.manifestSha256) fail('reserved manifest hash differs');\n    s.reservation = v;\n  }\n  function start(config, input, context) {\n    const blockers = [];\n    if (config.transportEnabled !== true) blockers.push('Native transport nodes are disabled in the import candidate');\n    if (!validId(config.archiveRootId)) blockers.push('Dedicated archive root folder not configured');\n    if (!validId(config.guardTableId) || !validId(config.ledgerTableId) || config.guardTableId === config.ledgerTableId || !Number.isInteger(config.guardRowId) || config.guardRowId < 1) blockers.push('Isolated SE-02 guard/reservation tables not configured');\n    if (!/^https:\\/\\/[A-Za-z0-9.-]+(?::443)?\\/[^?#\\s]*$/.test(config.scannerUrl || '')) blockers.push('Trusted malware scanner HTTPS endpoint not configured');\n    if (!input) blockers.push('No source-change input supplied');\n    const s = { version: VERSION, config, owner: context, phase: 'START', request: {}, writes: 0, officialGets: 0, scannerCalls: 0, reused: false, acquired: false, guardReleased: false };\n    if (config.mode === 'REPORT_ONLY') return issue(s, 'REPORT_ONLY', { route: 'done', blockers });\n    if (config.mode !== 'ARCHIVE' || blockers.length) fail('archive configuration incomplete: ' + blockers.join('; '));\n    if (!/^\\d+$/.test(context.executionId || '') || !validId(context.workflowId)) fail('native execution identity required');\n    const receipt = input.monitorReceipt;\n    const a = catalog.artifacts.find(x => x.id === input.sourceId);\n    if (!a || receipt?.workflowId !== 'SE-01' || receipt.catalogDigest !== catalogDigest || receipt.fiscalYear !== catalog.fiscalYear || receipt.state !== 'SOURCE_CHANGE_DETECTED' || receipt.summary?.failed !== 0 || receipt.summary.sourcesChecked !== 5 || !Array.isArray(receipt.results) || receipt.results.length !== 5) fail('complete reviewed-catalogue source-change receipt required');\n    const expectedIds = [catalog.discovery.id, ...catalog.artifacts.map(x => x.id)];\n    if (new Set(receipt.results.map(x => x.sourceId)).size !== 5 || expectedIds.some(id => !receipt.results.some(x => x.sourceId === id))) fail('monitor source set differs');\n    if (receipt.results.some(x => !['UNCHANGED', 'CHANGED'].includes(x.outcome) || x.statusCode !== 200 || !validHash(x.observedSha256))) fail('monitor result validation differs');\n    const counts = receipt.results.reduce((v, r) => { v[r.outcome]++; return v; }, { CHANGED: 0, UNCHANGED: 0 });\n    if (!counts.CHANGED || counts.CHANGED !== receipt.summary.changed || counts.UNCHANGED !== receipt.summary.unchanged) fail('monitor counts differ');\n    const r = receipt.results.find(x => x.sourceId === input.sourceId);\n    if (r.url !== a.url || r.sourceClass !== a.sourceClass || r.outcome !== 'CHANGED' || r.expectedSha256 !== a.expectedSha256 || r.observedSha256 === a.expectedSha256 || !Number.isInteger(r.observedBytes) || r.observedBytes < a.minimumBytes || r.observedBytes > a.maximumBytes) fail('selected changed artifact differs');\n    const age = Date.parse(now()) - Date.parse(receipt.checkedAt || '');\n    if (!Number.isFinite(age) || age < 0 || age > 86400000) fail('monitor receipt is stale or future dated');\n    Object.assign(s, { source: a, observedSha256: r.observedSha256, observedBytes: r.observedBytes, monitorCheckedAt: receipt.checkedAt });\n    s.batchKey = digest({ publisher: catalog.authority.publisher, source_type: a.id, fiscal_year: catalog.fiscalYear, checksum_sha256: r.observedSha256, parser_version: 'NOT_EXTRACTED', contract_version: VERSION });\n    s.claim = { lock_token: 'JIF-SE02|' + context.workflowId + '|' + context.executionId, holder_execution_id: context.executionId, holder_workflow_id: context.workflowId, acquired_at: now() };\n    return issue(s, 'GUARD_IDLE', { route: 'guard_read' });\n  }\n  function ledgerRead(s) { return issue(s, 'LEDGER_READ', { route: 'ledger_read' }); }\n  function create(s, kind) {\n    if (kind === 'source') {\n      s.writes++;\n      return guarded(s, 'SOURCE_SESSION_POST', { route: 'drive', method: 'POST', url: 'https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable&supportsAllDrives=true&fields=id', kind: 'source_session' });\n    }\n    const q = { route: 'drive', method: 'POST', url: kind === 'folder' ? DRIVE + '?supportsAllDrives=true&fields=id' : 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&supportsAllDrives=true&fields=id', kind };\n    s.writes++;\n    return guarded(s, kind.toUpperCase() + '_POST', q);\n  }\n  function checkOrCreate(s, kind) { return get(s, kind.toUpperCase() + '_META', metaUrl(s.reservation[kind + 'Id'])); }\n  function stepUnsafe(s, r) {\n    switch (s.phase) {\n      case 'GUARD_IDLE': guard(s, r, true); s.acquireAttempted = true; return issue(s, 'ACQUIRE', { route: 'acquire' });\n      case 'ACQUIRE': return issue(s, 'GUARD_HELD', { route: 'guard_read' });\n      case 'GUARD_HELD': guard(s, r, false); s.owned = true; return get(s, 'ROOT', DRIVE + '/' + s.config.archiveRootId + '?fields=id,mimeType,trashed,shared&supportsAllDrives=true');\n      case 'GUARD_BEFORE_WRITE': { guard(s, r, false); const p = s.pending; delete s.pending; return issue(s, p.phase, p.request); }\n      case 'ROOT': { const f = json(r); if (f.id !== s.config.archiveRootId || f.mimeType !== 'application/vnd.google-apps.folder' || f.trashed || f.shared !== false) fail('private archive root required'); return ledgerRead(s); }\n      case 'LEDGER_READ': {\n        const all = rows(r); if (all.length > 1) fail('duplicate batch reservations');\n        if (!all.length) {\n          if (s.reservationPending) { s.uncertain = true; fail('reservation write not reconciled; inspect saved execution'); }\n          s.officialGets++; return get(s, 'SOURCE_GET', s.source.url, 'public');\n        }\n        if (all[0].batch_key !== s.batchKey) fail('reservation key differs');\n        let v; try { v = JSON.parse(all[0].reservation_json); } catch { fail('invalid stored reservation'); }\n        if (s.reservationPending && stable(v) !== stable(s.reservation)) { s.uncertain = true; fail('reservation acknowledgment differs'); }\n        validateReservation(s, v); s.reservationPending = false; s.reused = !s.newReservation;\n        return checkOrCreate(s, 'folder');\n      }\n      case 'SOURCE_GET': {\n        if (r.status !== 200) fail('official source HTTP ' + r.status);\n        sourceBytes(s, r.bytes, r.headers?.['content-type']);\n        s.retrievedAt = now(); s.sourceContentType = r.headers['content-type']; s.hasSourceBytes = true; s.scannerCalls++;\n        return issue(s, 'SCAN', { route: 'scan', method: 'POST', url: s.config.scannerUrl, kind: 'scan' });\n      }\n      case 'SCAN': {\n        s.scanReport = scan(json(r), s, s.observedBytes);\n        if (s.reservation) return create(s, 'source');\n        return get(s, 'ALLOCATE_IDS', DRIVE + '/generateIds?count=3&space=drive&type=files');\n      }\n      case 'ALLOCATE_IDS': {\n        const v = json(r); if (v.ids?.length !== 3 || new Set(v.ids).size !== 3 || v.ids.some(x => !validId(x))) fail('Drive ID allocation differs');\n        const [folderId, sourceId, manifestId] = v.ids;\n        const manifest = { schema_version: '1.0.0', batch_id: s.batchKey, source_id: s.source.id, source_class: s.source.sourceClass, publisher: catalog.authority.publisher, title: s.source.title, fiscal_year: catalog.fiscalYear, release_date: null, release_date_status: 'NOT_VERIFIED_FOR_CHANGED_BYTES', catalogue_release_date: s.source.releaseDate, retrieved_at: s.retrievedAt, source_url: s.source.url, file_name: s.source.fileName, checksum_sha256: s.observedSha256, mime_type: s.source.fileName.endsWith('.pdf') ? 'application/pdf' : 'text/csv', source_content_type: s.sourceContentType, byte_size: s.observedBytes, status: 'ACQUIRED', parser_version: 'NOT_EXTRACTED', contract_version: VERSION, catalog_digest: catalogDigest, monitor_checked_at: s.monitorCheckedAt, malware_scan: s.scanReport, archive_folder_id: folderId, archive_file_id: sourceId, extraction_authorized: false, publication_authorized: false };\n        s.reservation = { version: VERSION, rootId: s.config.archiveRootId, batchKey: s.batchKey, folderId, sourceId, manifestId, manifest, manifestSha256: digest(manifest) };\n        s.newReservation = true; s.reservationPending = true;\n        return guarded(s, 'LEDGER_INSERT', { route: 'ledger_insert' });\n      }\n      // No second INSERT after an uncertain acknowledgment: read the complete batch key.\n      case 'LEDGER_INSERT': return ledgerRead(s);\n      case 'FOLDER_META':\n        if (r.status === 404) { if (s.justPosted === 'folder') fail('folder create not visible; inspect before resuming'); return create(s, 'folder'); }\n        checkMeta(s, json(r), 'folder'); delete s.justPosted; return checkOrCreate(s, 'source');\n      case 'FOLDER_POST': s.justPosted = 'folder'; return checkOrCreate(s, 'folder');\n      case 'SOURCE_META':\n        if (r.status === 404) {\n          if (s.justPosted === 'source') fail('source upload not visible; inspect before resuming');\n          if (s.hasSourceBytes) return create(s, 'source');\n          s.officialGets++; return get(s, 'SOURCE_GET', s.source.url, 'public');\n        }\n        checkMeta(s, json(r), 'source'); delete s.justPosted; return get(s, 'SOURCE_READBACK', mediaUrl(s.reservation.sourceId));\n      case 'SOURCE_POST': s.justPosted = 'source'; return checkOrCreate(s, 'source');\n      case 'SOURCE_SESSION_POST': {\n        // Session creation does not prove file persistence. An unknown response is not retried.\n        if (r.status !== 200) fail('resumable session not acknowledged; inspect before resuming');\n        const location = r.headers?.location;\n        if (typeof location !== 'string' || !/^https:\\/\\/www\\.googleapis\\.com\\/upload\\/drive\\/v3\\/files\\?[^\\s#]*upload_id=[A-Za-z0-9_%.-]+[^\\s#]*$/.test(location)) fail('resumable session location differs');\n        s.uploadPuts = (s.uploadPuts || 0) + 1;\n        return guarded(s, 'SOURCE_POST', { route: 'drive', method: 'PUT', url: location, kind: 'source' });\n      }\n      case 'SOURCE_READBACK':\n        if (r.status !== 200) fail('source readback HTTP ' + r.status);\n        sourceBytes(s, r.bytes, s.reservation.manifest.mime_type); s.sourceReadback = true; s.hasSourceBytes = false;\n        return checkOrCreate(s, 'manifest');\n      case 'MANIFEST_META':\n        if (r.status === 404) { if (s.justPosted === 'manifest') fail('manifest upload not visible; inspect before resuming'); return create(s, 'manifest'); }\n        checkMeta(s, json(r), 'manifest'); delete s.justPosted; return get(s, 'MANIFEST_READBACK', mediaUrl(s.reservation.manifestId));\n      case 'MANIFEST_POST': s.justPosted = 'manifest'; return checkOrCreate(s, 'manifest');\n      case 'MANIFEST_READBACK':\n        if (r.status !== 200 || hash(r.bytes) !== s.reservation.manifestSha256 || r.bytes.toString('utf8') !== stable(s.reservation.manifest)) fail('manifest byte readback differs');\n        s.acquired = s.sourceReadback === true;\n        return issue(s, 'RELEASE', { route: 'release' });\n      case 'RELEASE': return issue(s, 'GUARD_RELEASED', { route: 'guard_read' });\n      case 'GUARD_RELEASED': guard(s, r, true); s.owned = false; s.guardReleased = true; return issue(s, 'COMPLETE', { route: 'done' });\n      default: fail('unknown phase ' + s.phase);\n    }\n  }\n  function step(s, r) {\n    if (s?.version !== VERSION) fail('state version differs');\n    try { return stepUnsafe(s, r); }\n    catch (e) {\n      s.failure = String(e.message); s.acquired = false;\n      if (s.owned && !s.uncertain && !s.reservationPending && !['RELEASE', 'GUARD_RELEASED'].includes(s.phase)) return issue(s, 'RELEASE', { route: 'release' });\n      return issue(s, 'BLOCKED', { route: 'done' });\n    }\n  }\n  function body(s, bytes = Buffer.alloc(0)) {\n    const q = s.request;\n    if (q.kind === 'scan') { if (hash(bytes) !== s.observedSha256) fail('scanner input bytes differ'); return { bytes, mime: s.source.fileName.endsWith('.pdf') ? 'application/pdf' : 'text/csv' }; }\n    if (!q.kind) return { bytes: Buffer.alloc(0), mime: 'application/octet-stream' };\n    const kind = q.kind, v = s.reservation;\n    if (kind === 'source' && (!s.hasSourceBytes || hash(bytes) !== s.observedSha256)) fail('source upload binary unavailable or differs');\n    if (kind === 'source') return { bytes, mime: v.manifest.mime_type };\n    const actualKind = kind === 'source_session' ? 'source' : kind;\n    const metadata = { id: v[actualKind + 'Id'], name: actualKind === 'folder' ? 'SE02-' + s.batchKey : actualKind === 'source' ? v.manifest.file_name : 'source-manifest.json', mimeType: actualKind === 'folder' ? 'application/vnd.google-apps.folder' : actualKind === 'source' ? v.manifest.mime_type : 'application/json', parents: [actualKind === 'folder' ? s.config.archiveRootId : v.folderId], appProperties: props(s, actualKind) };\n    if (kind === 'folder' || kind === 'source_session') return { bytes: Buffer.from(JSON.stringify(metadata)), mime: 'application/json' };\n    const data = Buffer.from(stable(v.manifest));\n    const boundary = 'JIFSE02' + s.batchKey.slice(0, 24);\n    return { bytes: Buffer.concat([Buffer.from('--' + boundary + '\\r\\nContent-Type: application/json; charset=UTF-8\\r\\n\\r\\n' + JSON.stringify(metadata) + '\\r\\n--' + boundary + '\\r\\nContent-Type: ' + metadata.mimeType + '\\r\\n\\r\\n'), data, Buffer.from('\\r\\n--' + boundary + '--\\r\\n')]), mime: 'multipart/related; boundary=' + boundary };\n  }\n  function result(s) {\n    if (s.request.route !== 'done') fail('terminal state required');\n    const ok = s.acquired && s.guardReleased && !s.failure;\n    return { ok, workflow_id: s.owner.workflowId, execution_id: s.owner.executionId, scope: 'SPENDING_EXPLORER_SOURCE_ARCHIVE_ONLY', mode: s.config.mode, state: s.phase === 'REPORT_ONLY' ? 'REPORT_ONLY' : ok ? 'ACQUIRED' : 'FAILED_CLOSED', blockers: s.request.blockers || (s.failure ? [s.failure] : []), batch_id: s.batchKey || '', official_download_calls: s.officialGets, scanner_calls: s.scannerCalls, drive_create_attempts: s.writes, source_upload_put_attempts: s.uploadPuts || 0, idempotent_replay: s.reused, guard_release_verified: s.guardReleased, guard_recovery_required: !s.guardReleased && !!s.acquireAttempted, source_byte_readback: ok ? 'PASS' : 'NOT_VERIFIED', manifest_byte_readback: ok ? 'PASS' : 'NOT_VERIFIED', malware_scan_verified: ok, source_package: ok ? { folder_id: s.reservation.folderId, folder_url: 'https://drive.google.com/drive/folders/' + s.reservation.folderId, source_file_id: s.reservation.sourceId, manifest_file_id: s.reservation.manifestId, manifest_sha256: s.reservation.manifestSha256, manifest: s.reservation.manifest } : null, extraction_authorized: false, publication_authorized: false, public_rows_written: 0, subscriber_sends: 0, downstream_calls: 0 };\n  }\n  return { start, step, body, result, stable };\n}\nconst engine=makeArchive({hash:sha256Bytes,now:()=>new Date().toISOString(),catalog:{\"$schema\":\"../schemas/source-catalog.schema.json\",\"catalogVersion\":\"1.0.1\",\"workflowId\":\"SE-01\",\"workflowName\":\"JIF | SE-01 Spending Explorer Source Monitor | INACTIVE\",\"status\":\"INACTIVE_READ_ONLY\",\"fiscalYear\":\"2026-2027\",\"authority\":{\"publisher\":\"Ministry of Finance & Public Service, Jamaica\",\"scope\":\"Central Government annual and supplementary Estimates of Expenditure\",\"officialDomain\":\"www.mof.gov.jm\"},\"allowedHosts\":[\"www.mof.gov.jm\",\"mof.gov.jm\"],\"network\":{\"method\":\"GET\",\"timeoutMs\":90000,\"maxRedirects\":3,\"maxBytesPerSource\":50000000,\"userAgent\":\"JIF-SE-01-ReadOnly-Source-Monitor/1.0\"},\"discovery\":{\"id\":\"annual_and_supplementary_estimates_index\",\"sourceClass\":\"primary_discovery\",\"url\":\"https://www.mof.gov.jm/resources-annual-and-supplementary-estimates/\",\"expectedContentTypes\":[\"text/html\"],\"minimumBytes\":10000,\"requiredTextTokens\":[\"Annual and Supplementary Estimates\"],\"linkInventory\":{\"requiredPathPrefix\":\"/wp-content/uploads/\",\"fiscalYearTokens\":[\"2026-2027\",\"2026-27\"],\"includeTokens\":[\"estimates\",\"supplementary\"],\"excludeTokens\":[\"public-sector\",\"consolidated\",\"public-bodies\",\"revenue\"],\"expectedUrls\":[\"https://www.mof.gov.jm/wp-content/uploads/2026-2027-Approved-Estimates.csv\",\"https://www.mof.gov.jm/wp-content/uploads/2026-2027-As-Presented-Estimates.csv\",\"https://www.mof.gov.jm/wp-content/uploads/2026-2027-Estimates-of-Expenditure-As-Passed.pdf\",\"https://www.mof.gov.jm/wp-content/uploads/2026-2027-Estimates-of-Expenditures.pdf\"],\"expectedSha256\":\"92a6622d95e582f25d60c726ee6c996cdcf364f2efc0acc67103518ca36e24a2\"}},\"artifacts\":[{\"id\":\"fy2026_27_estimates_as_passed_pdf\",\"sourceClass\":\"primary_controlling\",\"title\":\"2026-2027 Estimates of Expenditure As Passed\",\"releaseDate\":\"2026-04-02\",\"url\":\"https://www.mof.gov.jm/wp-content/uploads/2026-2027-Estimates-of-Expenditure-As-Passed.pdf\",\"fileName\":\"2026-2027-Estimates-of-Expenditure-As-Passed.pdf\",\"expectedContentTypes\":[\"application/pdf\",\"application/octet-stream\"],\"minimumBytes\":1000000,\"maximumBytes\":50000000,\"requiredMagicHex\":\"255044462d\",\"expectedBytes\":23172267,\"expectedSha256\":\"32ef2cb30c9498d2c8d9d4597fcaadce9823c13a97fe199acec19247664a3bd6\"},{\"id\":\"fy2026_27_approved_estimates_csv\",\"sourceClass\":\"primary_machine_readable\",\"title\":\"2026-2027 Approved Estimates Open Data\",\"releaseDate\":\"2026-07-23\",\"url\":\"https://www.mof.gov.jm/wp-content/uploads/2026-2027-Approved-Estimates.csv\",\"fileName\":\"2026-2027-Approved-Estimates.csv\",\"expectedContentTypes\":[\"text/csv\",\"application/csv\",\"application/octet-stream\"],\"minimumBytes\":1000000,\"maximumBytes\":50000000,\"requiredTextTokens\":[\"Coding Block\",\"Org Desc\",\"2026-2027\"],\"expectedBytes\":10891264,\"expectedSha256\":\"cdb6ce99c678feabb3c3c48cf2bcc06d756762a8240c302f82719cabecb4e7ab\"},{\"id\":\"fy2026_27_estimates_as_presented_pdf\",\"sourceClass\":\"supporting_active\",\"title\":\"2026-2027 Estimates of Expenditure As Presented\",\"releaseDate\":\"2026-02-12\",\"url\":\"https://www.mof.gov.jm/wp-content/uploads/2026-2027-Estimates-of-Expenditures.pdf\",\"fileName\":\"2026-2027-Estimates-of-Expenditures.pdf\",\"expectedContentTypes\":[\"application/pdf\",\"application/octet-stream\"],\"minimumBytes\":1000000,\"maximumBytes\":50000000,\"requiredMagicHex\":\"255044462d\",\"expectedBytes\":30471481,\"expectedSha256\":\"792ab9cbd822c112f19480b6133f6bdeb2d980a4d72710390c36e720c7ffa7af\"},{\"id\":\"fy2026_27_as_presented_estimates_csv\",\"sourceClass\":\"supporting_machine_readable\",\"title\":\"2026-2027 As Presented Estimates Open Data\",\"releaseDate\":\"2026-07-23\",\"url\":\"https://www.mof.gov.jm/wp-content/uploads/2026-2027-As-Presented-Estimates.csv\",\"fileName\":\"2026-2027-As-Presented-Estimates.csv\",\"expectedContentTypes\":[\"text/csv\",\"application/csv\",\"application/octet-stream\"],\"minimumBytes\":1000000,\"maximumBytes\":50000000,\"requiredTextTokens\":[\"Coding Block\",\"Org Desc\",\"2026-2027 As Presented\"],\"expectedBytes\":12262651,\"expectedSha256\":\"d480726d35bb1d694f4f0a48e2fab3038c5968d335dc45b00ab5f51bfb497f1a\"}],\"outputContract\":{\"allowedStates\":[\"MONITORED_NO_CHANGE\",\"SOURCE_CHANGE_DETECTED\",\"FAILED_CLOSED\"],\"persistence\":\"NONE\",\"notification\":\"NONE\",\"downstreamExecution\":\"NONE\"},\"prohibitedCapabilities\":[\"Google Sheets writes\",\"Drive writes\",\"n8n workflow activation\",\"Execute Workflow calls\",\"webhooks\",\"subscriber communications\",\"Telegram messages\",\"social posting\",\"video capture or publication\",\"public feed promotion\"]},catalogDigest:\"f84921812c0950717879b528e57530a4c23f5c8e2bfb65b51b022f6c9b9fda29\"});\n\nlet s;const input=$input.first();\nif($runIndex===0){const settings=$('SE02 | Settings').first().json;s=engine.start(settings.config,settings.input,{workflowId:String($workflow.id||''),executionId:String($execution.id||'')});}\nelse{\n const prior=$('SE02 | Engine').all(0,$runIndex-1);if(prior.length!==1)throw new Error('JIF_SE02_BLOCKED: same-execution state missing');\n s=JSON.parse(JSON.stringify(prior[0].json.state));\n if(s.owner.executionId!==String($execution.id)||s.owner.workflowId!==$workflow.id)throw new Error('JIF_SE02_BLOCKED: current execution differs');\n const response={status:Number(input.json.statusCode||0),headers:Object.fromEntries(Object.entries(input.json.headers||{}).map(([k,v])=>[k.toLowerCase(),v])),rows:input.json.tableRows,bytes:Buffer.alloc(0)};\n if(input.binary?.response)response.bytes=await this.helpers.getBinaryDataBuffer(0,'response');s=engine.step(s,response);\n}\nconst binary={};if(s.hasSourceBytes&&input.binary?.source)binary.source=input.binary.source;\nif(['drive','public','scan'].includes(s.request.route)){\n let source=Buffer.alloc(0);if(['scan','source'].includes(s.request.kind))source=await this.helpers.getBinaryDataBuffer(0,'source');\n const body=engine.body(s,source);s.request.mime=body.mime;binary.requestBody=await this.helpers.prepareBinaryData(body.bytes,'request.bin',body.mime);\n}\nreturn [{json:{state:s},binary}];\n"
+      },
+      "position": [
+        -200,
+        0
+      ],
+      "retryOnFail": false
+    },
+    {
+      "id": "2fdfcd2a-824a-4d3d-9759-efa8aed9022a",
+      "name": "SE02 | Response Context",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "jsCode": "\nconst prior=$('SE02 | Engine').all(0,$runIndex);if(prior.length!==1)throw new Error('JIF_SE02_BLOCKED: transport context missing');\nconst p=prior[0],s=p.json.state;if(s.owner.executionId!==String($execution.id)||s.owner.workflowId!==$workflow.id)throw new Error('JIF_SE02_BLOCKED: transport execution differs');\nconst inputs=$input.all(),table=['guard_read','acquire','release','ledger_read','ledger_insert'].includes(s.request.route);\nif(!table&&inputs.length!==1)throw new Error('JIF_SE02_BLOCKED: one HTTP response required');\nconst binary={...p.binary,...inputs[0]?.binary};if(s.phase==='SOURCE_GET'&&inputs[0]?.binary?.response)binary.source=inputs[0].binary.response;\nreturn [{json:table?{tableRows:inputs.map(i=>i.json)}:inputs[0].json,binary}];\n"
+      },
+      "position": [
+        1800,
+        1700
+      ],
+      "retryOnFail": false
+    },
+    {
+      "id": "3e05ef1e-8dc3-817d-bb4c-ef7e3cc2efca",
+      "name": "SE02 | Return Receipt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "jsCode": "function sha256Bytes(input) {\n  const bytes = Buffer.isBuffer(input) ? input : Buffer.from(input);\n  const k = [1116352408,1899447441,3049323471,3921009573,961987163,1508970993,2453635748,2870763221,3624381080,310598401,607225278,1426881987,1925078388,2162078206,2614888103,3248222580,3835390401,4022224774,264347078,604807628,770255983,1249150122,1555081692,1996064986,2554220882,2821834349,2952996808,3210313671,3336571891,3584528711,113926993,338241895,666307205,773529912,1294757372,1396182291,1695183700,1986661051,2177026350,2456956037,2730485921,2820302411,3259730800,3345764771,3516065817,3600352804,4094571909,275423344,430227734,506948616,659060556,883997877,958139571,1322822218,1537002063,1747873779,1955562222,2024104815,2227730452,2361852424,2428436474,2756734187,3204031479,3329325298];\n  const h = [1779033703,3144134277,1013904242,2773480762,1359893119,2600822924,528734635,1541459225];\n  const w = new Uint32Array(64);\n  function chunk(block, offset) {\n    for(let j=0;j<16;j++){const i=offset+j*4;w[j]=((block[i]<<24)|(block[i+1]<<16)|(block[i+2]<<8)|block[i+3])>>>0;}\n    for(let j=16;j<64;j++){const a=w[j-15],b=w[j-2],s0=((a>>>7)|(a<<25))^((a>>>18)|(a<<14))^(a>>>3),s1=((b>>>17)|(b<<15))^((b>>>19)|(b<<13))^(b>>>10);w[j]=(w[j-16]+s0+w[j-7]+s1)>>>0;}\n    let [a,b,c,d,e,f,g,z]=h;\n    for(let j=0;j<64;j++){const s1=((e>>>6)|(e<<26))^((e>>>11)|(e<<21))^((e>>>25)|(e<<7)),ch=(e&f)^(~e&g),t1=(z+s1+ch+k[j]+w[j])>>>0,s0=((a>>>2)|(a<<30))^((a>>>13)|(a<<19))^((a>>>22)|(a<<10)),maj=(a&b)^(a&c)^(b&c),t2=(s0+maj)>>>0;z=g;g=f;f=e;e=(d+t1)>>>0;d=c;c=b;b=a;a=(t1+t2)>>>0;}\n    const v=[a,b,c,d,e,f,g,z];for(let j=0;j<8;j++)h[j]=(h[j]+v[j])>>>0;\n  }\n  const full=bytes.length-bytes.length%64;\n  for(let i=0;i<full;i+=64)chunk(bytes,i);\n  const tail=Buffer.alloc(bytes.length-full<56?64:128);\n  bytes.copy(tail,0,full);tail[bytes.length-full]=128;\n  const bits=bytes.length*8;\n  tail.writeUInt32BE(Math.floor(bits/0x100000000),tail.length-8);\n  tail.writeUInt32BE(bits>>>0,tail.length-4);\n  for(let i=0;i<tail.length;i+=64)chunk(tail,i);\n  return h.map(v=>v.toString(16).padStart(8,'0')).join('');\n}\nfunction makeArchive({ hash, now, catalog, catalogDigest }) {\n  const DRIVE = 'https://www.googleapis.com/drive/v3/files';\n  const META = 'id,name,mimeType,size,parents,appProperties,trashed';\n  const VERSION = 'jif-se02-archive-v1';\n  const GUARD = 'JIF_SE02_ARCHIVE_GLOBAL';\n  const fail = m => { throw new Error('JIF_SE02_BLOCKED: ' + m); };\n  const stable = v => Array.isArray(v) ? '[' + v.map(stable).join(',') + ']' : v && typeof v === 'object' ? '{' + Object.keys(v).sort().map(k => JSON.stringify(k) + ':' + stable(v[k])).join(',') + '}' : JSON.stringify(v);\n  const digest = v => hash(Buffer.from(stable(v)));\n  const validId = v => typeof v === 'string' && /^[A-Za-z0-9_-]{8,200}$/.test(v);\n  const validHash = v => typeof v === 'string' && /^[a-f0-9]{64}$/.test(v);\n  const json = r => { if (r.status !== 200) fail('HTTP ' + r.status); if (!Buffer.isBuffer(r.bytes) || r.bytes.length > 1000000) fail('JSON response size differs'); try { return JSON.parse(r.bytes.toString('utf8')); } catch { fail('invalid JSON response'); } };\n  const issue = (s, phase, request) => { s.phase = phase; s.request = request; return s; };\n  const get = (s, phase, url, route = 'drive') => issue(s, phase, { route, method: 'GET', url });\n  const props = (s, kind) => ({ jif_se02_batch: s.batchKey, jif_se02_kind: kind, jif_se02_version: '1' });\n  const metaUrl = id => DRIVE + '/' + id + '?fields=' + META + '&supportsAllDrives=true';\n  const mediaUrl = id => DRIVE + '/' + id + '?alt=media&supportsAllDrives=true';\n  function guarded(s, phase, request) {\n    s.pending = { phase, request };\n    return issue(s, 'GUARD_BEFORE_WRITE', { route: 'guard_read' });\n  }\n  function rows(r) {\n    if (!Array.isArray(r.rows) || r.rows.some(x => x.error)) fail('native table read failed');\n    return r.rows.filter(x => Object.keys(x).length);\n  }\n  function guard(s, r, idle) {\n    s.uncertain = true;\n    const all = rows(r);\n    if (all.length !== 1) fail('exactly one guard row required');\n    const g = all[0];\n    if (String(g.id) !== String(s.config.guardRowId) || g.guard_key !== GUARD || g.schema_version !== VERSION) fail('guard identity differs');\n    const expected = idle ? { lock_token: 'UNLOCKED', holder_execution_id: 'NONE', holder_workflow_id: 'NONE', acquired_at: 'NONE' } : s.claim;\n    for (const [k, v] of Object.entries(expected)) if (g[k] !== v) fail(idle ? 'archive guard is held; do not reset it' : 'current execution guard ownership differs');\n    s.uncertain = false;\n  }\n  function scan(report, s, byteCount, retrievedAt = s.retrievedAt) {\n    if (!report || report.status !== 'CLEAN' || report.sha256 !== s.observedSha256 || report.bytes !== byteCount || !Number.isFinite(Date.parse(report.scannedAt || '')) || Date.parse(report.scannedAt) > Date.parse(now())) fail('malware scan does not cover the exact bytes');\n    for (const field of ['engine', 'engineVersion', 'signatureVersion']) if (typeof report[field] !== 'string' || !report[field].trim() || report[field].length > 200) fail('scanner evidence missing ' + field);\n    if (Object.keys(report).sort().join(',') !== ['status', 'sha256', 'bytes', 'engine', 'engineVersion', 'signatureVersion', 'scannedAt'].sort().join(',') || Date.parse(report.scannedAt) < Date.parse(retrievedAt)) fail('scanner evidence fields or timestamp differ');\n    return report;\n  }\n  function sourceBytes(s, bytes, contentType, expectedSize = s.observedBytes) {\n    const a = s.source;\n    if (!Buffer.isBuffer(bytes) || bytes.length < a.minimumBytes || bytes.length > a.maximumBytes || bytes.length !== expectedSize) fail('source byte size differs');\n    const mime = String(contentType || '').toLowerCase().split(';')[0].trim();\n    if (!a.expectedContentTypes.includes(mime)) fail('source content type differs');\n    if (a.requiredMagicHex && bytes.subarray(0, a.requiredMagicHex.length / 2).toString('hex') !== a.requiredMagicHex) fail('source signature differs');\n    if (a.requiredTextTokens?.some(token => !bytes.toString('utf8').includes(token))) fail('source required tokens missing');\n    if (hash(bytes) !== s.observedSha256) fail('source changed after monitoring or stored bytes differ');\n  }\n  function checkMeta(s, f, kind) {\n    const folder = kind === 'folder', parent = folder ? s.config.archiveRootId : s.reservation.folderId;\n    const expectedId = s.reservation[kind + 'Id'];\n    const name = folder ? 'SE02-' + s.batchKey : kind === 'source' ? s.reservation.manifest.file_name : 'source-manifest.json';\n    const mime = folder ? 'application/vnd.google-apps.folder' : kind === 'source' ? s.reservation.manifest.mime_type : 'application/json';\n    if (f.id !== expectedId || f.name !== name || f.mimeType !== mime || f.trashed || !f.parents?.includes(parent) || stable(f.appProperties) !== stable(props(s, kind))) fail('stored ' + kind + ' metadata differs');\n    if (kind === 'source' && Number(f.size) !== s.observedBytes) fail('stored source size differs');\n  }\n  function validateReservation(s, v) {\n    const m = v?.manifest;\n    if (v?.version !== VERSION || v.batchKey !== s.batchKey || v.rootId !== s.config.archiveRootId || !validId(v.folderId) || !validId(v.sourceId) || !validId(v.manifestId) || new Set([v.folderId, v.sourceId, v.manifestId]).size !== 3) fail('reservation identity differs');\n    if (!m || m.batch_id !== s.batchKey || m.checksum_sha256 !== s.observedSha256 || m.byte_size !== s.observedBytes || m.source_id !== s.source.id || m.fiscal_year !== catalog.fiscalYear || m.publisher !== catalog.authority.publisher || m.source_class !== s.source.sourceClass || m.file_name !== s.source.fileName || m.status !== 'ACQUIRED' || m.release_date !== null || m.release_date_status !== 'NOT_VERIFIED_FOR_CHANGED_BYTES' || !/^\\d{4}-\\d{2}-\\d{2}$/.test(m.catalogue_release_date || '') || m.parser_version !== 'NOT_EXTRACTED' || m.contract_version !== VERSION || m.archive_file_id !== v.sourceId || m.archive_folder_id !== v.folderId || !Number.isFinite(Date.parse(m.retrieved_at || ''))) fail('reservation manifest differs');\n    // The original URL/date remains evidence on replays; the current observation cannot rewrite it.\n    if (!/^https:\\/\\/www\\.mof\\.gov\\.jm\\/wp-content\\/uploads\\/[^?#]+$/.test(m.source_url || '') || !validHash(m.catalog_digest) || m.extraction_authorized !== false || m.publication_authorized !== false) fail('reserved source authority or release boundary differs');\n    if (m.mime_type !== (s.source.fileName.endsWith('.pdf') ? 'application/pdf' : 'text/csv')) fail('reserved MIME differs');\n    scan(m.malware_scan, s, m.byte_size, m.retrieved_at);\n    if (digest(m) !== v.manifestSha256) fail('reserved manifest hash differs');\n    s.reservation = v;\n  }\n  function start(config, input, context) {\n    const blockers = [];\n    if (config.transportEnabled !== true) blockers.push('Native transport nodes are disabled in the import candidate');\n    if (!validId(config.archiveRootId)) blockers.push('Dedicated archive root folder not configured');\n    if (!validId(config.guardTableId) || !validId(config.ledgerTableId) || config.guardTableId === config.ledgerTableId || !Number.isInteger(config.guardRowId) || config.guardRowId < 1) blockers.push('Isolated SE-02 guard/reservation tables not configured');\n    if (!/^https:\\/\\/[A-Za-z0-9.-]+(?::443)?\\/[^?#\\s]*$/.test(config.scannerUrl || '')) blockers.push('Trusted malware scanner HTTPS endpoint not configured');\n    if (!input) blockers.push('No source-change input supplied');\n    const s = { version: VERSION, config, owner: context, phase: 'START', request: {}, writes: 0, officialGets: 0, scannerCalls: 0, reused: false, acquired: false, guardReleased: false };\n    if (config.mode === 'REPORT_ONLY') return issue(s, 'REPORT_ONLY', { route: 'done', blockers });\n    if (config.mode !== 'ARCHIVE' || blockers.length) fail('archive configuration incomplete: ' + blockers.join('; '));\n    if (!/^\\d+$/.test(context.executionId || '') || !validId(context.workflowId)) fail('native execution identity required');\n    const receipt = input.monitorReceipt;\n    const a = catalog.artifacts.find(x => x.id === input.sourceId);\n    if (!a || receipt?.workflowId !== 'SE-01' || receipt.catalogDigest !== catalogDigest || receipt.fiscalYear !== catalog.fiscalYear || receipt.state !== 'SOURCE_CHANGE_DETECTED' || receipt.summary?.failed !== 0 || receipt.summary.sourcesChecked !== 5 || !Array.isArray(receipt.results) || receipt.results.length !== 5) fail('complete reviewed-catalogue source-change receipt required');\n    const expectedIds = [catalog.discovery.id, ...catalog.artifacts.map(x => x.id)];\n    if (new Set(receipt.results.map(x => x.sourceId)).size !== 5 || expectedIds.some(id => !receipt.results.some(x => x.sourceId === id))) fail('monitor source set differs');\n    if (receipt.results.some(x => !['UNCHANGED', 'CHANGED'].includes(x.outcome) || x.statusCode !== 200 || !validHash(x.observedSha256))) fail('monitor result validation differs');\n    const counts = receipt.results.reduce((v, r) => { v[r.outcome]++; return v; }, { CHANGED: 0, UNCHANGED: 0 });\n    if (!counts.CHANGED || counts.CHANGED !== receipt.summary.changed || counts.UNCHANGED !== receipt.summary.unchanged) fail('monitor counts differ');\n    const r = receipt.results.find(x => x.sourceId === input.sourceId);\n    if (r.url !== a.url || r.sourceClass !== a.sourceClass || r.outcome !== 'CHANGED' || r.expectedSha256 !== a.expectedSha256 || r.observedSha256 === a.expectedSha256 || !Number.isInteger(r.observedBytes) || r.observedBytes < a.minimumBytes || r.observedBytes > a.maximumBytes) fail('selected changed artifact differs');\n    const age = Date.parse(now()) - Date.parse(receipt.checkedAt || '');\n    if (!Number.isFinite(age) || age < 0 || age > 86400000) fail('monitor receipt is stale or future dated');\n    Object.assign(s, { source: a, observedSha256: r.observedSha256, observedBytes: r.observedBytes, monitorCheckedAt: receipt.checkedAt });\n    s.batchKey = digest({ publisher: catalog.authority.publisher, source_type: a.id, fiscal_year: catalog.fiscalYear, checksum_sha256: r.observedSha256, parser_version: 'NOT_EXTRACTED', contract_version: VERSION });\n    s.claim = { lock_token: 'JIF-SE02|' + context.workflowId + '|' + context.executionId, holder_execution_id: context.executionId, holder_workflow_id: context.workflowId, acquired_at: now() };\n    return issue(s, 'GUARD_IDLE', { route: 'guard_read' });\n  }\n  function ledgerRead(s) { return issue(s, 'LEDGER_READ', { route: 'ledger_read' }); }\n  function create(s, kind) {\n    if (kind === 'source') {\n      s.writes++;\n      return guarded(s, 'SOURCE_SESSION_POST', { route: 'drive', method: 'POST', url: 'https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable&supportsAllDrives=true&fields=id', kind: 'source_session' });\n    }\n    const q = { route: 'drive', method: 'POST', url: kind === 'folder' ? DRIVE + '?supportsAllDrives=true&fields=id' : 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&supportsAllDrives=true&fields=id', kind };\n    s.writes++;\n    return guarded(s, kind.toUpperCase() + '_POST', q);\n  }\n  function checkOrCreate(s, kind) { return get(s, kind.toUpperCase() + '_META', metaUrl(s.reservation[kind + 'Id'])); }\n  function stepUnsafe(s, r) {\n    switch (s.phase) {\n      case 'GUARD_IDLE': guard(s, r, true); s.acquireAttempted = true; return issue(s, 'ACQUIRE', { route: 'acquire' });\n      case 'ACQUIRE': return issue(s, 'GUARD_HELD', { route: 'guard_read' });\n      case 'GUARD_HELD': guard(s, r, false); s.owned = true; return get(s, 'ROOT', DRIVE + '/' + s.config.archiveRootId + '?fields=id,mimeType,trashed,shared&supportsAllDrives=true');\n      case 'GUARD_BEFORE_WRITE': { guard(s, r, false); const p = s.pending; delete s.pending; return issue(s, p.phase, p.request); }\n      case 'ROOT': { const f = json(r); if (f.id !== s.config.archiveRootId || f.mimeType !== 'application/vnd.google-apps.folder' || f.trashed || f.shared !== false) fail('private archive root required'); return ledgerRead(s); }\n      case 'LEDGER_READ': {\n        const all = rows(r); if (all.length > 1) fail('duplicate batch reservations');\n        if (!all.length) {\n          if (s.reservationPending) { s.uncertain = true; fail('reservation write not reconciled; inspect saved execution'); }\n          s.officialGets++; return get(s, 'SOURCE_GET', s.source.url, 'public');\n        }\n        if (all[0].batch_key !== s.batchKey) fail('reservation key differs');\n        let v; try { v = JSON.parse(all[0].reservation_json); } catch { fail('invalid stored reservation'); }\n        if (s.reservationPending && stable(v) !== stable(s.reservation)) { s.uncertain = true; fail('reservation acknowledgment differs'); }\n        validateReservation(s, v); s.reservationPending = false; s.reused = !s.newReservation;\n        return checkOrCreate(s, 'folder');\n      }\n      case 'SOURCE_GET': {\n        if (r.status !== 200) fail('official source HTTP ' + r.status);\n        sourceBytes(s, r.bytes, r.headers?.['content-type']);\n        s.retrievedAt = now(); s.sourceContentType = r.headers['content-type']; s.hasSourceBytes = true; s.scannerCalls++;\n        return issue(s, 'SCAN', { route: 'scan', method: 'POST', url: s.config.scannerUrl, kind: 'scan' });\n      }\n      case 'SCAN': {\n        s.scanReport = scan(json(r), s, s.observedBytes);\n        if (s.reservation) return create(s, 'source');\n        return get(s, 'ALLOCATE_IDS', DRIVE + '/generateIds?count=3&space=drive&type=files');\n      }\n      case 'ALLOCATE_IDS': {\n        const v = json(r); if (v.ids?.length !== 3 || new Set(v.ids).size !== 3 || v.ids.some(x => !validId(x))) fail('Drive ID allocation differs');\n        const [folderId, sourceId, manifestId] = v.ids;\n        const manifest = { schema_version: '1.0.0', batch_id: s.batchKey, source_id: s.source.id, source_class: s.source.sourceClass, publisher: catalog.authority.publisher, title: s.source.title, fiscal_year: catalog.fiscalYear, release_date: null, release_date_status: 'NOT_VERIFIED_FOR_CHANGED_BYTES', catalogue_release_date: s.source.releaseDate, retrieved_at: s.retrievedAt, source_url: s.source.url, file_name: s.source.fileName, checksum_sha256: s.observedSha256, mime_type: s.source.fileName.endsWith('.pdf') ? 'application/pdf' : 'text/csv', source_content_type: s.sourceContentType, byte_size: s.observedBytes, status: 'ACQUIRED', parser_version: 'NOT_EXTRACTED', contract_version: VERSION, catalog_digest: catalogDigest, monitor_checked_at: s.monitorCheckedAt, malware_scan: s.scanReport, archive_folder_id: folderId, archive_file_id: sourceId, extraction_authorized: false, publication_authorized: false };\n        s.reservation = { version: VERSION, rootId: s.config.archiveRootId, batchKey: s.batchKey, folderId, sourceId, manifestId, manifest, manifestSha256: digest(manifest) };\n        s.newReservation = true; s.reservationPending = true;\n        return guarded(s, 'LEDGER_INSERT', { route: 'ledger_insert' });\n      }\n      // No second INSERT after an uncertain acknowledgment: read the complete batch key.\n      case 'LEDGER_INSERT': return ledgerRead(s);\n      case 'FOLDER_META':\n        if (r.status === 404) { if (s.justPosted === 'folder') fail('folder create not visible; inspect before resuming'); return create(s, 'folder'); }\n        checkMeta(s, json(r), 'folder'); delete s.justPosted; return checkOrCreate(s, 'source');\n      case 'FOLDER_POST': s.justPosted = 'folder'; return checkOrCreate(s, 'folder');\n      case 'SOURCE_META':\n        if (r.status === 404) {\n          if (s.justPosted === 'source') fail('source upload not visible; inspect before resuming');\n          if (s.hasSourceBytes) return create(s, 'source');\n          s.officialGets++; return get(s, 'SOURCE_GET', s.source.url, 'public');\n        }\n        checkMeta(s, json(r), 'source'); delete s.justPosted; return get(s, 'SOURCE_READBACK', mediaUrl(s.reservation.sourceId));\n      case 'SOURCE_POST': s.justPosted = 'source'; return checkOrCreate(s, 'source');\n      case 'SOURCE_SESSION_POST': {\n        // Session creation does not prove file persistence. An unknown response is not retried.\n        if (r.status !== 200) fail('resumable session not acknowledged; inspect before resuming');\n        const location = r.headers?.location;\n        if (typeof location !== 'string' || !/^https:\\/\\/www\\.googleapis\\.com\\/upload\\/drive\\/v3\\/files\\?[^\\s#]*upload_id=[A-Za-z0-9_%.-]+[^\\s#]*$/.test(location)) fail('resumable session location differs');\n        s.uploadPuts = (s.uploadPuts || 0) + 1;\n        return guarded(s, 'SOURCE_POST', { route: 'drive', method: 'PUT', url: location, kind: 'source' });\n      }\n      case 'SOURCE_READBACK':\n        if (r.status !== 200) fail('source readback HTTP ' + r.status);\n        sourceBytes(s, r.bytes, s.reservation.manifest.mime_type); s.sourceReadback = true; s.hasSourceBytes = false;\n        return checkOrCreate(s, 'manifest');\n      case 'MANIFEST_META':\n        if (r.status === 404) { if (s.justPosted === 'manifest') fail('manifest upload not visible; inspect before resuming'); return create(s, 'manifest'); }\n        checkMeta(s, json(r), 'manifest'); delete s.justPosted; return get(s, 'MANIFEST_READBACK', mediaUrl(s.reservation.manifestId));\n      case 'MANIFEST_POST': s.justPosted = 'manifest'; return checkOrCreate(s, 'manifest');\n      case 'MANIFEST_READBACK':\n        if (r.status !== 200 || hash(r.bytes) !== s.reservation.manifestSha256 || r.bytes.toString('utf8') !== stable(s.reservation.manifest)) fail('manifest byte readback differs');\n        s.acquired = s.sourceReadback === true;\n        return issue(s, 'RELEASE', { route: 'release' });\n      case 'RELEASE': return issue(s, 'GUARD_RELEASED', { route: 'guard_read' });\n      case 'GUARD_RELEASED': guard(s, r, true); s.owned = false; s.guardReleased = true; return issue(s, 'COMPLETE', { route: 'done' });\n      default: fail('unknown phase ' + s.phase);\n    }\n  }\n  function step(s, r) {\n    if (s?.version !== VERSION) fail('state version differs');\n    try { return stepUnsafe(s, r); }\n    catch (e) {\n      s.failure = String(e.message); s.acquired = false;\n      if (s.owned && !s.uncertain && !s.reservationPending && !['RELEASE', 'GUARD_RELEASED'].includes(s.phase)) return issue(s, 'RELEASE', { route: 'release' });\n      return issue(s, 'BLOCKED', { route: 'done' });\n    }\n  }\n  function body(s, bytes = Buffer.alloc(0)) {\n    const q = s.request;\n    if (q.kind === 'scan') { if (hash(bytes) !== s.observedSha256) fail('scanner input bytes differ'); return { bytes, mime: s.source.fileName.endsWith('.pdf') ? 'application/pdf' : 'text/csv' }; }\n    if (!q.kind) return { bytes: Buffer.alloc(0), mime: 'application/octet-stream' };\n    const kind = q.kind, v = s.reservation;\n    if (kind === 'source' && (!s.hasSourceBytes || hash(bytes) !== s.observedSha256)) fail('source upload binary unavailable or differs');\n    if (kind === 'source') return { bytes, mime: v.manifest.mime_type };\n    const actualKind = kind === 'source_session' ? 'source' : kind;\n    const metadata = { id: v[actualKind + 'Id'], name: actualKind === 'folder' ? 'SE02-' + s.batchKey : actualKind === 'source' ? v.manifest.file_name : 'source-manifest.json', mimeType: actualKind === 'folder' ? 'application/vnd.google-apps.folder' : actualKind === 'source' ? v.manifest.mime_type : 'application/json', parents: [actualKind === 'folder' ? s.config.archiveRootId : v.folderId], appProperties: props(s, actualKind) };\n    if (kind === 'folder' || kind === 'source_session') return { bytes: Buffer.from(JSON.stringify(metadata)), mime: 'application/json' };\n    const data = Buffer.from(stable(v.manifest));\n    const boundary = 'JIFSE02' + s.batchKey.slice(0, 24);\n    return { bytes: Buffer.concat([Buffer.from('--' + boundary + '\\r\\nContent-Type: application/json; charset=UTF-8\\r\\n\\r\\n' + JSON.stringify(metadata) + '\\r\\n--' + boundary + '\\r\\nContent-Type: ' + metadata.mimeType + '\\r\\n\\r\\n'), data, Buffer.from('\\r\\n--' + boundary + '--\\r\\n')]), mime: 'multipart/related; boundary=' + boundary };\n  }\n  function result(s) {\n    if (s.request.route !== 'done') fail('terminal state required');\n    const ok = s.acquired && s.guardReleased && !s.failure;\n    return { ok, workflow_id: s.owner.workflowId, execution_id: s.owner.executionId, scope: 'SPENDING_EXPLORER_SOURCE_ARCHIVE_ONLY', mode: s.config.mode, state: s.phase === 'REPORT_ONLY' ? 'REPORT_ONLY' : ok ? 'ACQUIRED' : 'FAILED_CLOSED', blockers: s.request.blockers || (s.failure ? [s.failure] : []), batch_id: s.batchKey || '', official_download_calls: s.officialGets, scanner_calls: s.scannerCalls, drive_create_attempts: s.writes, source_upload_put_attempts: s.uploadPuts || 0, idempotent_replay: s.reused, guard_release_verified: s.guardReleased, guard_recovery_required: !s.guardReleased && !!s.acquireAttempted, source_byte_readback: ok ? 'PASS' : 'NOT_VERIFIED', manifest_byte_readback: ok ? 'PASS' : 'NOT_VERIFIED', malware_scan_verified: ok, source_package: ok ? { folder_id: s.reservation.folderId, folder_url: 'https://drive.google.com/drive/folders/' + s.reservation.folderId, source_file_id: s.reservation.sourceId, manifest_file_id: s.reservation.manifestId, manifest_sha256: s.reservation.manifestSha256, manifest: s.reservation.manifest } : null, extraction_authorized: false, publication_authorized: false, public_rows_written: 0, subscriber_sends: 0, downstream_calls: 0 };\n  }\n  return { start, step, body, result, stable };\n}\nconst engine=makeArchive({hash:sha256Bytes,now:()=>new Date().toISOString(),catalog:{\"$schema\":\"../schemas/source-catalog.schema.json\",\"catalogVersion\":\"1.0.1\",\"workflowId\":\"SE-01\",\"workflowName\":\"JIF | SE-01 Spending Explorer Source Monitor | INACTIVE\",\"status\":\"INACTIVE_READ_ONLY\",\"fiscalYear\":\"2026-2027\",\"authority\":{\"publisher\":\"Ministry of Finance & Public Service, Jamaica\",\"scope\":\"Central Government annual and supplementary Estimates of Expenditure\",\"officialDomain\":\"www.mof.gov.jm\"},\"allowedHosts\":[\"www.mof.gov.jm\",\"mof.gov.jm\"],\"network\":{\"method\":\"GET\",\"timeoutMs\":90000,\"maxRedirects\":3,\"maxBytesPerSource\":50000000,\"userAgent\":\"JIF-SE-01-ReadOnly-Source-Monitor/1.0\"},\"discovery\":{\"id\":\"annual_and_supplementary_estimates_index\",\"sourceClass\":\"primary_discovery\",\"url\":\"https://www.mof.gov.jm/resources-annual-and-supplementary-estimates/\",\"expectedContentTypes\":[\"text/html\"],\"minimumBytes\":10000,\"requiredTextTokens\":[\"Annual and Supplementary Estimates\"],\"linkInventory\":{\"requiredPathPrefix\":\"/wp-content/uploads/\",\"fiscalYearTokens\":[\"2026-2027\",\"2026-27\"],\"includeTokens\":[\"estimates\",\"supplementary\"],\"excludeTokens\":[\"public-sector\",\"consolidated\",\"public-bodies\",\"revenue\"],\"expectedUrls\":[\"https://www.mof.gov.jm/wp-content/uploads/2026-2027-Approved-Estimates.csv\",\"https://www.mof.gov.jm/wp-content/uploads/2026-2027-As-Presented-Estimates.csv\",\"https://www.mof.gov.jm/wp-content/uploads/2026-2027-Estimates-of-Expenditure-As-Passed.pdf\",\"https://www.mof.gov.jm/wp-content/uploads/2026-2027-Estimates-of-Expenditures.pdf\"],\"expectedSha256\":\"92a6622d95e582f25d60c726ee6c996cdcf364f2efc0acc67103518ca36e24a2\"}},\"artifacts\":[{\"id\":\"fy2026_27_estimates_as_passed_pdf\",\"sourceClass\":\"primary_controlling\",\"title\":\"2026-2027 Estimates of Expenditure As Passed\",\"releaseDate\":\"2026-04-02\",\"url\":\"https://www.mof.gov.jm/wp-content/uploads/2026-2027-Estimates-of-Expenditure-As-Passed.pdf\",\"fileName\":\"2026-2027-Estimates-of-Expenditure-As-Passed.pdf\",\"expectedContentTypes\":[\"application/pdf\",\"application/octet-stream\"],\"minimumBytes\":1000000,\"maximumBytes\":50000000,\"requiredMagicHex\":\"255044462d\",\"expectedBytes\":23172267,\"expectedSha256\":\"32ef2cb30c9498d2c8d9d4597fcaadce9823c13a97fe199acec19247664a3bd6\"},{\"id\":\"fy2026_27_approved_estimates_csv\",\"sourceClass\":\"primary_machine_readable\",\"title\":\"2026-2027 Approved Estimates Open Data\",\"releaseDate\":\"2026-07-23\",\"url\":\"https://www.mof.gov.jm/wp-content/uploads/2026-2027-Approved-Estimates.csv\",\"fileName\":\"2026-2027-Approved-Estimates.csv\",\"expectedContentTypes\":[\"text/csv\",\"application/csv\",\"application/octet-stream\"],\"minimumBytes\":1000000,\"maximumBytes\":50000000,\"requiredTextTokens\":[\"Coding Block\",\"Org Desc\",\"2026-2027\"],\"expectedBytes\":10891264,\"expectedSha256\":\"cdb6ce99c678feabb3c3c48cf2bcc06d756762a8240c302f82719cabecb4e7ab\"},{\"id\":\"fy2026_27_estimates_as_presented_pdf\",\"sourceClass\":\"supporting_active\",\"title\":\"2026-2027 Estimates of Expenditure As Presented\",\"releaseDate\":\"2026-02-12\",\"url\":\"https://www.mof.gov.jm/wp-content/uploads/2026-2027-Estimates-of-Expenditures.pdf\",\"fileName\":\"2026-2027-Estimates-of-Expenditures.pdf\",\"expectedContentTypes\":[\"application/pdf\",\"application/octet-stream\"],\"minimumBytes\":1000000,\"maximumBytes\":50000000,\"requiredMagicHex\":\"255044462d\",\"expectedBytes\":30471481,\"expectedSha256\":\"792ab9cbd822c112f19480b6133f6bdeb2d980a4d72710390c36e720c7ffa7af\"},{\"id\":\"fy2026_27_as_presented_estimates_csv\",\"sourceClass\":\"supporting_machine_readable\",\"title\":\"2026-2027 As Presented Estimates Open Data\",\"releaseDate\":\"2026-07-23\",\"url\":\"https://www.mof.gov.jm/wp-content/uploads/2026-2027-As-Presented-Estimates.csv\",\"fileName\":\"2026-2027-As-Presented-Estimates.csv\",\"expectedContentTypes\":[\"text/csv\",\"application/csv\",\"application/octet-stream\"],\"minimumBytes\":1000000,\"maximumBytes\":50000000,\"requiredTextTokens\":[\"Coding Block\",\"Org Desc\",\"2026-2027 As Presented\"],\"expectedBytes\":12262651,\"expectedSha256\":\"d480726d35bb1d694f4f0a48e2fab3038c5968d335dc45b00ab5f51bfb497f1a\"}],\"outputContract\":{\"allowedStates\":[\"MONITORED_NO_CHANGE\",\"SOURCE_CHANGE_DETECTED\",\"FAILED_CLOSED\"],\"persistence\":\"NONE\",\"notification\":\"NONE\",\"downstreamExecution\":\"NONE\"},\"prohibitedCapabilities\":[\"Google Sheets writes\",\"Drive writes\",\"n8n workflow activation\",\"Execute Workflow calls\",\"webhooks\",\"subscriber communications\",\"Telegram messages\",\"social posting\",\"video capture or publication\",\"public feed promotion\"]},catalogDigest:\"f84921812c0950717879b528e57530a4c23f5c8e2bfb65b51b022f6c9b9fda29\"});\nreturn [{json:engine.result($input.first().json.state)}];\n"
+      },
+      "position": [
+        600,
+        -150
+      ],
+      "retryOnFail": false
+    },
+    {
+      "id": "50889091-b639-4809-b60f-70ada10940d5",
+      "name": "SE02 | Invalid Route",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "jsCode": "throw new Error('JIF_SE02_BLOCKED: transport route differs');"
+      },
+      "position": [
+        800,
+        1800
+      ],
+      "retryOnFail": false
+    },
+    {
+      "id": "90ee0c6a-8ba3-d9a9-2640-71acbc90a84d",
+      "name": "SE02 | Route done",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d593f3da-8218-b7d5-4955-43f4450690a2",
+              "leftValue": "={{$json.state.request.route}}",
+              "rightValue": "done",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "position": [
+        60,
+        0
+      ],
+      "retryOnFail": false
+    },
+    {
+      "id": "6af3d9f6-8742-332f-c2e5-075cea47d86a",
+      "name": "SE02 | Route guard_read",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b78a583b-fadd-08da-1436-fb746e46c495",
+              "leftValue": "={{$json.state.request.route}}",
+              "rightValue": "guard_read",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "position": [
+        210,
+        200
+      ],
+      "retryOnFail": false
+    },
+    {
+      "id": "5ed16771-fb83-eb0b-7e5d-16bbd3beddda",
+      "name": "SE02 | Route acquire",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5154c4c1-18fa-a843-2d1b-aa275fe973f8",
+              "leftValue": "={{$json.state.request.route}}",
+              "rightValue": "acquire",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "position": [
+        360,
+        400
+      ],
+      "retryOnFail": false
+    },
+    {
+      "id": "67da4375-2b79-ca1e-dd94-6f4580081272",
+      "name": "SE02 | Route release",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a184a3d4-12fe-3cc8-4ecf-11eea547d18e",
+              "leftValue": "={{$json.state.request.route}}",
+              "rightValue": "release",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "position": [
+        510,
+        600
+      ],
+      "retryOnFail": false
+    },
+    {
+      "id": "f9ef2943-9d88-b070-28b9-b245c467e0c1",
+      "name": "SE02 | Route ledger_read",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c7980278-0995-a8e1-735a-3da0ee97fd0e",
+              "leftValue": "={{$json.state.request.route}}",
+              "rightValue": "ledger_read",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "position": [
+        660,
+        800
+      ],
+      "retryOnFail": false
+    },
+    {
+      "id": "e2b9ea30-2d36-f463-cf96-86d9d8628224",
+      "name": "SE02 | Route ledger_insert",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a4ee6680-7169-41dd-35a1-b76280f11e11",
+              "leftValue": "={{$json.state.request.route}}",
+              "rightValue": "ledger_insert",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "position": [
+        810,
+        1000
+      ],
+      "retryOnFail": false
+    },
+    {
+      "id": "a05816ce-6581-a2c5-2098-2f7512614db5",
+      "name": "SE02 | Route drive",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cdb6a16b-d073-010c-21e1-ebd8c2b807ba",
+              "leftValue": "={{$json.state.request.route}}",
+              "rightValue": "drive",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "position": [
+        960,
+        1200
+      ],
+      "retryOnFail": false
+    },
+    {
+      "id": "1a65d43e-2be1-738c-e2ae-b01b49295ff2",
+      "name": "SE02 | Route public",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "93e8b537-e203-ddca-802d-96a826352ad1",
+              "leftValue": "={{$json.state.request.route}}",
+              "rightValue": "public",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "position": [
+        1110,
+        1400
+      ],
+      "retryOnFail": false
+    },
+    {
+      "id": "23811331-3201-15cd-eba8-4111282ad103",
+      "name": "SE02 | Route scan",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f9ead9b4-9760-cd67-cb3d-0d12020d9623",
+              "leftValue": "={{$json.state.request.route}}",
+              "rightValue": "scan",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "position": [
+        1260,
+        1600
+      ],
+      "retryOnFail": false
+    },
+    {
+      "id": "4afddfe5-1f9c-5c7a-d7ff-44bfbfa39179",
+      "name": "SE02 | guard_read",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "parameters": {
+        "resource": "row",
+        "matchType": "allConditions",
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{$json.state.config.guardTableId}}"
+        },
+        "filters": {
+          "conditions": []
+        },
+        "returnAll": true
+      },
+      "position": [
+        1400,
+        200
+      ],
+      "retryOnFail": false,
+      "disabled": true,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "aa3ba2bb-ef34-3739-7486-1b6974972237",
+      "name": "SE02 | acquire",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "parameters": {
+        "resource": "row",
+        "matchType": "allConditions",
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{$json.state.config.guardTableId}}"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{(()=>{const s=$json.state;if(!$('SE02 | Engine').isExecuted||s.version!=='jif-se02-archive-v1'||s.request.route!=='acquire'||s.owner.workflowId!==$workflow.id||s.owner.executionId!==String($execution.id)||s.claim.lock_token!=='JIF-SE02|'+$workflow.id+'|'+$execution.id)throw new Error('JIF_SE02_BLOCKED: same-execution write required');return String(s.config.guardRowId);})()}}"
+            },
+            {
+              "keyName": "guard_key",
+              "keyValue": "JIF_SE02_ARCHIVE_GLOBAL"
+            },
+            {
+              "keyName": "schema_version",
+              "keyValue": "jif-se02-archive-v1"
+            },
+            {
+              "keyName": "lock_token",
+              "keyValue": "UNLOCKED"
+            },
+            {
+              "keyName": "holder_execution_id",
+              "keyValue": "NONE"
+            },
+            {
+              "keyName": "holder_workflow_id",
+              "keyValue": "NONE"
+            },
+            {
+              "keyName": "acquired_at",
+              "keyValue": "NONE"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "lock_token": "={{$json.state.claim.lock_token}}",
+            "holder_execution_id": "={{$json.state.claim.holder_execution_id}}",
+            "holder_workflow_id": "={{$json.state.claim.holder_workflow_id}}",
+            "acquired_at": "={{$json.state.claim.acquired_at}}"
+          },
+          "schema": [
+            {
+              "id": "guard_key",
+              "displayName": "guard_key",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "schema_version",
+              "displayName": "schema_version",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lock_token",
+              "displayName": "lock_token",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "holder_execution_id",
+              "displayName": "holder_execution_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "holder_workflow_id",
+              "displayName": "holder_workflow_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "acquired_at",
+              "displayName": "acquired_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {
+          "dryRun": false
+        }
+      },
+      "position": [
+        1400,
+        400
+      ],
+      "retryOnFail": false,
+      "disabled": true,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "05ed17a9-2fd8-e7dd-ac02-0639d9952c47",
+      "name": "SE02 | release",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "parameters": {
+        "resource": "row",
+        "matchType": "allConditions",
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{$json.state.config.guardTableId}}"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{(()=>{const s=$json.state;if(!$('SE02 | Engine').isExecuted||s.version!=='jif-se02-archive-v1'||s.request.route!=='release'||s.owner.workflowId!==$workflow.id||s.owner.executionId!==String($execution.id)||s.claim.lock_token!=='JIF-SE02|'+$workflow.id+'|'+$execution.id)throw new Error('JIF_SE02_BLOCKED: same-execution write required');return String(s.config.guardRowId);})()}}"
+            },
+            {
+              "keyName": "guard_key",
+              "keyValue": "JIF_SE02_ARCHIVE_GLOBAL"
+            },
+            {
+              "keyName": "schema_version",
+              "keyValue": "jif-se02-archive-v1"
+            },
+            {
+              "keyName": "lock_token",
+              "keyValue": "={{$json.state.claim.lock_token}}"
+            },
+            {
+              "keyName": "holder_execution_id",
+              "keyValue": "={{$json.state.claim.holder_execution_id}}"
+            },
+            {
+              "keyName": "holder_workflow_id",
+              "keyValue": "={{$json.state.claim.holder_workflow_id}}"
+            },
+            {
+              "keyName": "acquired_at",
+              "keyValue": "={{$json.state.claim.acquired_at}}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "lock_token": "UNLOCKED",
+            "holder_execution_id": "NONE",
+            "holder_workflow_id": "NONE",
+            "acquired_at": "NONE"
+          },
+          "schema": [
+            {
+              "id": "guard_key",
+              "displayName": "guard_key",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "schema_version",
+              "displayName": "schema_version",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lock_token",
+              "displayName": "lock_token",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "holder_execution_id",
+              "displayName": "holder_execution_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "holder_workflow_id",
+              "displayName": "holder_workflow_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "acquired_at",
+              "displayName": "acquired_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {
+          "dryRun": false
+        }
+      },
+      "position": [
+        1400,
+        600
+      ],
+      "retryOnFail": false,
+      "disabled": true,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "80e033b7-c365-b139-636e-0bad210888d0",
+      "name": "SE02 | ledger_read",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "parameters": {
+        "resource": "row",
+        "matchType": "allConditions",
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{$json.state.config.ledgerTableId}}"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "batch_key",
+              "keyValue": "={{$json.state.batchKey}}"
+            }
+          ]
+        },
+        "returnAll": true
+      },
+      "position": [
+        1400,
+        800
+      ],
+      "retryOnFail": false,
+      "disabled": true,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "b4d3946b-aa3f-8e29-2369-df69e671aa3c",
+      "name": "SE02 | ledger_insert",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "parameters": {
+        "resource": "row",
+        "operation": "insert",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{$json.state.config.ledgerTableId}}"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "batch_key": "={{(()=>{const s=$json.state;if(s.phase!=='LEDGER_INSERT'||!s.owned||s.owner.workflowId!==$workflow.id||s.owner.executionId!==String($execution.id)||!s.reservationPending)throw new Error('JIF_SE02_BLOCKED: guarded reservation required');return s.batchKey;})()}}",
+            "reservation_json": "={{JSON.stringify($json.state.reservation)}}"
+          },
+          "schema": [
+            {
+              "id": "batch_key",
+              "displayName": "batch_key",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "reservation_json",
+              "displayName": "reservation_json",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {
+          "optimizeBulk": false
+        }
+      },
+      "position": [
+        1400,
+        1000
+      ],
+      "retryOnFail": false,
+      "disabled": true,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "95a827c2-4d0a-de0c-356e-f98d70e58a17",
+      "name": "SE02 | drive",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "parameters": {
+        "url": "={{$json.state.request.url}}",
+        "method": "={{$json.state.request.method}}",
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "requestBody",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json, application/pdf, text/csv"
+            },
+            {
+              "name": "Content-Type",
+              "value": "={{$json.state.request.mime}}"
+            },
+            {
+              "name": "Cache-Control",
+              "value": "no-cache"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 180000,
+          "redirect": {
+            "redirect": {
+              "followRedirects": false,
+              "maxRedirects": 0
+            }
+          },
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "file",
+              "outputPropertyName": "response"
+            }
+          }
+        },
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDriveOAuth2Api"
+      },
+      "position": [
+        1400,
+        1200
+      ],
+      "retryOnFail": false,
+      "disabled": true,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "eb049616-e278-6a72-c6e1-88da2518d7f0",
+      "name": "SE02 | public",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "parameters": {
+        "url": "={{$json.state.request.url}}",
+        "method": "={{$json.state.request.method}}",
+        "sendBody": false,
+        "contentType": "binaryData",
+        "inputDataFieldName": "requestBody",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json, application/pdf, text/csv"
+            },
+            {
+              "name": "Content-Type",
+              "value": "={{$json.state.request.mime}}"
+            },
+            {
+              "name": "Cache-Control",
+              "value": "no-cache"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 180000,
+          "redirect": {
+            "redirect": {
+              "followRedirects": false,
+              "maxRedirects": 0
+            }
+          },
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "file",
+              "outputPropertyName": "response"
+            }
+          }
+        },
+        "authentication": "none"
+      },
+      "position": [
+        1400,
+        1400
+      ],
+      "retryOnFail": false,
+      "disabled": true,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "eb3a2d17-4897-3db1-2733-f4e9efbe5a74",
+      "name": "SE02 | scan",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "parameters": {
+        "url": "={{$json.state.request.url}}",
+        "method": "={{$json.state.request.method}}",
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "requestBody",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json, application/pdf, text/csv"
+            },
+            {
+              "name": "Content-Type",
+              "value": "={{$json.state.request.mime}}"
+            },
+            {
+              "name": "Cache-Control",
+              "value": "no-cache"
+            },
+            {
+              "name": "X-JIF-Expected-SHA256",
+              "value": "={{$json.state.observedSha256}}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 180000,
+          "redirect": {
+            "redirect": {
+              "followRedirects": false,
+              "maxRedirects": 0
+            }
+          },
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "file",
+              "outputPropertyName": "response"
+            }
+          }
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "position": [
+        1400,
+        1600
+      ],
+      "retryOnFail": false,
+      "disabled": true,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "connections": {
+    "SE02 | Route done": {
+      "main": [
+        [
+          {
+            "node": "SE02 | Return Receipt",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SE02 | Route guard_read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SE02 | Route guard_read": {
+      "main": [
+        [
+          {
+            "node": "SE02 | guard_read",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SE02 | Route acquire",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SE02 | Route acquire": {
+      "main": [
+        [
+          {
+            "node": "SE02 | acquire",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SE02 | Route release",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SE02 | Route release": {
+      "main": [
+        [
+          {
+            "node": "SE02 | release",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SE02 | Route ledger_read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SE02 | Route ledger_read": {
+      "main": [
+        [
+          {
+            "node": "SE02 | ledger_read",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SE02 | Route ledger_insert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SE02 | Route ledger_insert": {
+      "main": [
+        [
+          {
+            "node": "SE02 | ledger_insert",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SE02 | Route drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SE02 | Route drive": {
+      "main": [
+        [
+          {
+            "node": "SE02 | drive",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SE02 | Route public",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SE02 | Route public": {
+      "main": [
+        [
+          {
+            "node": "SE02 | public",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SE02 | Route scan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SE02 | Route scan": {
+      "main": [
+        [
+          {
+            "node": "SE02 | scan",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SE02 | Invalid Route",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SE02 | guard_read": {
+      "main": [
+        [
+          {
+            "node": "SE02 | Response Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SE02 | acquire": {
+      "main": [
+        [
+          {
+            "node": "SE02 | Response Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SE02 | release": {
+      "main": [
+        [
+          {
+            "node": "SE02 | Response Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SE02 | ledger_read": {
+      "main": [
+        [
+          {
+            "node": "SE02 | Response Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SE02 | ledger_insert": {
+      "main": [
+        [
+          {
+            "node": "SE02 | Response Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SE02 | drive": {
+      "main": [
+        [
+          {
+            "node": "SE02 | Response Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SE02 | public": {
+      "main": [
+        [
+          {
+            "node": "SE02 | Response Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SE02 | scan": {
+      "main": [
+        [
+          {
+            "node": "SE02 | Response Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SE02 | Manual Preflight": {
+      "main": [
+        [
+          {
+            "node": "SE02 | Settings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SE02 | Future Child Input": {
+      "main": [
+        [
+          {
+            "node": "SE02 | Settings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SE02 | Settings": {
+      "main": [
+        [
+          {
+            "node": "SE02 | Engine",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SE02 | Engine": {
+      "main": [
+        [
+          {
+            "node": "SE02 | Route done",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SE02 | Response Context": {
+      "main": [
+        [
+          {
+            "node": "SE02 | Engine",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all"
+  }
+}
