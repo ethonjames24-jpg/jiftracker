@@ -8,7 +8,7 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -760,
+        -860,
         120
       ]
     },
@@ -27,24 +27,25 @@
       },
       "id": "0a4f32d1-1fe4-42c5-a2f7-20158ef3a002",
       "name": "Daily Schedule — INACTIVE",
+      "disabled": true,
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -760,
+        -860,
         -60
       ]
     },
     {
       "parameters": {
         "mode": "runOnceForAllItems",
-        "jsCode": "const catalog = {\"$schema\":\"../schemas/source-catalog.schema.json\",\"catalogVersion\":\"1.0.1\",\"workflowId\":\"SE-01\",\"workflowName\":\"JIF | SE-01 Spending Explorer Source Monitor | INACTIVE\",\"status\":\"INACTIVE_READ_ONLY\",\"fiscalYear\":\"2026-2027\",\"authority\":{\"publisher\":\"Ministry of Finance & Public Service, Jamaica\",\"scope\":\"Central Government annual and supplementary Estimates of Expenditure\",\"officialDomain\":\"www.mof.gov.jm\"},\"allowedHosts\":[\"www.mof.gov.jm\",\"mof.gov.jm\"],\"network\":{\"method\":\"GET\",\"timeoutMs\":90000,\"maxRedirects\":3,\"maxBytesPerSource\":50000000,\"userAgent\":\"JIF-SE-01-ReadOnly-Source-Monitor/1.0\"},\"discovery\":{\"id\":\"annual_and_supplementary_estimates_index\",\"sourceClass\":\"primary_discovery\",\"url\":\"https://www.mof.gov.jm/resources-annual-and-supplementary-estimates/\",\"expectedContentTypes\":[\"text/html\"],\"minimumBytes\":10000,\"requiredTextTokens\":[\"Annual and Supplementary Estimates\"],\"linkInventory\":{\"requiredPathPrefix\":\"/wp-content/uploads/\",\"fiscalYearTokens\":[\"2026-2027\",\"2026-27\"],\"includeTokens\":[\"estimates\",\"supplementary\"],\"excludeTokens\":[\"public-sector\",\"consolidated\",\"public-bodies\",\"revenue\"],\"expectedUrls\":[\"https://www.mof.gov.jm/wp-content/uploads/2026-2027-Approved-Estimates.csv\",\"https://www.mof.gov.jm/wp-content/uploads/2026-2027-As-Presented-Estimates.csv\",\"https://www.mof.gov.jm/wp-content/uploads/2026-2027-Estimates-of-Expenditure-As-Passed.pdf\",\"https://www.mof.gov.jm/wp-content/uploads/2026-2027-Estimates-of-Expenditures.pdf\"],\"expectedSha256\":\"92a6622d95e582f25d60c726ee6c996cdcf364f2efc0acc67103518ca36e24a2\"}},\"artifacts\":[{\"id\":\"fy2026_27_estimates_as_passed_pdf\",\"sourceClass\":\"primary_controlling\",\"title\":\"2026-2027 Estimates of Expenditure As Passed\",\"releaseDate\":\"2026-04-02\",\"url\":\"https://www.mof.gov.jm/wp-content/uploads/2026-2027-Estimates-of-Expenditure-As-Passed.pdf\",\"fileName\":\"2026-2027-Estimates-of-Expenditure-As-Passed.pdf\",\"expectedContentTypes\":[\"application/pdf\",\"application/octet-stream\"],\"minimumBytes\":1000000,\"maximumBytes\":50000000,\"requiredMagicHex\":\"255044462d\",\"expectedBytes\":23172267,\"expectedSha256\":\"32ef2cb30c9498d2c8d9d4597fcaadce9823c13a97fe199acec19247664a3bd6\"},{\"id\":\"fy2026_27_approved_estimates_csv\",\"sourceClass\":\"primary_machine_readable\",\"title\":\"2026-2027 Approved Estimates Open Data\",\"releaseDate\":\"2026-07-23\",\"url\":\"https://www.mof.gov.jm/wp-content/uploads/2026-2027-Approved-Estimates.csv\",\"fileName\":\"2026-2027-Approved-Estimates.csv\",\"expectedContentTypes\":[\"text/csv\",\"application/csv\",\"application/octet-stream\"],\"minimumBytes\":1000000,\"maximumBytes\":50000000,\"requiredTextTokens\":[\"Coding Block\",\"Org Desc\",\"2026-2027\"],\"expectedBytes\":10891264,\"expectedSha256\":\"cdb6ce99c678feabb3c3c48cf2bcc06d756762a8240c302f82719cabecb4e7ab\"},{\"id\":\"fy2026_27_estimates_as_presented_pdf\",\"sourceClass\":\"supporting_active\",\"title\":\"2026-2027 Estimates of Expenditure As Presented\",\"releaseDate\":\"2026-02-12\",\"url\":\"https://www.mof.gov.jm/wp-content/uploads/2026-2027-Estimates-of-Expenditures.pdf\",\"fileName\":\"2026-2027-Estimates-of-Expenditures.pdf\",\"expectedContentTypes\":[\"application/pdf\",\"application/octet-stream\"],\"minimumBytes\":1000000,\"maximumBytes\":50000000,\"requiredMagicHex\":\"255044462d\",\"expectedBytes\":30471481,\"expectedSha256\":\"792ab9cbd822c112f19480b6133f6bdeb2d980a4d72710390c36e720c7ffa7af\"},{\"id\":\"fy2026_27_as_presented_estimates_csv\",\"sourceClass\":\"supporting_machine_readable\",\"title\":\"2026-2027 As Presented Estimates Open Data\",\"releaseDate\":\"2026-07-23\",\"url\":\"https://www.mof.gov.jm/wp-content/uploads/2026-2027-As-Presented-Estimates.csv\",\"fileName\":\"2026-2027-As-Presented-Estimates.csv\",\"expectedContentTypes\":[\"text/csv\",\"application/csv\",\"application/octet-stream\"],\"minimumBytes\":1000000,\"maximumBytes\":50000000,\"requiredTextTokens\":[\"Coding Block\",\"Org Desc\",\"2026-2027 As Presented\"],\"expectedBytes\":12262651,\"expectedSha256\":\"d480726d35bb1d694f4f0a48e2fab3038c5968d335dc45b00ab5f51bfb497f1a\"}],\"outputContract\":{\"allowedStates\":[\"MONITORED_NO_CHANGE\",\"SOURCE_CHANGE_DETECTED\",\"FAILED_CLOSED\"],\"persistence\":\"NONE\",\"notification\":\"NONE\",\"downstreamExecution\":\"NONE\"},\"prohibitedCapabilities\":[\"Google Sheets writes\",\"Drive writes\",\"n8n workflow activation\",\"Execute Workflow calls\",\"webhooks\",\"subscriber communications\",\"Telegram messages\",\"social posting\",\"video capture or publication\",\"public feed promotion\"]};\nconst sources = [\n  { ...catalog.discovery, kind: 'discovery' },\n  ...catalog.artifacts.map((source) => ({ ...source, kind: 'artifact' })),\n];\nreturn sources.map((source) => ({ json: {\n  ...source,\n  workflowId: catalog.workflowId,\n  workflowName: catalog.workflowName,\n  catalogVersion: catalog.catalogVersion,\n  fiscalYear: catalog.fiscalYear,\n  allowedHosts: catalog.allowedHosts,\n  readOnly: true,\n  inactive: true,\n} }));"
+        "jsCode": "function canonicalMofUrl(raw, base) {\n  const value=String(raw).trim();\n  if(!value||/[\\x00-\\x1f\\x7f\\\\]/.test(value))throw new Error('SOURCE_URL_INVALID');\n  const baseMatch=String(base).match(/^https:\\/\\/(www\\.mof\\.gov\\.jm|mof\\.gov\\.jm)(\\/[^?#]*)?(?:[?#].*)?$/i);\n  if(!baseMatch)throw new Error('SOURCE_BASE_URL_INVALID');\n  let authority=baseMatch[1],path=value;\n  const absolute=value.match(/^https:\\/\\/([^/?#]+)([^?#]*)/i);\n  const relativeAuthority=value.match(/^\\/\\/([^/?#]+)([^?#]*)/);\n  if(absolute||relativeAuthority){const m=absolute||relativeAuthority;authority=m[1];path=m[2]||'/';}\n  else {\n    if(/^[a-z][a-z0-9+.-]*:/i.test(value))throw new Error('SOURCE_URL_PROTOCOL_INVALID');\n    path=value.split(/[?#]/,1)[0];\n    if(!path)path=baseMatch[2]||'/';\n    else if(!path.startsWith('/'))path=(baseMatch[2]||'/').replace(/[^/]*$/,'')+path;\n  }\n  if(!/^(?:www\\.)?mof\\.gov\\.jm(?::443)?$/i.test(authority))throw new Error('SOURCE_URL_HOST_INVALID');\n  const segments=[];\n  for(const segment of path.split('/')){\n    const dot=segment.replace(/%2e/ig,'.');\n    if(dot==='..'){if(segments.length>1)segments.pop();}\n    else if(dot!=='.')segments.push(segment);\n  }\n  if(/\\/(?:\\.{1,2}|%2e|\\.%2e|%2e\\.|%2e%2e)$/i.test(path))segments.push('');\n  const pathname=encodeURI(segments.join('/')||'/').replace(/%25/g,'%');\n  return {url:'https://www.mof.gov.jm'+pathname,hostname:'www.mof.gov.jm',pathname};\n}\nconst catalog = {\"$schema\":\"../schemas/source-catalog.schema.json\",\"catalogVersion\":\"1.0.1\",\"workflowId\":\"SE-01\",\"workflowName\":\"JIF | SE-01 Spending Explorer Source Monitor | INACTIVE\",\"status\":\"INACTIVE_READ_ONLY\",\"fiscalYear\":\"2026-2027\",\"authority\":{\"publisher\":\"Ministry of Finance & Public Service, Jamaica\",\"scope\":\"Central Government annual and supplementary Estimates of Expenditure\",\"officialDomain\":\"www.mof.gov.jm\"},\"allowedHosts\":[\"www.mof.gov.jm\",\"mof.gov.jm\"],\"network\":{\"method\":\"GET\",\"timeoutMs\":90000,\"maxRedirects\":3,\"maxBytesPerSource\":50000000,\"userAgent\":\"JIF-SE-01-ReadOnly-Source-Monitor/1.0\"},\"discovery\":{\"id\":\"annual_and_supplementary_estimates_index\",\"sourceClass\":\"primary_discovery\",\"url\":\"https://www.mof.gov.jm/resources-annual-and-supplementary-estimates/\",\"expectedContentTypes\":[\"text/html\"],\"minimumBytes\":10000,\"requiredTextTokens\":[\"Annual and Supplementary Estimates\"],\"linkInventory\":{\"requiredPathPrefix\":\"/wp-content/uploads/\",\"fiscalYearTokens\":[\"2026-2027\",\"2026-27\"],\"includeTokens\":[\"estimates\",\"supplementary\"],\"excludeTokens\":[\"public-sector\",\"consolidated\",\"public-bodies\",\"revenue\"],\"expectedUrls\":[\"https://www.mof.gov.jm/wp-content/uploads/2026-2027-Approved-Estimates.csv\",\"https://www.mof.gov.jm/wp-content/uploads/2026-2027-As-Presented-Estimates.csv\",\"https://www.mof.gov.jm/wp-content/uploads/2026-2027-Estimates-of-Expenditure-As-Passed.pdf\",\"https://www.mof.gov.jm/wp-content/uploads/2026-2027-Estimates-of-Expenditures.pdf\"],\"expectedSha256\":\"92a6622d95e582f25d60c726ee6c996cdcf364f2efc0acc67103518ca36e24a2\"}},\"artifacts\":[{\"id\":\"fy2026_27_estimates_as_passed_pdf\",\"sourceClass\":\"primary_controlling\",\"title\":\"2026-2027 Estimates of Expenditure As Passed\",\"releaseDate\":\"2026-04-02\",\"url\":\"https://www.mof.gov.jm/wp-content/uploads/2026-2027-Estimates-of-Expenditure-As-Passed.pdf\",\"fileName\":\"2026-2027-Estimates-of-Expenditure-As-Passed.pdf\",\"expectedContentTypes\":[\"application/pdf\",\"application/octet-stream\"],\"minimumBytes\":1000000,\"maximumBytes\":50000000,\"requiredMagicHex\":\"255044462d\",\"expectedBytes\":23172267,\"expectedSha256\":\"32ef2cb30c9498d2c8d9d4597fcaadce9823c13a97fe199acec19247664a3bd6\"},{\"id\":\"fy2026_27_approved_estimates_csv\",\"sourceClass\":\"primary_machine_readable\",\"title\":\"2026-2027 Approved Estimates Open Data\",\"releaseDate\":\"2026-07-23\",\"url\":\"https://www.mof.gov.jm/wp-content/uploads/2026-2027-Approved-Estimates.csv\",\"fileName\":\"2026-2027-Approved-Estimates.csv\",\"expectedContentTypes\":[\"text/csv\",\"application/csv\",\"application/octet-stream\"],\"minimumBytes\":1000000,\"maximumBytes\":50000000,\"requiredTextTokens\":[\"Coding Block\",\"Org Desc\",\"2026-2027\"],\"expectedBytes\":10891264,\"expectedSha256\":\"cdb6ce99c678feabb3c3c48cf2bcc06d756762a8240c302f82719cabecb4e7ab\"},{\"id\":\"fy2026_27_estimates_as_presented_pdf\",\"sourceClass\":\"supporting_active\",\"title\":\"2026-2027 Estimates of Expenditure As Presented\",\"releaseDate\":\"2026-02-12\",\"url\":\"https://www.mof.gov.jm/wp-content/uploads/2026-2027-Estimates-of-Expenditures.pdf\",\"fileName\":\"2026-2027-Estimates-of-Expenditures.pdf\",\"expectedContentTypes\":[\"application/pdf\",\"application/octet-stream\"],\"minimumBytes\":1000000,\"maximumBytes\":50000000,\"requiredMagicHex\":\"255044462d\",\"expectedBytes\":30471481,\"expectedSha256\":\"792ab9cbd822c112f19480b6133f6bdeb2d980a4d72710390c36e720c7ffa7af\"},{\"id\":\"fy2026_27_as_presented_estimates_csv\",\"sourceClass\":\"supporting_machine_readable\",\"title\":\"2026-2027 As Presented Estimates Open Data\",\"releaseDate\":\"2026-07-23\",\"url\":\"https://www.mof.gov.jm/wp-content/uploads/2026-2027-As-Presented-Estimates.csv\",\"fileName\":\"2026-2027-As-Presented-Estimates.csv\",\"expectedContentTypes\":[\"text/csv\",\"application/csv\",\"application/octet-stream\"],\"minimumBytes\":1000000,\"maximumBytes\":50000000,\"requiredTextTokens\":[\"Coding Block\",\"Org Desc\",\"2026-2027 As Presented\"],\"expectedBytes\":12262651,\"expectedSha256\":\"d480726d35bb1d694f4f0a48e2fab3038c5968d335dc45b00ab5f51bfb497f1a\"}],\"outputContract\":{\"allowedStates\":[\"MONITORED_NO_CHANGE\",\"SOURCE_CHANGE_DETECTED\",\"FAILED_CLOSED\"],\"persistence\":\"NONE\",\"notification\":\"NONE\",\"downstreamExecution\":\"NONE\"},\"prohibitedCapabilities\":[\"Google Sheets writes\",\"Drive writes\",\"n8n workflow activation\",\"Execute Workflow calls\",\"webhooks\",\"subscriber communications\",\"Telegram messages\",\"social posting\",\"video capture or publication\",\"public feed promotion\"]};\nconst sources = [\n  { ...catalog.discovery, kind: 'discovery' },\n  ...catalog.artifacts.map((source) => ({ ...source, kind: 'artifact' })),\n];\nif(catalog.status!==\"INACTIVE_READ_ONLY\"||catalog.network.method!==\"GET\"||sources.length!==5)throw new Error(\"SE01_CATALOG_INVALID\");\nfor(const source of sources) canonicalMofUrl(source.url, source.url);\nreturn sources.map((source) => ({ json: {\n  ...source,\n  workflowId: catalog.workflowId,\n  workflowName: catalog.workflowName,\n  catalogVersion: catalog.catalogVersion,\n  fiscalYear: catalog.fiscalYear,\n  allowedHosts: catalog.allowedHosts,\n  readOnly: true,\n  inactive: true,\n} }));"
       },
       "id": "0a4f32d1-1fe4-42c5-a2f7-20158ef3a003",
       "name": "Load Approved Catalog",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -500,
+        -600,
         20
       ],
       "notesInFlow": true,
@@ -52,13 +53,34 @@
     },
     {
       "parameters": {
+        "batchSize": 1,
+        "options": {
+          "reset": false
+        }
+      },
+      "id": "0a4f32d1-1fe4-42c5-a2f7-20158ef3a007",
+      "name": "Loop Official Sources",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -350,
+        20
+      ],
+      "notesInFlow": true,
+      "notes": "One in-flight public source request. Done collects all five results, including failures, before comparison."
+    },
+    {
+      "parameters": {
         "method": "GET",
+        "sendBody": false,
+        "authentication": "none",
         "url": "={{ $json.url }}",
         "options": {
           "allowUnauthorizedCerts": false,
           "redirect": {
             "redirect": {
-              "followRedirects": false
+              "followRedirects": false,
+              "maxRedirects": 0
             }
           },
           "response": {
@@ -69,48 +91,49 @@
               "outputPropertyName": "data"
             }
           },
-          "timeout": 90000
+          "timeout": 180000
         }
       },
       "id": "0a4f32d1-1fe4-42c5-a2f7-20158ef3a004",
       "name": "GET Official Source Bytes",
       "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
+      "typeVersion": 4.4,
       "position": [
-        -240,
-        20
+        -100,
+        100
       ],
       "notesInFlow": true,
       "notes": "Read-only GET. Redirects are not followed. Status, type or request failures continue only to the FAILED_CLOSED receipt.",
+      "retryOnFail": false,
       "alwaysOutputData": true,
       "onError": "continueRegularOutput"
     },
     {
       "parameters": {
         "mode": "runOnceForAllItems",
-        "jsCode": "const sourceItems = $('Load Approved Catalog').all();\nconst fetchedItems = $input.all();\nconst fail = (code, message = code) => {\n  throw Object.assign(new Error(message), { code });\n};\nconst sha256 = async (bytes) => {\n  const digest = await crypto.subtle.digest('SHA-256', bytes);\n  return [...new Uint8Array(digest)].map((value) => value.toString(16).padStart(2, '0')).join('');\n};\nconst normalizeUrl = (raw, base) => {\n  const url = new URL(raw, base);\n  url.hash = '';\n  url.search = '';\n  if (url.hostname === 'mof.gov.jm') url.hostname = 'www.mof.gov.jm';\n  return url.toString();\n};\nconst results = [];\nfor (let index = 0; index < sourceItems.length; index += 1) {\n  const source = sourceItems[index].json;\n  try {\n    const fetchedItem = fetchedItems[index];\n    if (!fetchedItem) fail('SOURCE_RESPONSE_MISSING');\n    const responseError = fetchedItem.json?.error;\n    if (responseError) {\n      const message = typeof responseError === 'string'\n        ? responseError\n        : responseError.message || JSON.stringify(responseError);\n      fail('HTTP_REQUEST_FAILED', message);\n    }\n    const statusCode = Number(fetchedItem.json?.statusCode || 0);\n    if (!Number.isInteger(statusCode) || statusCode < 100) fail('HTTP_STATUS_MISSING');\n    if (statusCode < 200 || statusCode >= 300) fail('HTTP_FAILURE', 'HTTP ' + statusCode);\n    const responseHeaders = fetchedItem.json?.headers || {};\n    const contentTypeHeader = Object.entries(responseHeaders)\n      .find(([name]) => name.toLowerCase() === 'content-type')?.[1];\n    const contentType = String(contentTypeHeader || '')\n      .split(';', 1)[0]\n      .trim()\n      .toLowerCase();\n    const expectedContentTypes = (source.expectedContentTypes || [])\n      .map((value) => String(value).toLowerCase());\n    if (!contentType || !expectedContentTypes.includes(contentType)) {\n      fail('CONTENT_TYPE_MISMATCH', 'Unexpected content type: ' + (contentType || '<missing>'));\n    }\n    const bytes = await this.helpers.getBinaryDataBuffer(index, 'data');\n    if (!bytes || bytes.length < (source.minimumBytes || 1)) fail('SOURCE_BYTES_MISSING_OR_TOO_SMALL');\n    if (bytes.length > (source.maximumBytes || 50000000)) fail('SOURCE_TOO_LARGE');\n    if (source.requiredMagicHex) {\n      const magic = bytes.subarray(0, source.requiredMagicHex.length / 2).toString('hex');\n      if (magic.toLowerCase() !== source.requiredMagicHex.toLowerCase()) fail('FILE_SIGNATURE_MISMATCH');\n    }\n    const sample = bytes.subarray(0, Math.min(bytes.length, 131072)).toString('utf8');\n    for (const token of source.requiredTextTokens || []) {\n      if (!sample.includes(token)) fail('CONTENT_SIGNATURE_MISMATCH');\n    }\n    if (source.kind === 'discovery') {\n      const discoveryHtml = bytes.toString('utf8');\n      const rules = source.linkInventory;\n      const allowed = new Set(source.allowedHosts.map((host) => host === 'mof.gov.jm' ? 'www.mof.gov.jm' : host));\n      const links = new Set();\n      for (const match of discoveryHtml.matchAll(/href\\s*=\\s*[\"']([^\"']+)[\"']/giu)) {\n        try {\n          const normalized = normalizeUrl(match[1], source.url);\n          const parsed = new URL(normalized);\n          const searchable = parsed.pathname.toLowerCase();\n          if (!allowed.has(parsed.hostname)) continue;\n          if (!parsed.pathname.startsWith(rules.requiredPathPrefix)) continue;\n          if (!rules.fiscalYearTokens.some((token) => searchable.includes(token.toLowerCase()))) continue;\n          if (!rules.includeTokens.some((token) => searchable.includes(token.toLowerCase()))) continue;\n          if (rules.excludeTokens.some((token) => searchable.includes(token.toLowerCase()))) continue;\n          links.add(normalized);\n        } catch {}\n      }\n      const observedLinks = [...links].sort();\n      const observedSha256 = await sha256(new TextEncoder().encode(observedLinks.join('\\n')));\n      results.push({ json: {\n        sourceId: source.id,\n        sourceClass: source.sourceClass,\n        url: source.url,\n        outcome: observedSha256 === rules.expectedSha256 ? 'UNCHANGED' : 'CHANGED',\n        expectedSha256: rules.expectedSha256,\n        observedSha256,\n        expectedLinks: rules.expectedUrls,\n        observedLinks,\n        addedLinks: observedLinks.filter((url) => !rules.expectedUrls.includes(url)),\n        missingLinks: rules.expectedUrls.filter((url) => !observedLinks.includes(url)),\n        observedBytes: bytes.length,\n        contentType,\n        statusCode,\n      } });\n    } else {\n      const observedSha256 = await sha256(bytes);\n      results.push({ json: {\n        sourceId: source.id,\n        sourceClass: source.sourceClass,\n        url: source.url,\n        outcome: observedSha256 === source.expectedSha256 ? 'UNCHANGED' : 'CHANGED',\n        expectedSha256: source.expectedSha256,\n        observedSha256,\n        expectedBytes: source.expectedBytes,\n        observedBytes: bytes.length,\n        contentType,\n        statusCode,\n      } });\n    }\n  } catch (error) {\n    results.push({ json: {\n      sourceId: source.id,\n      sourceClass: source.sourceClass,\n      url: source.url,\n      outcome: 'FAILED',\n      errorCode: error.code || 'FAILED_CLOSED',\n      errorMessage: error.message || 'FAILED_CLOSED',\n    } });\n  }\n}\nreturn results;"
+        "jsCode": "function sha256Bytes(input) {\n  const bytes = Buffer.isBuffer(input) ? input : Buffer.from(input);\n  const k = [1116352408,1899447441,3049323471,3921009573,961987163,1508970993,2453635748,2870763221,3624381080,310598401,607225278,1426881987,1925078388,2162078206,2614888103,3248222580,3835390401,4022224774,264347078,604807628,770255983,1249150122,1555081692,1996064986,2554220882,2821834349,2952996808,3210313671,3336571891,3584528711,113926993,338241895,666307205,773529912,1294757372,1396182291,1695183700,1986661051,2177026350,2456956037,2730485921,2820302411,3259730800,3345764771,3516065817,3600352804,4094571909,275423344,430227734,506948616,659060556,883997877,958139571,1322822218,1537002063,1747873779,1955562222,2024104815,2227730452,2361852424,2428436474,2756734187,3204031479,3329325298];\n  const h = [1779033703,3144134277,1013904242,2773480762,1359893119,2600822924,528734635,1541459225];\n  const w = new Uint32Array(64);\n  function chunk(block, offset) {\n    for(let j=0;j<16;j++){const i=offset+j*4;w[j]=((block[i]<<24)|(block[i+1]<<16)|(block[i+2]<<8)|block[i+3])>>>0;}\n    for(let j=16;j<64;j++){const a=w[j-15],b=w[j-2],s0=((a>>>7)|(a<<25))^((a>>>18)|(a<<14))^(a>>>3),s1=((b>>>17)|(b<<15))^((b>>>19)|(b<<13))^(b>>>10);w[j]=(w[j-16]+s0+w[j-7]+s1)>>>0;}\n    let [a,b,c,d,e,f,g,z]=h;\n    for(let j=0;j<64;j++){const s1=((e>>>6)|(e<<26))^((e>>>11)|(e<<21))^((e>>>25)|(e<<7)),ch=(e&f)^(~e&g),t1=(z+s1+ch+k[j]+w[j])>>>0,s0=((a>>>2)|(a<<30))^((a>>>13)|(a<<19))^((a>>>22)|(a<<10)),maj=(a&b)^(a&c)^(b&c),t2=(s0+maj)>>>0;z=g;g=f;f=e;e=(d+t1)>>>0;d=c;c=b;b=a;a=(t1+t2)>>>0;}\n    const v=[a,b,c,d,e,f,g,z];for(let j=0;j<8;j++)h[j]=(h[j]+v[j])>>>0;\n  }\n  const full=bytes.length-bytes.length%64;\n  for(let i=0;i<full;i+=64)chunk(bytes,i);\n  const tail=Buffer.alloc(bytes.length-full<56?64:128);\n  bytes.copy(tail,0,full);tail[bytes.length-full]=128;\n  const bits=bytes.length*8;\n  tail.writeUInt32BE(Math.floor(bits/0x100000000),tail.length-8);\n  tail.writeUInt32BE(bits>>>0,tail.length-4);\n  for(let i=0;i<tail.length;i+=64)chunk(tail,i);\n  return h.map(v=>v.toString(16).padStart(8,'0')).join('');\n}\nfunction canonicalMofUrl(raw, base) {\n  const value=String(raw).trim();\n  if(!value||/[\\x00-\\x1f\\x7f\\\\]/.test(value))throw new Error('SOURCE_URL_INVALID');\n  const baseMatch=String(base).match(/^https:\\/\\/(www\\.mof\\.gov\\.jm|mof\\.gov\\.jm)(\\/[^?#]*)?(?:[?#].*)?$/i);\n  if(!baseMatch)throw new Error('SOURCE_BASE_URL_INVALID');\n  let authority=baseMatch[1],path=value;\n  const absolute=value.match(/^https:\\/\\/([^/?#]+)([^?#]*)/i);\n  const relativeAuthority=value.match(/^\\/\\/([^/?#]+)([^?#]*)/);\n  if(absolute||relativeAuthority){const m=absolute||relativeAuthority;authority=m[1];path=m[2]||'/';}\n  else {\n    if(/^[a-z][a-z0-9+.-]*:/i.test(value))throw new Error('SOURCE_URL_PROTOCOL_INVALID');\n    path=value.split(/[?#]/,1)[0];\n    if(!path)path=baseMatch[2]||'/';\n    else if(!path.startsWith('/'))path=(baseMatch[2]||'/').replace(/[^/]*$/,'')+path;\n  }\n  if(!/^(?:www\\.)?mof\\.gov\\.jm(?::443)?$/i.test(authority))throw new Error('SOURCE_URL_HOST_INVALID');\n  const segments=[];\n  for(const segment of path.split('/')){\n    const dot=segment.replace(/%2e/ig,'.');\n    if(dot==='..'){if(segments.length>1)segments.pop();}\n    else if(dot!=='.')segments.push(segment);\n  }\n  if(/\\/(?:\\.{1,2}|%2e|\\.%2e|%2e\\.|%2e%2e)$/i.test(path))segments.push('');\n  const pathname=encodeURI(segments.join('/')||'/').replace(/%25/g,'%');\n  return {url:'https://www.mof.gov.jm'+pathname,hostname:'www.mof.gov.jm',pathname};\n}\nconst sourceItems = $('Load Approved Catalog').all();\nconst fetchedItems = $input.all();\nconst fail = (code, message = code) => {\n  throw Object.assign(new Error(message), { code });\n};\nconst sha256 = async (bytes) => sha256Bytes(bytes);\nconst results = [];\nfor (let index = 0; index < sourceItems.length; index += 1) {\n  const source = sourceItems[index].json;\n  try {\n    const fetchedItem = fetchedItems[index];\n    if (!fetchedItem) fail('SOURCE_RESPONSE_MISSING');\n    const responseError = fetchedItem.json?.error;\n    if (responseError) {\n      const message = typeof responseError === 'string'\n        ? responseError\n        : responseError.message || JSON.stringify(responseError);\n      fail('HTTP_REQUEST_FAILED', message);\n    }\n    const statusCode = Number(fetchedItem.json?.statusCode || 0);\n    if (!Number.isInteger(statusCode) || statusCode < 100) fail('HTTP_STATUS_MISSING');\n    if (statusCode < 200 || statusCode >= 300) fail('HTTP_FAILURE', 'HTTP ' + statusCode);\n    const responseHeaders = fetchedItem.json?.headers || {};\n    const contentTypeHeader = Object.entries(responseHeaders)\n      .find(([name]) => name.toLowerCase() === 'content-type')?.[1];\n    const contentType = String(contentTypeHeader || '')\n      .split(';', 1)[0]\n      .trim()\n      .toLowerCase();\n    const expectedContentTypes = (source.expectedContentTypes || [])\n      .map((value) => String(value).toLowerCase());\n    if (!contentType || !expectedContentTypes.includes(contentType)) {\n      fail('CONTENT_TYPE_MISMATCH', 'Unexpected content type: ' + (contentType || '<missing>'));\n    }\n    const bytes = await this.helpers.getBinaryDataBuffer(index, 'data');\n    if (!bytes || bytes.length < (source.minimumBytes || 1)) fail('SOURCE_BYTES_MISSING_OR_TOO_SMALL');\n    if (bytes.length > (source.maximumBytes || 50000000)) fail('SOURCE_TOO_LARGE');\n    if (source.requiredMagicHex) {\n      const magic = bytes.subarray(0, source.requiredMagicHex.length / 2).toString('hex');\n      if (magic.toLowerCase() !== source.requiredMagicHex.toLowerCase()) fail('FILE_SIGNATURE_MISMATCH');\n    }\n    const sample = bytes.subarray(0, Math.min(bytes.length, 131072)).toString('utf8');\n    for (const token of source.requiredTextTokens || []) {\n      if (!sample.includes(token)) fail('CONTENT_SIGNATURE_MISMATCH');\n    }\n    if (source.kind === 'discovery') {\n      const discoveryHtml = bytes.toString('utf8');\n      const rules = source.linkInventory;\n      const allowed = new Set(source.allowedHosts.map((host) => host === 'mof.gov.jm' ? 'www.mof.gov.jm' : host));\n      const links = new Set();\n      for (const match of discoveryHtml.matchAll(/href\\s*=\\s*[\"']([^\"']+)[\"']/giu)) {\n        try {\n          const parsed = canonicalMofUrl(match[1].replace(/&amp;/g, \"&\"), source.url);\n          const normalized = parsed.url;\n          const searchable = parsed.pathname.toLowerCase();\n          if (!allowed.has(parsed.hostname)) continue;\n          if (!parsed.pathname.startsWith(rules.requiredPathPrefix)) continue;\n          if (!rules.fiscalYearTokens.some((token) => searchable.includes(token.toLowerCase()))) continue;\n          if (!rules.includeTokens.some((token) => searchable.includes(token.toLowerCase()))) continue;\n          if (rules.excludeTokens.some((token) => searchable.includes(token.toLowerCase()))) continue;\n          links.add(normalized);\n        } catch {}\n      }\n      const observedLinks = [...links].sort();\n      const observedSha256 = await sha256(new TextEncoder().encode(observedLinks.join('\\n')));\n      results.push({ json: {\n        sourceId: source.id,\n        sourceClass: source.sourceClass,\n        url: source.url,\n        outcome: observedSha256 === rules.expectedSha256 ? 'UNCHANGED' : 'CHANGED',\n        expectedSha256: rules.expectedSha256,\n        observedSha256,\n        expectedLinks: rules.expectedUrls,\n        observedLinks,\n        addedLinks: observedLinks.filter((url) => !rules.expectedUrls.includes(url)),\n        missingLinks: rules.expectedUrls.filter((url) => !observedLinks.includes(url)),\n        observedBytes: bytes.length,\n        contentType,\n        statusCode,\n      } });\n    } else {\n      const observedSha256 = await sha256(bytes);\n      results.push({ json: {\n        sourceId: source.id,\n        sourceClass: source.sourceClass,\n        url: source.url,\n        outcome: observedSha256 === source.expectedSha256 ? 'UNCHANGED' : 'CHANGED',\n        expectedSha256: source.expectedSha256,\n        observedSha256,\n        expectedBytes: source.expectedBytes,\n        observedBytes: bytes.length,\n        contentType,\n        statusCode,\n      } });\n    }\n  } catch (error) {\n    results.push({ json: {\n      sourceId: source.id,\n      sourceClass: source.sourceClass,\n      url: source.url,\n      outcome: 'FAILED',\n      errorCode: error.code || 'FAILED_CLOSED',\n      errorMessage: error.message || 'FAILED_CLOSED',\n    } });\n  }\n}\nreturn results;"
       },
       "id": "0a4f32d1-1fe4-42c5-a2f7-20158ef3a005",
       "name": "Fingerprint and Compare",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        20,
-        20
+        160,
+        -80
       ]
     },
     {
       "parameters": {
         "mode": "runOnceForAllItems",
-        "jsCode": "const results = $input.all().map((item) => item.json);\nconst failed = results.filter((result) => result.outcome === 'FAILED').length;\nconst changed = results.filter((result) => result.outcome === 'CHANGED').length;\nconst unchanged = results.filter((result) => result.outcome === 'UNCHANGED').length;\nconst state = failed > 0 ? 'FAILED_CLOSED' : changed > 0 ? 'SOURCE_CHANGE_DETECTED' : 'MONITORED_NO_CHANGE';\nconst nextAction = state === 'MONITORED_NO_CHANGE'\n  ? 'No action. Retain the receipt and wait for the next authorized check.'\n  : state === 'SOURCE_CHANGE_DETECTED'\n    ? 'Open a human source-review case. Do not acquire, extract, stage, approve or publish from this receipt alone.'\n    : 'Stop. Investigate the source or content failure. Do not open a release case.';\nreturn [{ json: {\n  schemaVersion: '1.0.0',\n  workflowId: 'SE-01',\n  workflowName: 'JIF | SE-01 Spending Explorer Source Monitor | INACTIVE',\n  catalogVersion: '1.0.1',\n  catalogDigest: 'f84921812c0950717879b528e57530a4c23f5c8e2bfb65b51b022f6c9b9fda29',\n  fiscalYear: '2026-2027',\n  checkedAt: new Date().toISOString(),\n  inactive: true,\n  readOnly: true,\n  state,\n  summary: { sourcesChecked: results.length, unchanged, changed, failed },\n  results,\n  nextAction,\n} }];"
+        "jsCode": "const results = $input.all().map((item) => item.json);\nconst expectedIds = [\"annual_and_supplementary_estimates_index\",\"fy2026_27_estimates_as_passed_pdf\",\"fy2026_27_approved_estimates_csv\",\"fy2026_27_estimates_as_presented_pdf\",\"fy2026_27_as_presented_estimates_csv\"];\nif(results.length!==expectedIds.length||new Set(results.map(r=>r.sourceId)).size!==expectedIds.length||results.some(r=>!expectedIds.includes(r.sourceId)||!['UNCHANGED','CHANGED','FAILED'].includes(r.outcome))){\n  results.push({sourceId:'receipt_contract',outcome:'FAILED',errorCode:'SOURCE_RESULT_SET_INVALID',errorMessage:'Expected exactly one recognized result for each approved source'});\n}\nconst failed = results.filter((result) => result.outcome === 'FAILED').length;\nconst changed = results.filter((result) => result.outcome === 'CHANGED').length;\nconst unchanged = results.filter((result) => result.outcome === 'UNCHANGED').length;\nconst state = failed > 0 ? 'FAILED_CLOSED' : changed > 0 ? 'SOURCE_CHANGE_DETECTED' : 'MONITORED_NO_CHANGE';\nconst nextAction = state === 'MONITORED_NO_CHANGE'\n  ? 'No action. Retain the receipt and wait for the next authorized check.'\n  : state === 'SOURCE_CHANGE_DETECTED'\n    ? 'Open a human source-review case. Do not acquire, extract, stage, approve or publish from this receipt alone.'\n    : 'Stop. Investigate the source or content failure. Do not open a release case.';\nreturn [{ json: {\n  schemaVersion: '1.0.0',\n  workflowId: 'SE-01',\n  workflowName: 'JIF | SE-01 Spending Explorer Source Monitor | INACTIVE',\n  catalogVersion: '1.0.1',\n  catalogDigest: 'f84921812c0950717879b528e57530a4c23f5c8e2bfb65b51b022f6c9b9fda29',\n  fiscalYear: '2026-2027',\n  checkedAt: new Date().toISOString(),\n  inactive: true,\n  readOnly: true,\n  state,\n  summary: { sourcesChecked: results.length, unchanged, changed, failed },\n  results,\n  nextAction,\n} }];"
       },
       "id": "0a4f32d1-1fe4-42c5-a2f7-20158ef3a006",
       "name": "Return Read-Only Receipt",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        280,
-        20
+        420,
+        -80
       ],
       "notesInFlow": true,
       "notes": "Terminal node. No persistence, notification, downstream execution or publication node follows."
@@ -143,6 +166,24 @@
       "main": [
         [
           {
+            "node": "Loop Official Sources",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Official Sources": {
+      "main": [
+        [
+          {
+            "node": "Fingerprint and Compare",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
             "node": "GET Official Source Bytes",
             "type": "main",
             "index": 0
@@ -154,7 +195,7 @@
       "main": [
         [
           {
-            "node": "Fingerprint and Compare",
+            "node": "Loop Official Sources",
             "type": "main",
             "index": 0
           }
@@ -185,6 +226,11 @@
     "packageStatus": "INACTIVE_READ_ONLY",
     "sourceCatalogDigest": "f84921812c0950717879b528e57530a4c23f5c8e2bfb65b51b022f6c9b9fda29",
     "importAuthorized": false,
+    "runtimeCompatibility": {
+      "candidateVersion": "1.0.3",
+      "target": "n8n 2.25.7",
+      "nativeTested": false
+    },
     "activationAuthorized": false
   },
   "tags": []

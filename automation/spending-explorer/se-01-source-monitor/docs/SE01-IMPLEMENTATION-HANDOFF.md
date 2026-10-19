@@ -1,9 +1,16 @@
 # JIF SE-01 — Spending Explorer Source Monitor Implementation Handoff
 
-Version 1.0.1
+Version 1.0.3 serial-download candidate
 Implementation state: Built and verified locally; inactive; not imported; not activated  
 Owner: Jamaica in Focus  
 Public product: JIF Government Spending Explorer and Every J$100
+
+Current 2026-10-18 candidate: the v1.0.1 code package was previously merged in
+PR #30. This follow-up changes only generated n8n runtime compatibility and its
+validation. It is a separate unmerged candidate, not a claim of deployed SE-01.
+The approved catalogue and hashes are unchanged. See
+`SE01-N8N-2257-COMPATIBILITY.md` for the current 25-test local evidence. The
+older verification list below describes the earlier package's evidence.
 
 ## 1. Purpose
 
@@ -86,7 +93,7 @@ It contains only:
 - an inactive daily schedule trigger;
 - a manual review trigger;
 - a catalogue-loading Code node;
-- one read-only HTTP Request node using `GET`, with redirects disabled and status/header retention;
+- one one-item source loop and one read-only HTTP Request node using `GET`, with redirects disabled and status/header retention;
 - fingerprint/comparison Code;
 - one terminal receipt Code node.
 
@@ -99,7 +106,9 @@ The comparison node iterates the approved source catalogue, so a missing respons
 non-2xx status, redirect or unexpected content type becomes a `FAILED_CLOSED` result and still
 reaches the terminal receipt.
 
-Runtime compatibility note: the fingerprint node uses Web Crypto plus n8n binary-data helpers.
+Runtime compatibility note: the fingerprint node uses a bounded-workspace SHA-256 implementation
+and a scoped MOFPS link resolver plus n8n binary-data helpers; it no longer relies on Web Crypto
+or a host URL global. This is locally tested in a VM without those globals.
 Before any import is authorized, the exact production n8n version must be checked in an isolated
 inactive import and the workflow must remain disconnected from every later SE workflow.
 
