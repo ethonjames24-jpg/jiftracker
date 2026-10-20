@@ -1,0 +1,1 @@
+{"name":"jif-se02-acquire-archive","version":"0.1.0","private":true,"type":"module","scripts":{"build":"node scripts/build-workflow.mjs","test":"node --test tests/*.test.mjs"},"engines":{"node":">=20"}}
