@@ -1,14 +1,25 @@
 # SE-02 Acquire and Archive — v0.1 candidate
 
-Prepared under Ethon's 2026-10-19 implementation approval. **Not imported, not run in n8n, not activated.**
+Prepared under Ethon's 2026-10-19 implementation approval. **Installed as I37vL2CouMUNCYxw; owner-supplied native report-only preflight execution 2603 passed its zero-transport diagnostic boundary. No archive-mode run or activation is accepted.**
 
 SE-01 is already merged as PR #38 and its five-source native no-change test passed. This package does not modify SE-01, monthly publication, public serving tables, or frozen Spending Explorer data.
 
-## First owner action
+## Initial installation (completed)
 
 Import `workflows/JIF-SE02-Acquire-Archive-REPORT-ONLY-v0.1.json` into **one new SE-02 workflow**, save it, and leave it unpublished. It has **24 nodes**, no schedule, zero bound credentials, and eight disabled native transport nodes. Do not append it to SE-01 or replace another workflow. After confirming the canvas, its manual report-only preflight can be run without source, Drive, scanner or table calls.
 
 The default result is `REPORT_ONLY`, `ok:false`, zero acquired files and explicit setup blockers. This is an installation diagnostic, never an acquisition PASS.
+
+## Current installation checkpoint — 2026-10-19
+
+The owner supplied separate SE-02 Data Table URLs in project `uEgykgvoDVlzk0ML`:
+
+- Guard `jwPFylsV6PbE0hff`: screenshot showed one row, numeric ID `1`, key `JIF_SE02_ARCHIVE_GLOBAL`, version `jif-se02-archive-v1`, token `UNLOCKED`, and holder execution/workflow `NONE`. `acquired_at` was off-screen and remains unverified.
+- Reservations `gu5oNfmgz6Tb1MVA`: screenshot showed String columns `batch_key` and `reservation_json`, no rows, Total 0.
+
+These IDs are now recorded in `config/install-config.json` and the generated Settings code. This is owner UI evidence, not a native transport readback. **The Settings patch has been prepared, not reported installed.** The only owner edit is to replace all code in the existing `SE02 | Settings` node and save the same workflow. Do not import again, run, publish, enable transports, or change other nodes. The generated full JSON remains a reproducible configuration snapshot, not an instruction to reimport.
+
+`mode=REPORT_ONLY`, `transportEnabled=false`, `scannerUrl=""` and `caseInput=null` are unchanged. Native table readback, a real scanner adapter/endpoint/credential, Drive binding, controlled archive/replay/failure/recovery acceptance, and the eventual SE-01 handoff remain pending. Initial engineering ZIP/import hashes remain historical baseline artifacts; this source revision and the current Drive handoff record contain the table-ID override. No monthly guard, source catalogue or public data was changed.
 
 ## Scope and layout
 

@@ -34,7 +34,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "parameters": {
-        "jsCode": "const config={\n  \"mode\": \"REPORT_ONLY\",\n  \"archiveRootId\": \"1zJVOBm8PxF8ontZzHS5udYMIBke1lUBB\",\n  \"guardTableId\": \"\",\n  \"guardRowId\": 1,\n  \"ledgerTableId\": \"\",\n  \"scannerUrl\": \"\",\n  \"caseInput\": null,\n  \"transportEnabled\": false\n};\nconst input=config.caseInput ?? ($input.first()?.json?.monitorReceipt ? $input.first().json : null);\nreturn [{json:{config,input}}];\n"
+        "jsCode": "const config={\n  \"mode\": \"REPORT_ONLY\",\n  \"archiveRootId\": \"1zJVOBm8PxF8ontZzHS5udYMIBke1lUBB\",\n  \"guardTableId\": \"jwPFylsV6PbE0hff\",\n  \"guardRowId\": 1,\n  \"ledgerTableId\": \"gu5oNfmgz6Tb1MVA\",\n  \"scannerUrl\": \"\",\n  \"caseInput\": null,\n  \"transportEnabled\": false\n};\nconst input=config.caseInput ?? ($input.first()?.json?.monitorReceipt ? $input.first().json : null);\nreturn [{json:{config,input}}];\n"
       },
       "position": [
         -460,
