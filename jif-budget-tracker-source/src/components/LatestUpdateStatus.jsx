@@ -20,12 +20,20 @@ const formatLatestUpdateAt = (value) => {
   return `Last updated: ${updateDateFormatter.format(date)}`;
 };
 
-export const LatestUpdateStatus = ({ currentMonth }) => {
+export const LatestUpdateStatus = ({ currentMonth, compact = false }) => {
   const status = displayValue(currentMonth?.latest_update_status, currentMonth?.status_headline || "Not reported");
   const label = displayValue(currentMonth?.latest_update_label, currentMonth?.month_label || "Current tracker month");
   const freshness = displayValue(currentMonth?.data_freshness_state, currentMonth?.tracker_state || "Public tracker data");
   const note = displayValue(currentMonth?.latest_update_note, "Latest public tracker update is based on the approved monthly data currently available.");
   const latestUpdateAt = formatLatestUpdateAt(currentMonth?.latest_update_at);
+
+  if (compact) return (
+    <div data-testid="latest-update-status" className="latest-update-inline">
+      <span data-testid="latest-update-freshness">{currentMonth?.period_label || "Selected reporting month"}</span>
+      <span data-testid="latest-update-at">{latestUpdateAt}</span>
+      <a href="#source-documents">Check the sources</a>
+    </div>
+  );
 
   return (
     <article data-testid="latest-update-status" className="latest-update-card animate-rise">

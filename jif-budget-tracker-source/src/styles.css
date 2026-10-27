@@ -287,7 +287,7 @@ tbody tr:nth-child(even) { background: var(--paper); }
   .section-nav-shell { min-height: var(--section-nav-height); }
   .nav-links { padding-top: 7px; padding-bottom: 7px; }
   .nav-button { min-height: 40px; padding-top: 7px; padding-bottom: 7px; }
-  .nav-product-switch { order: -1; margin-left: 0; }
+  .nav-product-switch { order: 2; margin-left: 0; }
   .month-select { width: 100%; }
   .public-tools-footer-inner { grid-template-columns: 1fr; gap: 18px; }
   .public-tools-footer-links { justify-content: flex-start; flex-wrap: wrap; white-space: normal; }
@@ -936,4 +936,46 @@ tbody tr:nth-child(even) { background: var(--paper); }
   .spending-explorer-release-pill { font-size: .65rem; padding: 7px 9px; }
   .spending-explorer-hero-total { padding: 24px; }
   .spending-explorer-filter-heading { align-items: flex-start; flex-direction: column; }
+}
+
+/* Monthly tracker review: retain JIF identity while bringing evidence forward.
+   Scope layout changes to the ordinary tracker, preserving capture/Explorer. */
+#tracker-main .metric-amber { color: #925f00; }
+.skip-link { position: fixed; top: -100px; left: 16px; z-index: 1000; background: white; color: #0a2c43; padding: 12px 16px; }
+.skip-link:focus { top: 8px; }
+#tracker-main .overview-section { padding-bottom: 24px; }
+#tracker-main .overview-copy h1 { font-size: clamp(2.25rem, 4.4vw, 4rem); line-height: 1.02; }
+#tracker-main .subtitle { font-size: 1rem; line-height: 1.55; }
+#tracker-main .tracker-pill { padding: 6px 10px; box-shadow: none; }
+#tracker-main .overview-grid { gap: 24px; align-items: center; padding-top: 24px; padding-bottom: 16px; }
+#tracker-main .scorecard, #tracker-main .metric { min-height: 0; }
+#tracker-main .scorecard-header { padding: 14px 18px; }
+#tracker-main .metric { padding: 16px; }
+#tracker-main .metric-value { font-size: 3rem; }
+#tracker-main .overview-update-row { margin-top: 20px; }
+#tracker-main .latest-update-inline { display: flex; flex-wrap: wrap; gap: 8px 20px; max-width: 1180px; margin: 12px auto 0; padding: 0 20px; font-size: .875rem; color: #555; }
+#tracker-main .latest-update-inline a { color: #0a2c43; text-decoration: underline; }
+#tracker-main .info-grid { grid-template-columns: 1fr; }
+#tracker-main .public-summary-details { padding: 16px 0; }
+#tracker-main summary { cursor: pointer; font-weight: 700; }
+#tracker-main summary:focus-visible { outline: 3px solid #0a2c43; outline-offset: 3px; }
+#subscribe-form { scroll-margin-top: 0; }
+.mobile-kpi-list { display: none; }
+@media (max-width: 600px) {
+  #tracker-main .overview-grid { padding-top: 20px; }
+  #tracker-main .latest-update-inline { padding-inline: 16px; }
+  #tracker-main .overview-copy h1 { margin-top: 16px; font-size: 2.25rem; }
+  #tracker-main .hero-status-row { margin-top: 16px; gap: 10px; }
+  #tracker-main .month-chip { padding: 8px 12px; }
+  #tracker-main .metric { padding: 12px; }
+  #tracker-main .metric-value { margin: 8px 0 0; font-size: 2.5rem; }
+  #tracker-main .kpi-section .table-card { display: none; }
+  #tracker-main .mobile-kpi-list { display: grid; gap: 12px; }
+  #tracker-main .mobile-kpi-item { padding: 16px; background: white; border: 1px solid #b8b8b8; border-left: 4px solid #0a2c43; }
+  #tracker-main .mobile-kpi-item h3 { margin: 0 0 10px; font-size: 1.15rem; }
+  #tracker-main .mobile-kpi-item p { line-height: 1.5; }
+  #tracker-main .mobile-kpi-item details { border-top: 1px solid #ddd; padding-top: 12px; }
+  #tracker-main .mobile-kpi-item summary { min-height: 32px; }
+  #tracker-main .mobile-kpi-item dl { margin-bottom: 0; }
+  #tracker-main .mobile-kpi-item dd { margin: 4px 0 12px; font-variant-numeric: tabular-nums; font-weight: 700; }
 }

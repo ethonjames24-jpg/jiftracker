@@ -4,7 +4,7 @@ import { StatusBadge } from "./StatusBadge.jsx";
 const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 const formatComparisonMonthLabel = (month) => {
-  const label = month?.month_label || month?.month_sort || "";
+  const label = month?.month_sort || month?.month_label || "";
   const canonicalMatch = typeof label === "string" ? label.match(/^(\d{4})-(\d{2})$/) : null;
 
   if (!canonicalMatch) return label || "Month pending";
@@ -67,7 +67,7 @@ const MovementList = ({ title, items, type }) => {
     <div className={`movement-list movement-${type}`} data-testid={`comparison-${type}-list`}>
       <h4><Icon size={17} aria-hidden="true" /> {title}</h4>
       <ul>
-        {items.slice(0, 5).map((item) => (
+        {items.map((item) => (
           <li key={`${type}-${item.label}`}>{item.label}</li>
         ))}
       </ul>

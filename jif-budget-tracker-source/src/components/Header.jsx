@@ -140,15 +140,6 @@ const SectionNavigation = () => {
   return (
     <div className="section-nav-shell" data-testid="section-navigation-shell">
       <nav ref={navRef} className="nav-links" data-testid="primary-navigation" aria-label="Dashboard sections">
-        <a
-          className="nav-button nav-product-switch"
-          href="/?view=spending"
-          data-testid="government-spending-explorer-link"
-        >
-          <Landmark size={16} aria-hidden="true" />
-          <span className="explorer-switch-label-full">Government Spending Explorer</span>
-          <span className="explorer-switch-label-short">Spending Explorer</span>
-        </a>
         {links.map(({ href, label, icon: Icon, testId }) => {
           const sectionId = href.replace("#", "");
           const isActive = activeSection === sectionId;
@@ -167,6 +158,15 @@ const SectionNavigation = () => {
             </a>
           );
         })}
+        <a
+          className="nav-button nav-product-switch"
+          href="/?view=spending"
+          data-testid="government-spending-explorer-link"
+        >
+          <Landmark size={16} aria-hidden="true" />
+          <span className="explorer-switch-label-full">Government Spending Explorer</span>
+          <span className="explorer-switch-label-short">Spending Explorer</span>
+        </a>
       </nav>
     </div>
   );

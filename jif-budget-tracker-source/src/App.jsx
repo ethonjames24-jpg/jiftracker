@@ -1,3 +1,4 @@
+import { trackerPresentation } from "./content/trackerPresentation.js";
 import { lazy, Suspense, useRef } from "react";
 import { BackToTopButton, Header } from "./components/Header.jsx";
 import { PublicToolsFooter } from "./components/PublicToolsFooter.jsx";
@@ -35,26 +36,28 @@ const MonthlyTrackerApp = () => {
   const showAdminChecklist = isAdminChecklistRoute();
 
   if (loading && !data) return <LoadingState />;
-  if (error && !data) return <ErrorState message={error} onRetry={() => loadTracker("")} />;
+  if (error && !data) return <ErrorState message={error} onRetry={() => loadTracker(new URLSearchParams(window.location.search).get("month") || "")} />;
   if (captureMode) return <CaptureView mode={captureMode} data={data} />;
   if (showAdminChecklist) return <AdminChecklist data={data} />;
+  const display = trackerPresentation(data);
 
   return (
     <div className="app" data-testid="dashboard-app">
       <LoadingLine active={loading} />
       <div id="page-top" className="page-top-sentinel" aria-hidden="true" />
       <div id="back-to-top-sentinel" className="back-to-top-sentinel" aria-hidden="true" />
-      <Header months={data.available_months || []} selectedMonth={selectedMonth} onMonthChange={handleMonthChange} />
+      <a className="skip-link" href="#tracker-main">Skip to tracker content</a>
+      <Header months={display.available_months || []} selectedMonth={selectedMonth} onMonthChange={handleMonthChange} />
       {error && <NonBlockingError message={error} />}
-      <main ref={mainRef} data-testid="dashboard-main-content">
+      <main id="tracker-main" tabIndex={-1} ref={mainRef} aria-busy={loading} data-testid="dashboard-main-content">
         <PublicWarnings data={data} />
-        <Overview currentMonth={data.current_month} />
+        <Overview currentMonth={display.current_month} />
         <MonthComparison comparison={data.month_comparison} />
         <CompactSubscribeCta />
-        <KpiTable kpis={data.kpis || []} monthLabel={data.current_month?.month_label} />
+        <KpiTable kpis={display.kpis || []} monthLabel={display.current_month?.month_label} />
         <ArchiveSection archive={data.archive || []} />
-        <SourceSection currentMonth={data.current_month} />
-        <MethodologySection currentMonth={data.current_month} />
+        <SourceSection currentMonth={display.current_month} showReviewNote />
+        <MethodologySection currentMonth={display.current_month} />
         <SubscriptionSection monthSort={data.current_month?.month_sort || selectedMonth} />
       </main>
       <BackToTopButton />
