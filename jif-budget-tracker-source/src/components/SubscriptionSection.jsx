@@ -9,7 +9,7 @@ const statusMessages = {
   already_subscribed: "You are already subscribed to tracker update emails.",
   validation_error: "Please enter a valid email address and confirm your consent.",
   server_error: "We could not submit your request right now. Please try again later.",
-  configuration_error: "Subscription form is not configured yet. Add VITE_TRACKER_SUBSCRIBE_WEBHOOK_URL to enable submissions.",
+  configuration_error: "Email sign-up is temporarily unavailable. Please try again later.",
 };
 
 const SUBSCRIPTION_STATUS_EVENT = "jif:subscription-status";
@@ -17,7 +17,7 @@ const SUBSCRIPTION_STATUS_EVENT = "jif:subscription-status";
 const prefersReducedMotion = () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 
 const scrollToSubscribeForm = () => {
-  const section = document.getElementById("subscribe");
+  const section = document.getElementById("subscribe-form");
   const emailInput = document.getElementById("subscriber-email");
   if (!section) return;
 
@@ -32,7 +32,7 @@ export const FloatingSubscribeButton = () => {
 
   useEffect(() => {
     const invitation = document.querySelector("[data-testid='compact-subscribe-cta-section']");
-    const form = document.getElementById("subscribe");
+    const form = document.getElementById("subscribe-form");
     if (!invitation || !form) return undefined;
 
     const invitationObserver = new IntersectionObserver(([entry]) => {
@@ -106,6 +106,8 @@ export const SubscriptionSection = ({ monthSort }) => {
 
     if (!validateForm()) {
       setStatus("validation_error");
+      const invalidField = !EMAIL_PATTERN.test(email.trim()) ? "subscriber-email" : "subscriber-consent";
+      document.getElementById(invalidField)?.focus();
       return;
     }
 
@@ -139,7 +141,7 @@ export const SubscriptionSection = ({ monthSort }) => {
           </div>
         </div>
 
-        <form data-testid="subscribe-form" className="subscribe-form" onSubmit={handleSubmit} noValidate>
+        <form id="subscribe-form" aria-busy={isSubmitting} data-testid="subscribe-form" className="subscribe-form" onSubmit={handleSubmit} noValidate>
           <label htmlFor="subscriber-email" data-testid="subscriber-email-label">Email address</label>
           <input
             id="subscriber-email"
@@ -149,6 +151,7 @@ export const SubscriptionSection = ({ monthSort }) => {
             placeholder="you@example.com"
             autoComplete="email"
             onChange={(event) => setEmail(event.target.value)}
+            aria-invalid={status === "validation_error" && !EMAIL_PATTERN.test(email.trim())}
             aria-describedby="subscribe-privacy-notice subscribe-status-message"
             required
           />
@@ -169,6 +172,9 @@ export const SubscriptionSection = ({ monthSort }) => {
 
           <label className="consent-row" data-testid="subscriber-consent-label">
             <input
+              id="subscriber-consent"
+              aria-invalid={status === "validation_error" && !consent}
+              aria-describedby="subscribe-status-message"
               data-testid="subscriber-consent-checkbox"
               type="checkbox"
               checked={consent}
@@ -194,11 +200,9 @@ export const SubscriptionSection = ({ monthSort }) => {
             </p>
           )}
 
-          {message && (
-            <p id="subscribe-status-message" data-testid="subscribe-status-message" className={`subscribe-message ${status}`}>
-              {message}
+          <p role="status" aria-live="polite" aria-atomic="true" id="subscribe-status-message" data-testid="subscribe-status-message" className={`subscribe-message ${status}`}>
+              {isSubmitting ? "Sending your request…" : message}
             </p>
-          )}
         </form>
       </div>
     </section>

@@ -138,9 +138,9 @@ const PublicReceiptsPack = ({ currentMonth, monthlyOutturn, budgetBaseline }) =>
   );
 };
 
-export const SourceSection = ({ currentMonth }) => {
+export const SourceSection = ({ currentMonth, showReviewNote = false }) => {
   const monthlyOutturn = sourceDetailFor({
-    label: "Monthly results document (official outturn)",
+    label: currentMonth?.ytd_source_verified ? "Monthly results and YTD budget comparison" : "Monthly results document (official outturn)",
     value: currentMonth?.monthly_outturn_source || currentMonth?.source_document_1_label || currentMonth?.source_doc_title,
     url: currentMonth?.source_document_1_url || currentMonth?.source_doc_url,
     fallbackLabel: currentMonth?.month_label
@@ -157,7 +157,7 @@ export const SourceSection = ({ currentMonth }) => {
     },
   });
   const budgetBaseline = sourceDetailFor({
-    label: "Budget plan document (official baseline)",
+    label: currentMonth?.ytd_source_verified ? "Annual budget context" : "Budget plan document (official baseline)",
     value: currentMonth?.budget_baseline_source || currentMonth?.source_document_2_label || currentMonth?.budget_source_title,
     url: currentMonth?.source_document_2_url || currentMonth?.budget_source_url,
     fallbackLabel: "2026–2027 Estimates of Expenditure",
@@ -187,6 +187,8 @@ export const SourceSection = ({ currentMonth }) => {
           <p data-testid="sources-eyebrow" className="eyebrow">Source documents</p>
           <h2 id="source-documents-heading" data-testid="sources-heading">Official source documents</h2>
           <p data-testid="source-basis-text" className="source-basis">Source basis: {sourceBasis}.</p>
+          {currentMonth?.ytd_source_verified && <p className="source-basis">The monthly CGO workbook supplies both the reported YTD results and the YTD budget comparisons. The Estimates of Expenditure provide annual budget context.</p>}
+          {showReviewNote && <p className="source-note">Review status refers to JIF’s data review. Missing source dates or documents are identified separately below.</p>}
         </div>
         <div className="source-card-stack">
           <PublicReceiptsPack currentMonth={currentMonth} monthlyOutturn={monthlyOutturn} budgetBaseline={budgetBaseline} />

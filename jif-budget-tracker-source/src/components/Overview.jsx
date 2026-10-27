@@ -50,7 +50,7 @@ export const Overview = ({ currentMonth }) => {
         <div className="overview-copy animate-rise">
           <div className="tracker-pill" data-testid="tracker-state-pill">
             <CalendarDays size={16} aria-hidden="true" />
-            {currentMonth?.tracker_state || "Tracker state pending"}
+            {currentMonth?.period_label || "Selected reporting month"}
           </div>
           <h1 data-testid="dashboard-title">{editorialHeadlineFor(currentMonth)}</h1>
           <p data-testid="dashboard-subtitle" className="subtitle">Tracking central government revenue, spending and balances against the approved FY 2026/27 plan.</p>
@@ -60,7 +60,7 @@ export const Overview = ({ currentMonth }) => {
           </div>
         </div>
         <article data-testid="overview-scorecard" className="scorecard animate-rise" data-screenshot-target="kpi-overview">
-          <div className="scorecard-header"><p data-testid="scorecard-label">Current month overview</p></div>
+          <div className="scorecard-header"><p data-testid="scorecard-label">Selected month overview</p></div>
           <div className="metrics-grid">
             <Metric label="KPIs Tracked" value={counts.kpis_tracked} testId="kpis-tracked-count" />
             <Metric label="On Track" value={counts.on_track} testId="on-track-count" tone="green" statusOrder={1} />
@@ -69,13 +69,13 @@ export const Overview = ({ currentMonth }) => {
           </div>
         </article>
       </div>
-      <div className="overview-update-row overview-insights-grid">
-        <LatestUpdateStatus currentMonth={currentMonth} />
+      <LatestUpdateStatus currentMonth={currentMonth} compact />
+      <div className="overview-update-row">
         <WhatChangedCard currentMonth={currentMonth} />
       </div>
       <div className="info-grid">
         <InfoCard icon={AlertTriangle} title="Why this matters" value={currentMonth?.monthly_note} testId="monthly-note-card" />
-        <PublicSummaryCard summary={currentMonth?.approved_email_summary} />
+        {currentMonth?.approved_email_summary && <details className="public-summary-details"><summary>Read the full monthly summary</summary><PublicSummaryCard summary={currentMonth.approved_email_summary} /></details>}
       </div>
     </section>
   );
