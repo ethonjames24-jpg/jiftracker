@@ -27,7 +27,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Syntax check and run all 31 isolated SE-03 synthetic tests
+      - name: Syntax check and run all 34 isolated SE-03 synthetic tests
         working-directory: automation/spending-explorer/se-03-extract-normalize
         run: |
           python -m py_compile se03_source_completeness.py se03_pdf_continuation_review.py se03_native_official_file_acceptance.py test_se03_source_completeness.py test_se03_pdf_continuation_review.py
