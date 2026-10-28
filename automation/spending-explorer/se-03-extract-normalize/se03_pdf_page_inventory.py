@@ -20,7 +20,7 @@ from se03_pdf_continuation_review import PageEvidence, classify_activity_continu
 PINNED_PDF_SHA256 = "32ef2cb30c9498d2c8d9d4597fcaadce9823c13a97fe199acec19247664a3bd6"
 EXPECTED_PAGES = 716
 PATTERNS = {
-    "head": re.compile(r"^Head\s+(\d{5})\s*[-\u2013\u2014]", re.I),
+    "head": re.compile(r"^Head\s+(\d{5}C?)\s*[-\u2013\u2014]", re.I),
     "budget": re.compile(r"^Budget\s+([16])\s*[-\u2013\u2014]", re.I),
     "function": re.compile(r"^Function\s+(\d{2})\s*[-\u2013\u2014]", re.I),
     "subfunction": re.compile(r"^Sub\s*Function\s+(\d{2})\s*[-\u2013\u2014]", re.I),
@@ -46,10 +46,20 @@ def heading_inventory(lines: list[str], physical_page: int) -> dict:
     unique = {k: list(dict.fromkeys(v)) for k, v in values.items()}
     boundaries = [k for k in ("head", "budget", "function", "subfunction", "programme", "subprogramme")
                   if len(unique[k]) > 1]
+    # As Passed source uses capital-only headings like Head 15000C (Budget 6).
+    # Retain the printed C; never silently equate 15000C to recurrent Head 15000.
+    # Conflicting explicit Head/Budget labels remain independent review blockers.
+    head_budget_conflicts = []
+    if len(unique["head"]) == 1 and len(unique["budget"]) == 1:
+        capital_suffix = unique["head"][0].upper().endswith("C")
+        capital_budget = unique["budget"][0] == "6"
+        if capital_suffix != capital_budget:
+            head_budget_conflicts.append("HEAD_BUDGET_CAPITAL_SUFFIX_CONFLICT")
     return {
         "physical_page": physical_page,
         "explicit": unique,
         "multiple_section_headings": boundaries,
+        "head_budget_conflicts": head_budget_conflicts,
         "has_activity_heading": bool(values["activity"] or values["project"]),
         "no_inferred_values": True,
     }
@@ -63,7 +73,7 @@ def page_evidence(inventory: dict) -> PageEvidence:
         physical_page=inventory["physical_page"],
         head=single("head"), vote=single("budget"), programme=single("programme"),
         activity_headings=tuple(e["activity"] + e["project"]),
-        section_boundary=bool(inventory["multiple_section_headings"]),
+        section_boundary=bool(inventory["multiple_section_headings"] or inventory.get("head_budget_conflicts")),
     )
 
 
