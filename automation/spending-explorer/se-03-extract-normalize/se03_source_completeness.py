@@ -82,10 +82,22 @@ def validate_bytes(raw: bytes, kind: str, *, enforce_pin: bool = True) -> dict:
             raise ValueError("UNRECOGNISED_AMOUNT_LABELS")
 
     header = take("HEADER")
-    if (tuple(header[:29]) != REQUIRED_HEADERS or
-        tuple(x.strip() for x in header[29:]) != YEAR_LABELS[kind] or
-        len(set(header)) != 33):
-        raise ValueError("UNRECOGNISED_HEADER")
+    # Budget CSV headers can contain NBSP or runs of ordinary spaces.
+    # Normalize ONLY header whitespace; never rewrite original source bytes,
+    # change label spelling/order, or relax the year or financial fields.
+    def normalized_header(label: str) -> str:
+        return re.sub(r"\s+", " ", label.strip())
+
+    observed = [normalized_header(value) for value in header]
+    reference = REQUIRED_HEADERS + YEAR_LABELS[kind]
+    expected = [normalized_header(value) for value in reference]
+    disagreements = [
+        {"column": i + 1, "actual": header[i], "expected": reference[i]}
+        for i in range(33) if observed[i] != expected[i]
+    ]
+    if disagreements or len(set(observed)) != 33:
+        raise ValueError("UNRECOGNISED_HEADER mismatches=" + repr(disagreements[:8]) +
+                         " normalized_unique=" + str(len(set(observed))))
 
     total = [Decimal(0)] * 4
     footer = None
