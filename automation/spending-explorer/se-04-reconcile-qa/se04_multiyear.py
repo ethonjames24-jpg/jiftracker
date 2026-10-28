@@ -111,9 +111,9 @@ def validate(path: Path, expected_years: tuple[str, ...] = ('2025/26', '2026/27'
             errors['PERIOD_NOT_ANNUAL'] += 1
         if str(row['currency'] or '').strip() != 'JMD':
             errors['CURRENCY_NOT_JMD'] += 1
-        if str(row['is_actual'] or '').strip().upper() != 'FALSE':
+        if str(row['is_actual'] or '').strip().upper() not in ('FALSE', '0'):
             errors['ACTUALS_FLAG_INVALID'] += 1
-        if str(row['is_budget'] or '').strip().upper() != 'TRUE':
+        if str(row['is_budget'] or '').strip().upper() not in ('TRUE', '1'):
             errors['BUDGET_FLAG_INVALID'] += 1
         for field in ('organisation_id', 'economic_id', 'vote_id', 'source_row',
                       'import_batch_id', 'public_category_id'):
