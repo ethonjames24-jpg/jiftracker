@@ -27,9 +27,10 @@ export const MethodologySection = ({ currentMonth }) => (
           <dl className="term-list">
             <div><dt>Standard band</dt><dd>On Track: −3% or better. Watch: below −3% through −8%. Under Pressure: below −8%.</dd></div>
             <div><dt>Capital Expenditure</dt><dd>On Track: −10% or better. Watch: below −10% through −20%. Under Pressure: below −20%.</dd></div>
-            <div><dt>Overall assessment</dt><dd>The overall status is published as part of the reviewed monthly assessment. The public receipts do not specify a numerical rule for combining the eight statuses; this page does not calculate one.</dd></div>
+            <div><dt>Overall assessment</dt><dd>The preparation workflow uses this fallback across the eight measures: three or more Under Pressure → Under Pressure; otherwise, one or two Under Pressure, or three or more Watch → Watch; otherwise → On Track. A supplied nonblank overall status takes precedence over that fallback. The website displays the published assessment; it does not recalculate or replace it.</dd></div>
           </dl>
           <p>These bands are documented in the <a href="/receipts-packs/2026-05-jif-receipts-pack.pdf">May receipts pack</a> and reaffirmed in the <a href="/receipts-packs/2026-08-jif-receipts-pack.pdf">August receipts pack</a>. The Capital Expenditure standing rule was approved on July 31, 2026. Earlier published results are retained as recorded.</p>
+          <p>This describes the existing preparation rule documented in JIF’s October 28, 2026 review. It does not establish when that overall rule was first approved or retrospectively change earlier published assessments.</p>
           <p>Statuses are JIF monitoring classifications, not Ministry ratings or findings of waste or wrongdoing. Read signed balance amounts alongside percentages, especially when a surplus becomes a deficit. A zero baseline cannot produce a meaningful percentage using this formula.</p>
         </article>
         <article data-testid="plain-language-terms-card" className="method-card">

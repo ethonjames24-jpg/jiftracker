@@ -1,3 +1,4 @@
+import { sourceEvidenceFor } from './trackerSourceEvidence.js';
 // Presentation evidence: public May–August receipts packs. Feed records and
 // frozen capture/admin views remain unchanged. Prefer any newer feed metadata.
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -40,7 +41,6 @@ export const trackerPresentation = (data) => {
   if (knownSource) {
     month.source_document_1_owner ||= PUBLISHER;
     month.source_document_1_period ||= key === '2026-04' ? 'April 2026 (year to date)' : `April–${month.month_label} (year to date)`;
-    if (key === '2026-08') month.source_document_1_publication_date ||= 'September 30, 2026';
     month.ytd_source_verified = key !== '2026-04';
   }
   if (key === '2026-08' && knownSource && !month.source_document_2_url
@@ -51,6 +51,7 @@ export const trackerPresentation = (data) => {
     month.source_document_2_owner ||= PUBLISHER;
     month.source_document_2_period ||= 'April 2026–March 2027';
   }
+  month.source_record = sourceEvidenceFor(original, data.kpis);
   return { ...data, current_month: month, kpis,
     archive: (data.archive || []).map(item => ({ ...item, month_label: monthLabel(item.month_sort, item.month_label) })),
     available_months: (data.available_months || []).map(item => ({ ...item, month_label: monthLabel(item.month_sort, item.month_label) })) };

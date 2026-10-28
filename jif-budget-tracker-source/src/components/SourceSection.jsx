@@ -1,3 +1,4 @@
+import { CGO_LISTING_URL } from "../content/trackerSourceEvidence.js";
 import { AlertTriangle, ExternalLink, Link2, ScrollText } from "lucide-react";
 import { PUBLIC_WARNING_MESSAGES, hasSourceLinkWarnings, isPublicHttpUrl as isSafeHttpUrl } from "../utils/dataQuality.js";
 import { receiptsCheckApproved } from "../utils/brandContent.js";
@@ -71,7 +72,12 @@ const SourceLink = ({ link }) => (
 const SourceMetadata = ({ metadata, verificationStatus }) => (
   <dl className="source-metadata" data-testid={metadata.testId}>
     <div><dt>Source owner</dt><dd>{metadata.owner || "Not stated in the public feed"}</dd></div>
-    <div><dt>Publication date</dt><dd>{metadata.publicationDate || "Not stated in the public feed"}</dd></div>
+    {metadata.sourceRecord ? <>
+      <div><dt>Source dates checked</dt><dd>{metadata.sourceRecord.checkedDate}</dd></div>
+      <div><dt>Linked-file record date</dt><dd>{metadata.sourceRecord.fileRecordDate}</dd></div>
+      <div><dt>Ministry listing date</dt><dd>{metadata.sourceRecord.listingDate} — for {metadata.sourceRecord.listedFile}</dd></div>
+      {metadata.publicationDate && <div><dt>Publication date reported by feed</dt><dd>{metadata.publicationDate}</dd></div>}
+    </> : <div><dt>Publication date</dt><dd>{metadata.publicationDate || "Not stated in the public feed"}</dd></div>}
     <div><dt>Period covered</dt><dd>{metadata.period || "Not stated in the public feed"}</dd></div>
     <div><dt>Used for tracker month</dt><dd>{metadata.trackerMonth || "Not stated in the public feed"}</dd></div>
     <div><dt>Verification status</dt><dd>{verificationStatus}</dd></div>
@@ -115,6 +121,7 @@ const PublicReceiptsPack = ({ currentMonth, monthlyOutturn, budgetBaseline }) =>
           <p>{monthlyOutturn.value || "Not reported in the sheet for this month."}</p>
           <SourceMetadata metadata={monthlyOutturn.metadata} verificationStatus={isReceiptsChecked ? "Receipts Checked" : "Official source record"} />
           {monthlyOutturn.link ? <SourceLink link={monthlyOutturn.link} /> : <p className="source-unavailable">Not available for this month</p>}
+          {monthlyOutturn.metadata.sourceRecord && <SourceVersionNote record={monthlyOutturn.metadata.sourceRecord} />}
         </div>
         <div className="receipts-pack-row" data-testid="receipts-pack-budget-baseline-row">
           <p className="source-label">{budgetBaseline.label}</p>
@@ -138,6 +145,22 @@ const PublicReceiptsPack = ({ currentMonth, monthlyOutturn, budgetBaseline }) =>
   );
 };
 
+const SourceVersionNote = ({ record }) => (
+  <details className="source-version-note" data-testid="source-version-note">
+    <summary>Source version and date notes</summary>
+    <p>The linked workbook is {record.file}. Source records were checked on {record.checkedDate}. The file-record date is the Ministry attachment’s creation date; it does not establish when the document first became public. The listing date belongs to the file named above. JIF’s publication date is separate.</p>
+    <p><a href={CGO_LISTING_URL} target="_blank" rel="noopener noreferrer">View the Ministry’s CGO listing</a></p>
+    {record.revisionNote && <>
+      <p>The published figures are retained against their original linked workbook. The Ministry listing points to a different version: {record.listedFile}.</p>
+      <p>{record.revisionNote}</p>
+      <p><a href={record.listedUrl} target="_blank" rel="noopener noreferrer">Compare the later Ministry workbook</a></p>
+      <p>Adopting revised figures requires a separate source review and correction decision. Original receipts remain the record of the published assessment.</p>
+    </>}
+    {record.sha256 && <p className="source-fingerprint">Linked workbook SHA-256 at review: <code>{record.sha256}</code></p>}
+    {record.revisionNote && <p className="source-fingerprint">Later workbook SHA-256 at review: <code>{record.listedSha256}</code></p>}
+  </details>
+);
+
 export const SourceSection = ({ currentMonth, showReviewNote = false }) => {
   const monthlyOutturn = sourceDetailFor({
     label: currentMonth?.ytd_source_verified ? "Monthly results and YTD budget comparison" : "Monthly results document (official outturn)",
@@ -151,6 +174,7 @@ export const SourceSection = ({ currentMonth, showReviewNote = false }) => {
     metadata: {
       testId: "source-document-1-metadata",
       owner: currentMonth?.source_document_1_owner,
+      sourceRecord: showReviewNote ? currentMonth?.source_record : null,
       publicationDate: currentMonth?.source_document_1_publication_date,
       period: currentMonth?.source_document_1_period || currentMonth?.month_label,
       trackerMonth: currentMonth?.month_label,

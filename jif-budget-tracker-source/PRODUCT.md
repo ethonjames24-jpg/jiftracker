@@ -11,3 +11,7 @@ The frontend reads public data. Approval, publication, evidence storage, and not
 ## October 27, 2026 UI scope
 
 The owner authorized targeted public tracker hierarchy, mobile reading, navigation, source disclosure and subscription accessibility fixes. This supersedes the earlier read-path-only scope for this branch. Preserve yellow/navy, Barlow Condensed/Inter, original brand assets, all financial values/statuses, capture views and Explorer behavior. Success means the selected reporting period is clear, history stays synchronized, every comparison is accessible, and mobile users can read exact values without horizontal table navigation. Validation and remaining limits: docs/ui-review-2026-10-27/VALIDATION.md.
+
+## October 28, 2026 source/methodology scope
+
+The owner approved website-only date/version disclosure and explanation of the existing overall fallback, retaining historical figures. Exact scope, source provenance, validation and outstanding merge/deployment decision: docs/source-methodology-2026-10-28/PLAN.md and VALIDATION.md. No workflow or Spending Explorer changes.

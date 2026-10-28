@@ -27,7 +27,8 @@ test('source metadata is bound to the recorded document and does not invent date
  const input=fixture('2026-08'); input.current_month.source_document_1_url='https://www.mof.gov.jm/wp-content/uploads/Copy-of-CGO-August-2026.xlsx';
  input.current_month.budget_baseline_source='FY 2026/27 Estimates of Expenditure (context)';
  const result=trackerPresentation(input).current_month;
- assert.equal(result.source_document_1_publication_date,'September 30, 2026');
+ assert.equal(result.source_document_1_publication_date,undefined);
+ assert.equal(result.source_record.fileRecordDate,'September 30, 2026');
  assert.match(result.source_document_2_url,/Estimates-of-Expenditures.pdf$/);
  input.current_month.source_document_1_publication_date='New date';
  assert.equal(trackerPresentation(input).current_month.source_document_1_publication_date,'New date');
