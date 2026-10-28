@@ -1,0 +1,75 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> jamaica-in-focus-budget-tracker@1.0.0 test
+> node --test
+
+✔ approved August correction reaches the hero, four bullets and short archive without changing source data (2.161695ms)
+✔ newly revised August copy is not replaced by the recorded older correction (0.15598ms)
+✔ changed score or detailed copy prevents applying a stale correction (0.202879ms)
+✔ historical and future selections keep their copy while August archive remains concise (0.165924ms)
+✔ a revised archive note is preserved and repeated application is stable (0.238421ms)
+✔ provides a definition for every tracked KPI (1.122384ms)
+✔ matches KPI labels without depending on case or surrounding spaces (0.18314ms)
+✔ explains the core terms used in the public table (0.194637ms)
+✔ historical labels and latest available follow the feed rather than the calendar (12.252963ms)
+✔ April correction requires the original numbers and wording; later revisions survive (0.636527ms)
+✔ June opening headline is corrected without replacing later approved headlines (0.247144ms)
+✔ source metadata is bound to the recorded document and does not invent dates (0.375453ms)
+✔ all 40 published KPI values/statuses, counts and original source/receipt links survive presentation (40.704296ms)
+✔ historical impact notes require every reviewed value/status and the original URL (11.183457ms)
+10:21:27 AM [vite] (client) Re-optimizing dependencies because vite config has changed
+✔ rendered disclosure describes versions and precedence; capture source markup is unchanged (410.403134ms)
+✔ latest approved text month displays with eight KPIs, status counts, and matching receipts (15.294444ms)
+✔ historical selection stays on July without borrowing August receipts (1.680316ms)
+✔ a later publication becomes the default without a frontend month change (3.339381ms)
+✔ CSV parsing preserves embedded commas and escaped quotes (1.949252ms)
+✔ release evaluation fails closed until both human gates pass (0.299682ms)
+✔ vertical README controls are converted to a key-value map (0.21704ms)
+✔ the loader checks controls first and does not request DS rows before release (0.930786ms)
+✔ annual comparison normalization preserves signed changes and nullable ranks (0.455652ms)
+✔ Every J$100 normalization retains the signed AIA offset (0.858525ms)
+✔ spending normalization excludes unreleased and malformed rows (0.600494ms)
+✔ spending normalization retains vote-level Appropriations-in-Aid offsets (0.161388ms)
+✔ existing monthly routes remain the default (1.465749ms)
+✔ capture and admin routes take precedence over the Explorer (0.218862ms)
+✔ the Explorer activates only for the additive spending view (0.212023ms)
+✔ sorts archived tracker months newest-first without mutating the feed (11.819484ms)
+✔ keeps the approved JIF v1.0 developer tokens and typography (8.521415ms)
+✔ keeps status colors out of decorative and Explorer accent roles (12.110527ms)
+✔ uses the approved master assets through one endorsed product-lockup component (7.851799ms)
+✔ uses only the current product names and monthly editorial hero headline (5.186551ms)
+✔ requires an explicit approval field before showing Receipts Checked (2.003021ms)
+✔ keeps Explorer changes neutral, signed, and fully contextualized (3.84154ms)
+✔ publishes complete source metadata and a truthful plain-text developer credit (7.64237ms)
+✔ removes retired logo configuration and keeps the glossary unique (1.759102ms)
+✔ KPI capture renders every supplied indicator, including Capital Expenditure and Interest (507.560979ms)
+✔ uses one accessible loading line and value-free skeleton structure (11.225359ms)
+✔ adds one delayed JIF document loader only to the initial loading skeleton (2.58614ms)
+✔ keeps Explorer filter motion brief and separate from data loading (1.952657ms)
+✔ marks all existing capture routes ready and removes capture motion (1.653637ms)
+✔ preserves protected public-finance language (2.157959ms)
+✔ completes the approved KPI, status-card, bar, chip, and section motion contract (2.123548ms)
+✔ provides an accessible mobile filter sheet and preserves settled motion modes (3.99789ms)
+✔ filters combine with AND semantics and an empty filter means all (1.492279ms)
+✔ signed aggregation preserves negative offsets (1.039701ms)
+✔ JMD formatting keeps the negative sign and J$ prefix (0.384246ms)
+✔ Explorer filters round-trip through shareable query parameters (0.645411ms)
+✔ fiscal-year filtering keeps annual datasets separate (0.286072ms)
+✔ annual comparison stays on the latest released year pair independently of the selected year (0.456303ms)
+✔ CSV export includes approved fields and safely escapes spreadsheet formulas (0.60402ms)
+✔ keeps the compact subscription CTA before results and the full form after methodology (5.665576ms)
+✔ keeps one sticky-anchor offset and the mobile KPI scanning contract (3.57712ms)
+✔ keeps the endorsed header readable at desktop, tablet, and mobile widths (2.082999ms)
+✔ keeps the Spending Explorer header at parity with the tracker identity (4.359734ms)
+✔ keeps the floating subscription prompt clear of Back to Top (7.175451ms)
+✔ comparison renders all seven unchanged indicators and normalizes month labels (320.879512ms)
+✔ mobile disclosure preserves exact values and desktop table remains semantic (89.802978ms)
+✔ compact publication details do not replace the capture card (64.722388ms)
+ℹ tests 61
+ℹ suites 0
+ℹ pass 61
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1960.29108

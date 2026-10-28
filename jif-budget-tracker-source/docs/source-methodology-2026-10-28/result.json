@@ -1,0 +1,19 @@
+{
+  "result": "PASS",
+  "snapshot": "public feed checked October 28, 2026; no live writes",
+  "months": 5,
+  "kpiRowsUnchanged": 40,
+  "originalLinksUnchanged": true,
+  "captureMarkupComparisons": 15,
+  "widths": [
+    320,
+    390,
+    768,
+    1440
+  ],
+  "keyboardDisclosure": true,
+  "history": true,
+  "pageErrors": [],
+  "writeRequests": [],
+  "screenshots": "/tmp/jif-source-disclosure-evidence"
+}

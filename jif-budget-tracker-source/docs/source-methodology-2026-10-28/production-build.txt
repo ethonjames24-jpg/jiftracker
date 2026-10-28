@@ -1,0 +1,15 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> jamaica-in-focus-budget-tracker@1.0.0 build
+> vite build
+
+vite v8.0.14 building client environment for production...
+[2Ktransforming...✓ 1777 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                 0.99 kB │ gzip:  0.47 kB
+dist/assets/index-CTEBRCgz.css                 84.44 kB │ gzip: 15.18 kB
+dist/assets/SpendingExplorerPage-aegiZq6z.js   40.17 kB │ gzip: 11.40 kB
+dist/assets/index-CdkxIeC4.js                 291.60 kB │ gzip: 88.72 kB
+
+✓ built in 223ms
