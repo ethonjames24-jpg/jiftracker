@@ -46,3 +46,15 @@ Added `se03_native_official_file_acceptance.py` to enforce **expected review-onl
 Expected official source checks: Approved CSV `FAILED_CLOSED_SOURCE_INCOMPLETE` (nonstandard final row, no footer, no final newline); As Presented CSV `SUPPORTING_EVIDENCE_ONLY`, full footer and exactly 23,559 rows. A successful wrapper receipt is `SOURCE_CLASSIFICATION_EXPECTED_PASS_REVIEW_ONLY`. This is explicitly NOT approval of canonical FY2026/27 PDF extraction.
 
 New checker syntax was verified locally and its remote Git blob SHA-1 exactly matches the tested local checker `8fa3e906e127058841dda2b0cdb3fb1a9aed35cf`. The original four SE-03 helper/test modules have local-vs-remote blob differences; do not close their remote parity gate before the launcher or CI runs against pinned remote bytes. Real source-file native receipt has NOT been received yet. 2,912 source-derived records, 33-field parity, PDF boundary integration, programme/AIA rules and end-to-end QA remain open.
+
+## October 28 — Native checkout PASS, source gate header STOP, scoped correction
+
+Operator output from `jif_se03_pr42_native_checkpoint_20261028.sh`:
+- **5/5 pinned GitHub source file blob identities PASS**. Previous local/remote mismatch risk is now CLOSED for the exact pinned source files.
+- **31/31 tests PASS when executed on GitHub source bytes**.
+- Official file gate returned `{"error":"UNRECOGNISED_HEADER","result":"FAILED_CLOSED","publication_authorized":false}`. This is a **validator-header-contract failure**, not an accepted source-quality verdict, and must not be reported as an official-file test PASS.
+- Cause is not yet proven to a specific raw header byte from this error alone. The original strict byte equality on all 33 labels was too brittle for presentational whitespace. The targeted correction normalizes only contiguous whitespace in header labels, retains exact label semantics/order/year columns, detects duplicate normalized names, and now emits specific mismatching header columns if a true source-schema mismatch persists.
+- Three added regression cases cover NBSP-vs-ASCII-space equivalence, semantic label mutation rejection, and normalized duplicate-name rejection. **34/34 local synthetic tests PASS; remote-code and official-file native proof for corrected version PENDING.**
+- Corrected pinned Mac launcher `run_se03_native_source_checkpoint.sh` uses immutable source commit `5fbc89f321bd9b2b9a5a30d15538d11feef09cdb` and exact updated Git blob pins `e8f5c3cfc19c0dc299135acb521535c1b8d2c055`, `45922a71da1ac176a4b1902f40df6320aaf39a10`; other three pins unchanged. Expected successful run: 5/5 identities, 34 tests, expected Approved FAILED_CLOSED_SOURCE_INCOMPLETE / Presented SUPPORTING_EVIDENCE_ONLY, and final PASS_REVIEW_ONLY. No release or canonical 2,912-row approval even if all pass.
+
+No PDF processing or 2,912-row canonical source-derived re-extraction was done at this checkpoint. Source authority, existing workbook, historical SE-01 receipts, n8n, scanner and release boundaries unchanged.
