@@ -1,0 +1,60 @@
+{
+  "receipt_id": "JIF-SE03-NATIVE-2026-10-28-V2",
+  "reported_by": "Owner, pasted Mac Terminal stdout in project conversation",
+  "evidence_type": "owner_supplied_native_execution",
+  "received_date": "2026-10-28",
+  "execution_environment": "Mac; immutable GitHub code fetch + pinned local official CSVs",
+  "branch": "codex/se03-se04-data-qa-20261028",
+  "source_code_commit": "5fbc89f321bd9b2b9a5a30d15538d11feef09cdb",
+  "script": "jif_se03_pr42_native_checkpoint_v2_20261028.sh",
+  "remote_github_blob_results": {
+    "status": "PASS",
+    "tested": 5,
+    "passed": 5,
+    "sha1": [
+      "e8f5c3cfc19c0dc299135acb521535c1b8d2c055",
+      "45922a71da1ac176a4b1902f40df6320aaf39a10",
+      "ffc8aa923928a89b1cd19373581def5b035d11f2",
+      "6997b778b5656a727ef4911fc94539bc157a527e",
+      "8fa3e906e127058841dda2b0cdb3fb1a9aed35cf"
+    ]
+  },
+  "synthetic_unit_tests": {
+    "passed": 34,
+    "failed": 0,
+    "reported_stdout": "Ran 34 tests in 0.003s; OK"
+  },
+  "approved_csv": {
+    "sha256": "cdb6ce99c678feabb3c3c48cf2bcc06d756762a8240c302f82719cabecb4e7ab",
+    "identity": "PASS",
+    "completeness": "FAILED_CLOSED_SOURCE_INCOMPLETE",
+    "reasons": [
+      "NONSTANDARD_WIDTH:20964:5",
+      "TOTAL_FOOTER_MISSING",
+      "UNTERMINATED_LAST_RECORD"
+    ]
+  },
+  "as_presented_csv": {
+    "sha256": "d480726d35bb1d694f4f0a48e2fab3038c5968d335dc45b00ab5f51bfb497f1a",
+    "identity": "PASS",
+    "completeness": "PASS",
+    "disposition": "SUPPORTING_EVIDENCE_ONLY",
+    "reasons": []
+  },
+  "assertions": {
+    "passed": 11,
+    "failed": 0
+  },
+  "source_classification_result": "SOURCE_CLASSIFICATION_EXPECTED_PASS_REVIEW_ONLY",
+  "wrapper_result": "SE03_PR42_NATIVE_SOURCE_CHECKPOINT=PASS_REVIEW_ONLY",
+  "still_not_accepted": [
+    "complete As Passed PDF economic-line extraction",
+    "2,912 source-derived FY26 FACT rows",
+    "33-field fact parity",
+    "production or release approval",
+    "GitHub Actions hosted CI run"
+  ],
+  "publication_authorized": false,
+  "pr_merged": false,
+  "notes": "Transcribed receipt (not CI artifact); no official source bytes, private FACT exports, or personal information stored."
+}
