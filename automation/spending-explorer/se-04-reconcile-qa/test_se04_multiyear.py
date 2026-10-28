@@ -65,6 +65,16 @@ class Tests(unittest.TestCase):
         rows=fixture();rows[0]['source_row']='';self.assertIn('MISSING_LINEAGE:source_row',assess(rows)['errors'])
     def test_not_as_passed(self):
         rows=fixture();rows[0]['estimate_version']='AS_PRESENTED';self.assertIn('SOURCE_NOT_AS_PASSED',assess(rows)['errors'])
+    def test_xlsx_boolean_encoding_accepted(self):
+        rows=fixture()
+        for row in rows:
+            row['is_actual']='0'
+            row['is_budget']='1'
+        self.assertEqual(assess(rows)['result'],'QA_PASS_REVIEW_ONLY')
+    def test_boolean_encoding_rejects_other_numeric(self):
+        rows=fixture()
+        rows[0]['is_actual']='2'
+        self.assertIn('ACTUALS_FLAG_INVALID',assess(rows)['errors'])
     def test_wrong_actual_budget_flags(self):
         rows=fixture();rows[0]['is_actual']='TRUE';rows[0]['is_budget']='FALSE'
         self.assertIn('ACTUALS_FLAG_INVALID',assess(rows)['errors']);self.assertIn('BUDGET_FLAG_INVALID',assess(rows)['errors'])
