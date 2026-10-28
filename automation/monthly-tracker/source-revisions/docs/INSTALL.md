@@ -26,3 +26,5 @@ Disable the new schedule and deactivate this new workflow. Export its definition
 ## October 28 native progress
 
 See evidence/NATIVE-ACCEPTANCE-20261028.json and docs/NATIVE-ACCEPTANCE.md. User-supplied screenshots establish setup/report-only, first OBSERVE and sequential replay persistence. Native acceptance is IN PROGRESS, not NOT STARTED and not fully approved. Keep the installed workflow inactive with its daily trigger disabled. The corrected reusable JSON remains a setup-gated REPORT_ONLY template; do not reimport it over the configured native workflow.
+
+Latest configured native export confirms completed timezone/timeout, execution saving and owner-handler binding (see docs/NATIVE-ACCEPTANCE.md, latest section). The isolated acceptance kit is in acceptance/README.md. Do not weaken the real workflow guard to use test resources; import the separate manual-only copy. The shared owner-alert allowed ID list was narrowly extended for v407uw3UAd050cn0; do not attach test copies to it. Manual runs cannot prove automatic Error Trigger delivery.

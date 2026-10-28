@@ -1,10 +1,27 @@
-✔ portable SHA-256 agrees with Node on binary, UTF-8 and boundary sizes (81.61421ms)
-✔ real listing plus the public feed produces all published original/listed checks (48.968609ms)
-✔ CSV rejects HTML, broken quotes and duplicate headers; quoted multiline roundtrip works (0.976669ms)
-✔ untrusted, redirected, missing and ambiguous source identity fail closed (30.714673ms)
-✔ April–June exact candidate bytes open distinct review cases without financial adoption (751.069567ms)
-✔ same candidate reuses the case and evidence ID, retaining first seen (226.836018ms)
-✔ missing baseline never silently blesses the first observed download (74.277074ms)
-✔ HTTP errors, redirects, HTML and empty/truncated binaries cannot report unchanged (30.152396ms)
-✔ partial, duplicate and empty completion cannot report a complete check (2.434633ms)
-✔ serialized workflow is inactive, has no credentials or publication path, and default Code executes in restricted VM (26.733865ms)
+✔ acceptance copy is manual-only, unbound and has only isolated write destinations (1.427971ms)
+✔ setup rejects accepted table IDs, table aliasing and incorrect evidence folder (6.380794ms)
+✔ NORMAL and MISSING_BASELINE isolate one actual candidate without editing baseline rows (72.676666ms)
+✔ native hash guard receives corrupted in-memory readback and rejects it (215.652278ms)
+✔ post-archive fault blocks the upsert edge and normal mode passes observations (2.486851ms)
+✔ download fault uses reserved invalid domain; normal mode uses exact source URL (1.199179ms)
+✔ portable SHA-256 agrees with Node on binary, UTF-8 and boundary sizes (24.052492ms)
+✔ real listing plus the public feed produces all published original/listed checks (18.84481ms)
+✔ CSV rejects HTML, broken quotes and duplicate headers; quoted multiline roundtrip works (0.936533ms)
+✔ untrusted, redirected, missing and ambiguous source identity fail closed (15.653766ms)
+✔ April–June exact candidate bytes open distinct review cases without financial adoption (383.270501ms)
+✔ same candidate reuses the case and evidence ID, retaining first seen (80.73357ms)
+✔ missing baseline never silently blesses the first observed download (35.13203ms)
+✔ HTTP errors, redirects, HTML and empty/truncated binaries cannot report unchanged (16.760897ms)
+✔ partial, duplicate and empty completion cannot report a complete check (0.936594ms)
+✔ serialized workflow is inactive, has no credentials or publication path, and default Code executes in restricted VM (9.190293ms)
+✔ generated Plan/Inspect/Verify nodes execute with n8n-style item and binary helpers (95.427419ms)
+✔ configuration gate is false by default and completion rejects missing persisted fields (5.488448ms)
+✔ singleton reads prevent five-by-eight fan-out; only Google CSVs follow bounded redirects (2.403136ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 860.502443

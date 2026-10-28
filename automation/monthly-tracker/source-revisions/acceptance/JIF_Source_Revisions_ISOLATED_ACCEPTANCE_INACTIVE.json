@@ -1,0 +1,920 @@
+{
+  "name": "TEST ONLY | JIF Source Revisions | Isolated Native Acceptance — INACTIVE",
+  "active": false,
+  "nodes": [
+    {
+      "id": "bt-sr-01",
+      "name": "Manual Prepublication Check",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        270,
+        0
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "bt-sr-03",
+      "name": "Configuration",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        810,
+        0
+      ],
+      "parameters": {
+        "jsCode": "return [{json:{\n  \"scope\": \"JIF_MONTHLY_TRACKER_SOURCE_REVISIONS_ACCEPTANCE_ONLY\",\n  \"mode\": \"REPORT_ONLY\",\n  \"test_case\": \"NORMAL\",\n  \"target_month\": \"2026-04\",\n  \"baseline_table_id\": \"\",\n  \"observation_table_id\": \"\",\n  \"evidence_folder_id\": \"1_tjDf3qSRxTFHIH_rVh9ErfdQwJksdtX\",\n  \"listing_url\": \"https://www.mof.gov.jm/central-government-operations-tables/\",\n  \"tracker_csv\": \"https://docs.google.com/spreadsheets/d/13npg-j5jjMzE115EOkkBdq7Rav1L5-RUPl1rza5e_v0/export?format=csv&gid=366568461\",\n  \"extras_csv\": \"https://docs.google.com/spreadsheets/d/13npg-j5jjMzE115EOkkBdq7Rav1L5-RUPl1rza5e_v0/export?format=csv&gid=1322269186\"\n}}];",
+        "mode": "runOnceForAllItems"
+      }
+    },
+    {
+      "id": "bt-sr-04",
+      "name": "Validate Configuration",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1080,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const c=$input.first().json;const id=x=>/^[A-Za-z0-9_-]{5,100}$/.test(x);const blocked=[\"1cpD6DxmQYp9Y385\",\"2Kh1xt4NLuJ5QF6X\"];const ok=c.scope==='JIF_MONTHLY_TRACKER_SOURCE_REVISIONS_ACCEPTANCE_ONLY'&&c.mode==='OBSERVE'&&id(c.baseline_table_id)&&id(c.observation_table_id)&&c.baseline_table_id!==c.observation_table_id&&!blocked.includes(c.baseline_table_id)&&!blocked.includes(c.observation_table_id)&&c.evidence_folder_id==='1_tjDf3qSRxTFHIH_rVh9ErfdQwJksdtX'&&[\"NORMAL\",\"MISSING_BASELINE\",\"DOWNLOAD_FAILURE\",\"ARCHIVE_HASH_MISMATCH\",\"POST_ARCHIVE_FAILURE\"].includes(c.test_case)&&/^2026-(04|05|06)$/.test(c.target_month);return [{json:{...c,configured:ok,check_complete:false,financial_adoption_authorized:false,test_only:true}}];",
+        "mode": "runOnceForAllItems"
+      }
+    },
+    {
+      "id": "bt-sr-05",
+      "name": "Configured for Isolated Observation",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1350,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "Configured for Isolated Observation",
+              "leftValue": "={{$json.configured}}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "bt-sr-06",
+      "name": "Configuration Report",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1620,
+        0
+      ],
+      "parameters": {
+        "jsCode": "return [{json:{scope:'JIF_MONTHLY_TRACKER_SOURCE_REVISIONS_ACCEPTANCE_ONLY',state:'CONFIGURATION_REQUIRED',test_only:true,check_complete:false,public_rows_written:0,subscriber_sends:0,next:'Create two NEW test tables, bind only the two Drive archive credentials, set NEW table IDs, OBSERVE and NORMAL; keep this test copy unpublished.'}}];",
+        "mode": "runOnceForAllItems"
+      }
+    },
+    {
+      "id": "bt-sr-07",
+      "name": "Read Published Baselines",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        250
+      ],
+      "parameters": {
+        "resource": "row",
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{$('Configuration').first().json.baseline_table_id}}"
+        },
+        "returnAll": true
+      },
+      "alwaysOutputData": true,
+      "executeOnce": true
+    },
+    {
+      "id": "bt-sr-08",
+      "name": "Read Prior Observations",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        270,
+        250
+      ],
+      "parameters": {
+        "resource": "row",
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{$('Configuration').first().json.observation_table_id}}"
+        },
+        "returnAll": true
+      },
+      "alwaysOutputData": true,
+      "executeOnce": true
+    },
+    {
+      "id": "bt-sr-09",
+      "name": "Read Published Tracker CSV",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        540,
+        250
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "={{$('Configuration').first().json.tracker_csv}}",
+        "authentication": "none",
+        "options": {
+          "timeout": 60000,
+          "redirect": {
+            "redirect": {
+              "followRedirects": true,
+              "maxRedirects": 3
+            }
+          },
+          "response": {
+            "response": {
+              "responseFormat": "text",
+              "outputPropertyName": "data"
+            }
+          }
+        }
+      },
+      "executeOnce": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "bt-sr-10",
+      "name": "Read Published Extras CSV",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        810,
+        250
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "={{$('Configuration').first().json.extras_csv}}",
+        "authentication": "none",
+        "options": {
+          "timeout": 60000,
+          "redirect": {
+            "redirect": {
+              "followRedirects": true,
+              "maxRedirects": 3
+            }
+          },
+          "response": {
+            "response": {
+              "responseFormat": "text",
+              "outputPropertyName": "data"
+            }
+          }
+        }
+      },
+      "executeOnce": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "bt-sr-11",
+      "name": "Read Official CGO Listing",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1080,
+        250
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "={{$('Configuration').first().json.listing_url}}",
+        "authentication": "none",
+        "options": {
+          "timeout": 60000,
+          "redirect": {
+            "redirect": {
+              "followRedirects": false
+            }
+          },
+          "response": {
+            "response": {
+              "responseFormat": "text",
+              "outputPropertyName": "data"
+            }
+          }
+        }
+      },
+      "executeOnce": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "bt-sr-12",
+      "name": "Plan Version Checks",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1350,
+        250
+      ],
+      "parameters": {
+        "jsCode": "// Reused from the monthly publisher byte-hash helper; no external modules.\nfunction hashBytes(s){const bytes=Array.from(Buffer.isBuffer(s)||s instanceof Uint8Array?s:Buffer.from(String(s),'utf8')), bitLength=bytes.length*8; bytes.push(128); while(bytes.length%64!==56)bytes.push(0); const hi=Math.floor(bitLength/0x100000000),lo=bitLength>>>0; for(const v of [hi>>>24,hi>>>16,hi>>>8,hi,lo>>>24,lo>>>16,lo>>>8,lo])bytes.push(v&255); const k=[1116352408,1899447441,3049323471,3921009573,961987163,1508970993,2453635748,2870763221,3624381080,310598401,607225278,1426881987,1925078388,2162078206,2614888103,3248222580,3835390401,4022224774,264347078,604807628,770255983,1249150122,1555081692,1996064986,2554220882,2821834349,2952996808,3210313671,3336571891,3584528711,113926993,338241895,666307205,773529912,1294757372,1396182291,1695183700,1986661051,2177026350,2456956037,2730485921,2820302411,3259730800,3345764771,3516065817,3600352804,4094571909,275423344,430227734,506948616,659060556,883997877,958139571,1322822218,1537002063,1747873779,1955562222,2024104815,2227730452,2361852424,2428436474,2756734187,3204031479,3329325298]; let h0=1779033703,h1=3144134277,h2=1013904242,h3=2773480762,h4=1359893119,h5=2600822924,h6=528734635,h7=1541459225; for(let o=0;o<bytes.length;o+=64){const w=new Array(64); for(let i=0;i<16;i++)w[i]=((bytes[o+i*4]<<24)|(bytes[o+i*4+1]<<16)|(bytes[o+i*4+2]<<8)|bytes[o+i*4+3])>>>0; for(let i=16;i<64;i++){const a=w[i-15],b=w[i-2],s0=((a>>>7)|(a<<25))^((a>>>18)|(a<<14))^(a>>>3),s1=((b>>>17)|(b<<15))^((b>>>19)|(b<<13))^(b>>>10); w[i]=(((w[i-16]+s0)>>>0)+((w[i-7]+s1)>>>0))>>>0;} let a=h0,b=h1,c=h2,d=h3,e=h4,f=h5,g=h6,h=h7; for(let i=0;i<64;i++){const s1=((e>>>6)|(e<<26))^((e>>>11)|(e<<21))^((e>>>25)|(e<<7)),ch=(e&f)^((~e)&g),t1=(((h+s1)>>>0)+((ch+k[i])>>>0)+w[i])>>>0,s0=((a>>>2)|(a<<30))^((a>>>13)|(a<<19))^((a>>>22)|(a<<10)),maj=(a&b)^(a&c)^(b&c),t2=(s0+maj)>>>0; h=g;g=f;f=e;e=(d+t1)>>>0;d=c;c=b;b=a;a=(t1+t2)>>>0;} h0=(h0+a)>>>0;h1=(h1+b)>>>0;h2=(h2+c)>>>0;h3=(h3+d)>>>0;h4=(h4+e)>>>0;h5=(h5+f)>>>0;h6=(h6+g)>>>0;h7=(h7+h)>>>0;} return [h0,h1,h2,h3,h4,h5,h6,h7].map(x=>x.toString(16).padStart(8,'0')).join('');}\n\nconst SCOPE='JIF_MONTHLY_TRACKER_SOURCE_REVISIONS_ONLY';\nconst HOST='https://www.mof.gov.jm';\nconst LISTING=HOST+'/central-government-operations-tables/';\nconst MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];\nconst LABELS=['Tax Revenue','Non-Tax Revenue','Total Revenue & Grants','Primary Balance','Fiscal Balance','Compensation of Employees','Capital Expenditure','Interest'];\nconst fail=(code)=>{throw new Error(code);};\nfunction safeWorkbook(url){return typeof url==='string' && /^https:\\/\\/www\\.mof\\.gov\\.jm\\/wp-content\\/uploads\\/[A-Za-z0-9_.-]+\\.xlsx$/.test(url) && !url.includes('..');}\nfunction parseCsv(text){\n if(typeof text!=='string'||text.length>3000000||/^\\s*</.test(text))fail('INVALID_CSV_RESPONSE');\n const rows=[];let row=[],cell='',quote=false;\n text=text.replace(/^\\uFEFF/,'');\n for(let i=0;i<text.length;i++){const c=text[i];if(c==='\"'){if(quote&&text[i+1]==='\"'){cell+='\"';i++;}else if(quote||cell==='')quote=!quote;else fail('INVALID_CSV_QUOTE');}else if(!quote&&(c===','||c==='\\n'||c==='\\r')){row.push(cell);cell='';if(c!==','){if(row.some(x=>x!==''))rows.push(row);row=[];if(c==='\\r'&&text[i+1]==='\\n')i++;}}else cell+=c;}\n if(quote)fail('UNCLOSED_CSV_QUOTE');if(cell!==''||row.length){row.push(cell);if(row.some(x=>x!==''))rows.push(row);}\n const headers=rows.shift();if(!headers||new Set(headers).size!==headers.length)fail('INVALID_CSV_HEADERS');\n return rows.map(r=>{if(r.length!==headers.length)fail('CSV_ROW_WIDTH');return Object.fromEntries(headers.map((h,i)=>[h,r[i]]));});\n}\nfunction parseListing(html,{start,end}={}){\n if(typeof html!=='string'||html.length>3000000||!html.includes('Central Government Operations'))fail('LISTING_STRUCTURE_CHANGED');\n const entries=[];const sections=[...html.matchAll(/<h4\\b[^>]*>([\\s\\S]*?)<\\/h4>([\\s\\S]*?)(?=<h4\\b|$)/gi)];\n for(const m of sections){const title=m[1].replace(/<[^>]+>/g,' ').replace(/\\s+/g,' ').trim();const t=/Central Government Operations Table\\s*[-–—]\\s*([A-Za-z]+)\\s+(\\d{4})/i.exec(title);if(!t)continue;\n const index=MONTHS.findIndex(x=>x.toLowerCase()===t[1].toLowerCase());if(index<0)continue;\n const month=t[2]+'-'+String(index+1).padStart(2,'0');if((start&&month<start)||(end&&month>end))continue;\n const body=m[2].slice(0,10000),link=/<a\\b[^>]*href=[\"']([^\"']+)[\"']/i.exec(body),date=/<p\\b[^>]*>\\s*([A-Za-z]+ \\d{1,2}, \\d{4})\\s*<\\/p>/i.exec(body);if(!link||!date)fail('LISTING_ENTRY_INCOMPLETE');\n let url=link[1].replaceAll('&amp;','&');if(url.startsWith('/'))url=HOST+url;if(!safeWorkbook(url))fail('UNTRUSTED_LISTING_URL');\n const entry={month_sort:month,url,listing_date:date[1]};\n if(!entries.some(x=>JSON.stringify(x)===JSON.stringify(entry)))entries.push(entry);\n }\n if(!entries.length)fail('NO_CGO_LISTING_ENTRIES');return entries;\n}\nfunction planChecks({trackerCsv,extrasCsv,html,baselines,now}){\n const rows=parseCsv(trackerCsv),extras=parseCsv(extrasCsv);const date=new Date(now);if(!Number.isFinite(+date))fail('INVALID_CHECK_TIME');\n const fy=date.getUTCFullYear()-(date.getUTCMonth()<3?1:0);const start=fy+'-04',end=(fy+1)+'-03';const listing=parseListing(html,{start,end});\n const months=[...new Set(rows.map(r=>r.month_sort).filter(x=>/^\\d{4}-\\d{2}$/.test(x)&&x>=start&&x<=end))].sort();if(!months.length)fail('NO_PUBLISHED_MONTHS_IN_FY');\n const tasks=[];\n for(const month of months){const kpis=rows.filter(x=>x.month_sort===month);if(kpis.length!==8||LABELS.some(label=>kpis.filter(x=>x.kpi_label===label).length!==1))fail('INCOMPLETE_PUBLISHED_KPI_SET');\n const extra=extras.filter(x=>x.month_sort===month);if(extra.length!==1||!safeWorkbook(extra[0].source_document_1_url))fail('PUBLISHED_SOURCE_URL_UNVERIFIED');\n const bs=baselines.filter(x=>x.month_sort===month);if(bs.length>1)fail('DUPLICATE_BASELINE');const baseline=bs[0]||null;\n if(baseline&&(!safeWorkbook(baseline.source_url)||!/^[a-f0-9]{64}$/.test(baseline.sha256)||!['VERIFIED_SNAPSHOT_MATCHES_PUBLISHED','ACCEPTED_PUBLISHED_ARCHIVE'].includes(baseline.provenance)))fail('INVALID_BASELINE');\n const ls=listing.filter(x=>x.month_sort===month);if(ls.length!==1)fail('MISSING_OR_AMBIGUOUS_LISTING_MONTH');\n const targets=new Map();const add=(url,role)=>targets.set(url,[...(targets.get(url)||[]),role]);if(baseline)add(baseline.source_url,'BASELINE_URL');add(extra[0].source_document_1_url,'PUBLISHED_URL');add(ls[0].url,'LISTED_URL');\n for(const [url,roles]of targets)tasks.push({check_key:hashBytes(month+'|'+url),month_sort:month,url,roles:roles.join('+'),baseline,listing_date:ls[0].listing_date,checked_at:now});\n }\n if(tasks.length>36)fail('SOURCE_LIMIT_EXCEEDED');return tasks;\n}\nfunction inspect(task,{status,bytes,error},prior=[]){\n if(!safeWorkbook(task.url))fail('UNTRUSTED_TASK_URL');\n let error_code=error?'HTTP_REQUEST_FAILED':'';if(status!==200)error_code='HTTP_STATUS_'+String(status||'MISSING');\n if(!bytes||bytes.length<100||bytes.length>10000000)error_code=error_code||'INVALID_WORKBOOK_SIZE';\n const buffer=Buffer.from(bytes||[]);const tail=buffer.subarray(Math.max(0,buffer.length-65557));\n if(buffer.length&&(!buffer.subarray(0,4).equals(Buffer.from([80,75,3,4]))||!tail.includes(Buffer.from([80,75,5,6]))||!buffer.includes(Buffer.from('xl/workbook.xml'))))error_code=error_code||'NOT_XLSX_ZIP';\n const digest=error_code?'':hashBytes(buffer),base=task.baseline;\n let classification=error_code?'CHECK_FAILED':!base?'BASELINE_REQUIRED':digest!==base.sha256?'SOURCE_BYTES_CHANGED':task.url!==base.source_url?'SOURCE_LINK_CHANGED':'UNCHANGED';\n const case_id=hashBytes([SCOPE,task.month_sort,task.url,digest||error_code].join('|'));\n const matches=prior.filter(x=>x.case_id===case_id);if(matches.length>1)fail('DUPLICATE_OBSERVATION_ROWS');const old=matches[0];\n if(old&&(!Number.isFinite(Date.parse(old.first_seen))||Date.parse(old.first_seen)>Date.parse(task.checked_at)))fail('OBSERVATION_TIME_CONFLICT');\n if(old && (old.month_sort!==task.month_sort||old.url!==task.url||old.observed_sha256!==digest))fail('OBSERVATION_IDENTITY_CONFLICT');\n const observation={case_id,check_key:task.check_key,month_sort:task.month_sort,roles:task.roles,url:task.url,listing_date:task.listing_date,baseline_provenance:base?.provenance||'UNVERIFIED',published_sha256:base?.sha256||'',observed_sha256:digest,observed_size:String(buffer.length),classification,review_required:String(classification!=='UNCHANGED'),first_seen:old?.first_seen||task.checked_at,last_seen:task.checked_at,evidence_file_id:old?.evidence_file_id||'',error_code,semantic_review_status:classification==='UNCHANGED'?'NOT_REQUIRED':'REQUIRED'};\n return {observation,archive_required:!error_code&&classification!=='UNCHANGED'&&!observation.evidence_file_id,archive_name:`${task.month_sort}-${digest}.xlsx`,complete:!error_code};\n}\nfunction summarize(rows,expected){\n if(!Number.isInteger(expected)||expected<1||rows.length!==expected||new Set(rows.map(x=>x.check_key)).size!==expected)fail('INCOMPLETE_CHECK_COVERAGE');\n for(const r of rows){if(!/^[a-f0-9]{64}$/.test(r.check_key)||!/^[a-f0-9]{64}$/.test(r.case_id)||!safeWorkbook(r.url)||!['UNCHANGED','SOURCE_BYTES_CHANGED','SOURCE_LINK_CHANGED','BASELINE_REQUIRED','CHECK_FAILED'].includes(r.classification)||r.review_required!==String(r.classification!=='UNCHANGED')||(r.classification!=='CHECK_FAILED'&&!/^[a-f0-9]{64}$/.test(r.observed_sha256)))fail('INVALID_PERSISTED_OBSERVATION');}\n const count=name=>rows.filter(x=>x.classification===name).length;\n return {scope:SCOPE,checked_sources:rows.length,check_complete:count('CHECK_FAILED')===0,baseline_coverage_complete:count('BASELINE_REQUIRED')===0,unchanged:count('UNCHANGED'),changes:count('SOURCE_BYTES_CHANGED')+count('SOURCE_LINK_CHANGED'),baseline_required:count('BASELINE_REQUIRED'),failed:count('CHECK_FAILED'),public_rows_written:0,subscriber_sends:0,financial_adoption_authorized:false,review_case_ids:[...new Set(rows.filter(x=>x.review_required==='true').map(x=>x.case_id))]};\n}\n\nconst tasks=planChecks({trackerCsv:$('Read Published Tracker CSV').first().json.data,extrasCsv:$('Read Published Extras CSV').first().json.data,html:$input.first().json.data,baselines:$('Read Published Baselines').all().map(x=>x.json).filter(x=>x.month_sort),now:new Date().toISOString()});if($('Read Prior Observations').all().some(x=>x.json?.case_id==='SETUP_ROW_DELETE_BEFORE_TEST'))throw new Error('ACCEPTANCE_DELETE_SETUP_ROW');const acceptance=$('Configuration').first().json;const selected=tasks.filter(t=>t.month_sort===acceptance.target_month&&t.roles==='LISTED_URL');if(selected.length!==1)throw new Error('ACCEPTANCE_TARGET_NOT_UNIQUE');return selected.map(t=>({json:acceptance.test_case==='MISSING_BASELINE'?{...t,baseline:null}:t}));",
+        "mode": "runOnceForAllItems"
+      }
+    },
+    {
+      "id": "bt-sr-13",
+      "name": "Loop Official Sources",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1620,
+        250
+      ],
+      "parameters": {
+        "batchSize": 1,
+        "options": {
+          "reset": false
+        }
+      }
+    },
+    {
+      "id": "bt-sr-14",
+      "name": "GET Exact Workbook Bytes",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        0,
+        500
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "={{$('Configuration').first().json.test_case==='DOWNLOAD_FAILURE'?'https://example.invalid/':$json.url}}",
+        "authentication": "none",
+        "options": {
+          "timeout": 60000,
+          "redirect": {
+            "redirect": {
+              "followRedirects": false
+            }
+          },
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "data",
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "bt-sr-15",
+      "name": "Inspect Exact Source",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        270,
+        500
+      ],
+      "parameters": {
+        "jsCode": "// Reused from the monthly publisher byte-hash helper; no external modules.\nfunction hashBytes(s){const bytes=Array.from(Buffer.isBuffer(s)||s instanceof Uint8Array?s:Buffer.from(String(s),'utf8')), bitLength=bytes.length*8; bytes.push(128); while(bytes.length%64!==56)bytes.push(0); const hi=Math.floor(bitLength/0x100000000),lo=bitLength>>>0; for(const v of [hi>>>24,hi>>>16,hi>>>8,hi,lo>>>24,lo>>>16,lo>>>8,lo])bytes.push(v&255); const k=[1116352408,1899447441,3049323471,3921009573,961987163,1508970993,2453635748,2870763221,3624381080,310598401,607225278,1426881987,1925078388,2162078206,2614888103,3248222580,3835390401,4022224774,264347078,604807628,770255983,1249150122,1555081692,1996064986,2554220882,2821834349,2952996808,3210313671,3336571891,3584528711,113926993,338241895,666307205,773529912,1294757372,1396182291,1695183700,1986661051,2177026350,2456956037,2730485921,2820302411,3259730800,3345764771,3516065817,3600352804,4094571909,275423344,430227734,506948616,659060556,883997877,958139571,1322822218,1537002063,1747873779,1955562222,2024104815,2227730452,2361852424,2428436474,2756734187,3204031479,3329325298]; let h0=1779033703,h1=3144134277,h2=1013904242,h3=2773480762,h4=1359893119,h5=2600822924,h6=528734635,h7=1541459225; for(let o=0;o<bytes.length;o+=64){const w=new Array(64); for(let i=0;i<16;i++)w[i]=((bytes[o+i*4]<<24)|(bytes[o+i*4+1]<<16)|(bytes[o+i*4+2]<<8)|bytes[o+i*4+3])>>>0; for(let i=16;i<64;i++){const a=w[i-15],b=w[i-2],s0=((a>>>7)|(a<<25))^((a>>>18)|(a<<14))^(a>>>3),s1=((b>>>17)|(b<<15))^((b>>>19)|(b<<13))^(b>>>10); w[i]=(((w[i-16]+s0)>>>0)+((w[i-7]+s1)>>>0))>>>0;} let a=h0,b=h1,c=h2,d=h3,e=h4,f=h5,g=h6,h=h7; for(let i=0;i<64;i++){const s1=((e>>>6)|(e<<26))^((e>>>11)|(e<<21))^((e>>>25)|(e<<7)),ch=(e&f)^((~e)&g),t1=(((h+s1)>>>0)+((ch+k[i])>>>0)+w[i])>>>0,s0=((a>>>2)|(a<<30))^((a>>>13)|(a<<19))^((a>>>22)|(a<<10)),maj=(a&b)^(a&c)^(b&c),t2=(s0+maj)>>>0; h=g;g=f;f=e;e=(d+t1)>>>0;d=c;c=b;b=a;a=(t1+t2)>>>0;} h0=(h0+a)>>>0;h1=(h1+b)>>>0;h2=(h2+c)>>>0;h3=(h3+d)>>>0;h4=(h4+e)>>>0;h5=(h5+f)>>>0;h6=(h6+g)>>>0;h7=(h7+h)>>>0;} return [h0,h1,h2,h3,h4,h5,h6,h7].map(x=>x.toString(16).padStart(8,'0')).join('');}\n\nconst SCOPE='JIF_MONTHLY_TRACKER_SOURCE_REVISIONS_ONLY';\nconst HOST='https://www.mof.gov.jm';\nconst LISTING=HOST+'/central-government-operations-tables/';\nconst MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];\nconst LABELS=['Tax Revenue','Non-Tax Revenue','Total Revenue & Grants','Primary Balance','Fiscal Balance','Compensation of Employees','Capital Expenditure','Interest'];\nconst fail=(code)=>{throw new Error(code);};\nfunction safeWorkbook(url){return typeof url==='string' && /^https:\\/\\/www\\.mof\\.gov\\.jm\\/wp-content\\/uploads\\/[A-Za-z0-9_.-]+\\.xlsx$/.test(url) && !url.includes('..');}\nfunction parseCsv(text){\n if(typeof text!=='string'||text.length>3000000||/^\\s*</.test(text))fail('INVALID_CSV_RESPONSE');\n const rows=[];let row=[],cell='',quote=false;\n text=text.replace(/^\\uFEFF/,'');\n for(let i=0;i<text.length;i++){const c=text[i];if(c==='\"'){if(quote&&text[i+1]==='\"'){cell+='\"';i++;}else if(quote||cell==='')quote=!quote;else fail('INVALID_CSV_QUOTE');}else if(!quote&&(c===','||c==='\\n'||c==='\\r')){row.push(cell);cell='';if(c!==','){if(row.some(x=>x!==''))rows.push(row);row=[];if(c==='\\r'&&text[i+1]==='\\n')i++;}}else cell+=c;}\n if(quote)fail('UNCLOSED_CSV_QUOTE');if(cell!==''||row.length){row.push(cell);if(row.some(x=>x!==''))rows.push(row);}\n const headers=rows.shift();if(!headers||new Set(headers).size!==headers.length)fail('INVALID_CSV_HEADERS');\n return rows.map(r=>{if(r.length!==headers.length)fail('CSV_ROW_WIDTH');return Object.fromEntries(headers.map((h,i)=>[h,r[i]]));});\n}\nfunction parseListing(html,{start,end}={}){\n if(typeof html!=='string'||html.length>3000000||!html.includes('Central Government Operations'))fail('LISTING_STRUCTURE_CHANGED');\n const entries=[];const sections=[...html.matchAll(/<h4\\b[^>]*>([\\s\\S]*?)<\\/h4>([\\s\\S]*?)(?=<h4\\b|$)/gi)];\n for(const m of sections){const title=m[1].replace(/<[^>]+>/g,' ').replace(/\\s+/g,' ').trim();const t=/Central Government Operations Table\\s*[-–—]\\s*([A-Za-z]+)\\s+(\\d{4})/i.exec(title);if(!t)continue;\n const index=MONTHS.findIndex(x=>x.toLowerCase()===t[1].toLowerCase());if(index<0)continue;\n const month=t[2]+'-'+String(index+1).padStart(2,'0');if((start&&month<start)||(end&&month>end))continue;\n const body=m[2].slice(0,10000),link=/<a\\b[^>]*href=[\"']([^\"']+)[\"']/i.exec(body),date=/<p\\b[^>]*>\\s*([A-Za-z]+ \\d{1,2}, \\d{4})\\s*<\\/p>/i.exec(body);if(!link||!date)fail('LISTING_ENTRY_INCOMPLETE');\n let url=link[1].replaceAll('&amp;','&');if(url.startsWith('/'))url=HOST+url;if(!safeWorkbook(url))fail('UNTRUSTED_LISTING_URL');\n const entry={month_sort:month,url,listing_date:date[1]};\n if(!entries.some(x=>JSON.stringify(x)===JSON.stringify(entry)))entries.push(entry);\n }\n if(!entries.length)fail('NO_CGO_LISTING_ENTRIES');return entries;\n}\nfunction planChecks({trackerCsv,extrasCsv,html,baselines,now}){\n const rows=parseCsv(trackerCsv),extras=parseCsv(extrasCsv);const date=new Date(now);if(!Number.isFinite(+date))fail('INVALID_CHECK_TIME');\n const fy=date.getUTCFullYear()-(date.getUTCMonth()<3?1:0);const start=fy+'-04',end=(fy+1)+'-03';const listing=parseListing(html,{start,end});\n const months=[...new Set(rows.map(r=>r.month_sort).filter(x=>/^\\d{4}-\\d{2}$/.test(x)&&x>=start&&x<=end))].sort();if(!months.length)fail('NO_PUBLISHED_MONTHS_IN_FY');\n const tasks=[];\n for(const month of months){const kpis=rows.filter(x=>x.month_sort===month);if(kpis.length!==8||LABELS.some(label=>kpis.filter(x=>x.kpi_label===label).length!==1))fail('INCOMPLETE_PUBLISHED_KPI_SET');\n const extra=extras.filter(x=>x.month_sort===month);if(extra.length!==1||!safeWorkbook(extra[0].source_document_1_url))fail('PUBLISHED_SOURCE_URL_UNVERIFIED');\n const bs=baselines.filter(x=>x.month_sort===month);if(bs.length>1)fail('DUPLICATE_BASELINE');const baseline=bs[0]||null;\n if(baseline&&(!safeWorkbook(baseline.source_url)||!/^[a-f0-9]{64}$/.test(baseline.sha256)||!['VERIFIED_SNAPSHOT_MATCHES_PUBLISHED','ACCEPTED_PUBLISHED_ARCHIVE'].includes(baseline.provenance)))fail('INVALID_BASELINE');\n const ls=listing.filter(x=>x.month_sort===month);if(ls.length!==1)fail('MISSING_OR_AMBIGUOUS_LISTING_MONTH');\n const targets=new Map();const add=(url,role)=>targets.set(url,[...(targets.get(url)||[]),role]);if(baseline)add(baseline.source_url,'BASELINE_URL');add(extra[0].source_document_1_url,'PUBLISHED_URL');add(ls[0].url,'LISTED_URL');\n for(const [url,roles]of targets)tasks.push({check_key:hashBytes(month+'|'+url),month_sort:month,url,roles:roles.join('+'),baseline,listing_date:ls[0].listing_date,checked_at:now});\n }\n if(tasks.length>36)fail('SOURCE_LIMIT_EXCEEDED');return tasks;\n}\nfunction inspect(task,{status,bytes,error},prior=[]){\n if(!safeWorkbook(task.url))fail('UNTRUSTED_TASK_URL');\n let error_code=error?'HTTP_REQUEST_FAILED':'';if(status!==200)error_code='HTTP_STATUS_'+String(status||'MISSING');\n if(!bytes||bytes.length<100||bytes.length>10000000)error_code=error_code||'INVALID_WORKBOOK_SIZE';\n const buffer=Buffer.from(bytes||[]);const tail=buffer.subarray(Math.max(0,buffer.length-65557));\n if(buffer.length&&(!buffer.subarray(0,4).equals(Buffer.from([80,75,3,4]))||!tail.includes(Buffer.from([80,75,5,6]))||!buffer.includes(Buffer.from('xl/workbook.xml'))))error_code=error_code||'NOT_XLSX_ZIP';\n const digest=error_code?'':hashBytes(buffer),base=task.baseline;\n let classification=error_code?'CHECK_FAILED':!base?'BASELINE_REQUIRED':digest!==base.sha256?'SOURCE_BYTES_CHANGED':task.url!==base.source_url?'SOURCE_LINK_CHANGED':'UNCHANGED';\n const case_id=hashBytes([SCOPE,task.month_sort,task.url,digest||error_code].join('|'));\n const matches=prior.filter(x=>x.case_id===case_id);if(matches.length>1)fail('DUPLICATE_OBSERVATION_ROWS');const old=matches[0];\n if(old&&(!Number.isFinite(Date.parse(old.first_seen))||Date.parse(old.first_seen)>Date.parse(task.checked_at)))fail('OBSERVATION_TIME_CONFLICT');\n if(old && (old.month_sort!==task.month_sort||old.url!==task.url||old.observed_sha256!==digest))fail('OBSERVATION_IDENTITY_CONFLICT');\n const observation={case_id,check_key:task.check_key,month_sort:task.month_sort,roles:task.roles,url:task.url,listing_date:task.listing_date,baseline_provenance:base?.provenance||'UNVERIFIED',published_sha256:base?.sha256||'',observed_sha256:digest,observed_size:String(buffer.length),classification,review_required:String(classification!=='UNCHANGED'),first_seen:old?.first_seen||task.checked_at,last_seen:task.checked_at,evidence_file_id:old?.evidence_file_id||'',error_code,semantic_review_status:classification==='UNCHANGED'?'NOT_REQUIRED':'REQUIRED'};\n return {observation,archive_required:!error_code&&classification!=='UNCHANGED'&&!observation.evidence_file_id,archive_name:`${task.month_sort}-${digest}.xlsx`,complete:!error_code};\n}\nfunction summarize(rows,expected){\n if(!Number.isInteger(expected)||expected<1||rows.length!==expected||new Set(rows.map(x=>x.check_key)).size!==expected)fail('INCOMPLETE_CHECK_COVERAGE');\n for(const r of rows){if(!/^[a-f0-9]{64}$/.test(r.check_key)||!/^[a-f0-9]{64}$/.test(r.case_id)||!safeWorkbook(r.url)||!['UNCHANGED','SOURCE_BYTES_CHANGED','SOURCE_LINK_CHANGED','BASELINE_REQUIRED','CHECK_FAILED'].includes(r.classification)||r.review_required!==String(r.classification!=='UNCHANGED')||(r.classification!=='CHECK_FAILED'&&!/^[a-f0-9]{64}$/.test(r.observed_sha256)))fail('INVALID_PERSISTED_OBSERVATION');}\n const count=name=>rows.filter(x=>x.classification===name).length;\n return {scope:SCOPE,checked_sources:rows.length,check_complete:count('CHECK_FAILED')===0,baseline_coverage_complete:count('BASELINE_REQUIRED')===0,unchanged:count('UNCHANGED'),changes:count('SOURCE_BYTES_CHANGED')+count('SOURCE_LINK_CHANGED'),baseline_required:count('BASELINE_REQUIRED'),failed:count('CHECK_FAILED'),public_rows_written:0,subscriber_sends:0,financial_adoption_authorized:false,review_case_ids:[...new Set(rows.filter(x=>x.review_required==='true').map(x=>x.case_id))]};\n}\n\nconst task=$('Loop Official Sources').item.json;let bytes=null;try{bytes=await this.helpers.getBinaryDataBuffer(0,'data');}catch{}const result=inspect(task,{status:$input.first().json.statusCode,bytes,error:$input.first().json.error},($('Configuration').first().json.test_case==='NORMAL'?$('Read Prior Observations').all().map(x=>x.json).filter(x=>x.case_id):[]));return [{json:result,binary:result.archive_required?$input.first().binary:undefined,pairedItem:{item:0}}];",
+        "mode": "runOnceForAllItems"
+      }
+    },
+    {
+      "id": "bt-sr-16",
+      "name": "Archive New Candidate",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        540,
+        500
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "Archive New Candidate",
+              "leftValue": "={{$json.archive_required}}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "bt-sr-17",
+      "name": "Archive Candidate Privately",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        810,
+        500
+      ],
+      "parameters": {
+        "resource": "file",
+        "operation": "upload",
+        "inputDataFieldName": "data",
+        "name": "={{$json.archive_name}}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1_tjDf3qSRxTFHIH_rVh9ErfdQwJksdtX"
+        },
+        "options": {
+          "simplifyOutput": true
+        }
+      }
+    },
+    {
+      "id": "bt-sr-18",
+      "name": "Download Archived Candidate",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1080,
+        500
+      ],
+      "parameters": {
+        "resource": "file",
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{$json.id}}"
+        },
+        "options": {
+          "binaryPropertyName": "stored"
+        }
+      }
+    },
+    {
+      "id": "bt-sr-19",
+      "name": "Verify Archived Bytes",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1350,
+        500
+      ],
+      "parameters": {
+        "jsCode": "// Reused from the monthly publisher byte-hash helper; no external modules.\nfunction hashBytes(s){const bytes=Array.from(Buffer.isBuffer(s)||s instanceof Uint8Array?s:Buffer.from(String(s),'utf8')), bitLength=bytes.length*8; bytes.push(128); while(bytes.length%64!==56)bytes.push(0); const hi=Math.floor(bitLength/0x100000000),lo=bitLength>>>0; for(const v of [hi>>>24,hi>>>16,hi>>>8,hi,lo>>>24,lo>>>16,lo>>>8,lo])bytes.push(v&255); const k=[1116352408,1899447441,3049323471,3921009573,961987163,1508970993,2453635748,2870763221,3624381080,310598401,607225278,1426881987,1925078388,2162078206,2614888103,3248222580,3835390401,4022224774,264347078,604807628,770255983,1249150122,1555081692,1996064986,2554220882,2821834349,2952996808,3210313671,3336571891,3584528711,113926993,338241895,666307205,773529912,1294757372,1396182291,1695183700,1986661051,2177026350,2456956037,2730485921,2820302411,3259730800,3345764771,3516065817,3600352804,4094571909,275423344,430227734,506948616,659060556,883997877,958139571,1322822218,1537002063,1747873779,1955562222,2024104815,2227730452,2361852424,2428436474,2756734187,3204031479,3329325298]; let h0=1779033703,h1=3144134277,h2=1013904242,h3=2773480762,h4=1359893119,h5=2600822924,h6=528734635,h7=1541459225; for(let o=0;o<bytes.length;o+=64){const w=new Array(64); for(let i=0;i<16;i++)w[i]=((bytes[o+i*4]<<24)|(bytes[o+i*4+1]<<16)|(bytes[o+i*4+2]<<8)|bytes[o+i*4+3])>>>0; for(let i=16;i<64;i++){const a=w[i-15],b=w[i-2],s0=((a>>>7)|(a<<25))^((a>>>18)|(a<<14))^(a>>>3),s1=((b>>>17)|(b<<15))^((b>>>19)|(b<<13))^(b>>>10); w[i]=(((w[i-16]+s0)>>>0)+((w[i-7]+s1)>>>0))>>>0;} let a=h0,b=h1,c=h2,d=h3,e=h4,f=h5,g=h6,h=h7; for(let i=0;i<64;i++){const s1=((e>>>6)|(e<<26))^((e>>>11)|(e<<21))^((e>>>25)|(e<<7)),ch=(e&f)^((~e)&g),t1=(((h+s1)>>>0)+((ch+k[i])>>>0)+w[i])>>>0,s0=((a>>>2)|(a<<30))^((a>>>13)|(a<<19))^((a>>>22)|(a<<10)),maj=(a&b)^(a&c)^(b&c),t2=(s0+maj)>>>0; h=g;g=f;f=e;e=(d+t1)>>>0;d=c;c=b;b=a;a=(t1+t2)>>>0;} h0=(h0+a)>>>0;h1=(h1+b)>>>0;h2=(h2+c)>>>0;h3=(h3+d)>>>0;h4=(h4+e)>>>0;h5=(h5+f)>>>0;h6=(h6+g)>>>0;h7=(h7+h)>>>0;} return [h0,h1,h2,h3,h4,h5,h6,h7].map(x=>x.toString(16).padStart(8,'0')).join('');}\nconst original=$('Inspect Exact Source').item.json.observation;const stored=Buffer.from(await this.helpers.getBinaryDataBuffer(0,'stored'));if($('Configuration').first().json.test_case==='ARCHIVE_HASH_MISMATCH')stored[0]^=1;if(hashBytes(stored)!==original.observed_sha256)throw new Error('ARCHIVE_READBACK_HASH_MISMATCH');const id=$('Archive Candidate Privately').item.json.id;if(!id)throw new Error('ARCHIVE_FILE_ID_MISSING');return [{json:{...original,evidence_file_id:id},pairedItem:{item:0}}];",
+        "mode": "runOnceForAllItems"
+      }
+    },
+    {
+      "id": "bt-sr-20",
+      "name": "Prepare Observation Only",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1620,
+        500
+      ],
+      "parameters": {
+        "jsCode": "return [{json:$input.first().json.observation,pairedItem:{item:0}}];",
+        "mode": "runOnceForAllItems"
+      }
+    },
+    {
+      "id": "bt-sr-21",
+      "name": "Upsert Private Observation",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        750
+      ],
+      "parameters": {
+        "resource": "row",
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{$('Configuration').first().json.observation_table_id}}"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "case_id",
+              "condition": "eq",
+              "keyValue": "={{$json.case_id}}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "case_id": "={{$json.case_id}}",
+            "check_key": "={{$json.check_key}}",
+            "month_sort": "={{$json.month_sort}}",
+            "roles": "={{$json.roles}}",
+            "url": "={{$json.url}}",
+            "listing_date": "={{$json.listing_date}}",
+            "baseline_provenance": "={{$json.baseline_provenance}}",
+            "published_sha256": "={{$json.published_sha256}}",
+            "observed_sha256": "={{$json.observed_sha256}}",
+            "observed_size": "={{$json.observed_size}}",
+            "classification": "={{$json.classification}}",
+            "review_required": "={{$json.review_required}}",
+            "first_seen": "={{$json.first_seen}}",
+            "last_seen": "={{$json.last_seen}}",
+            "evidence_file_id": "={{$json.evidence_file_id}}",
+            "error_code": "={{$json.error_code}}",
+            "semantic_review_status": "={{$json.semantic_review_status}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "case_id",
+              "displayName": "case_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "check_key",
+              "displayName": "check_key",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "month_sort",
+              "displayName": "month_sort",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "roles",
+              "displayName": "roles",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "listing_date",
+              "displayName": "listing_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "baseline_provenance",
+              "displayName": "baseline_provenance",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "published_sha256",
+              "displayName": "published_sha256",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "observed_sha256",
+              "displayName": "observed_sha256",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "observed_size",
+              "displayName": "observed_size",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "classification",
+              "displayName": "classification",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "review_required",
+              "displayName": "review_required",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "first_seen",
+              "displayName": "first_seen",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "last_seen",
+              "displayName": "last_seen",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "evidence_file_id",
+              "displayName": "evidence_file_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "error_code",
+              "displayName": "error_code",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "semantic_review_status",
+              "displayName": "semantic_review_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "bt-sr-22",
+      "name": "Complete Revision Check",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        270,
+        750
+      ],
+      "parameters": {
+        "jsCode": "// Reused from the monthly publisher byte-hash helper; no external modules.\nfunction hashBytes(s){const bytes=Array.from(Buffer.isBuffer(s)||s instanceof Uint8Array?s:Buffer.from(String(s),'utf8')), bitLength=bytes.length*8; bytes.push(128); while(bytes.length%64!==56)bytes.push(0); const hi=Math.floor(bitLength/0x100000000),lo=bitLength>>>0; for(const v of [hi>>>24,hi>>>16,hi>>>8,hi,lo>>>24,lo>>>16,lo>>>8,lo])bytes.push(v&255); const k=[1116352408,1899447441,3049323471,3921009573,961987163,1508970993,2453635748,2870763221,3624381080,310598401,607225278,1426881987,1925078388,2162078206,2614888103,3248222580,3835390401,4022224774,264347078,604807628,770255983,1249150122,1555081692,1996064986,2554220882,2821834349,2952996808,3210313671,3336571891,3584528711,113926993,338241895,666307205,773529912,1294757372,1396182291,1695183700,1986661051,2177026350,2456956037,2730485921,2820302411,3259730800,3345764771,3516065817,3600352804,4094571909,275423344,430227734,506948616,659060556,883997877,958139571,1322822218,1537002063,1747873779,1955562222,2024104815,2227730452,2361852424,2428436474,2756734187,3204031479,3329325298]; let h0=1779033703,h1=3144134277,h2=1013904242,h3=2773480762,h4=1359893119,h5=2600822924,h6=528734635,h7=1541459225; for(let o=0;o<bytes.length;o+=64){const w=new Array(64); for(let i=0;i<16;i++)w[i]=((bytes[o+i*4]<<24)|(bytes[o+i*4+1]<<16)|(bytes[o+i*4+2]<<8)|bytes[o+i*4+3])>>>0; for(let i=16;i<64;i++){const a=w[i-15],b=w[i-2],s0=((a>>>7)|(a<<25))^((a>>>18)|(a<<14))^(a>>>3),s1=((b>>>17)|(b<<15))^((b>>>19)|(b<<13))^(b>>>10); w[i]=(((w[i-16]+s0)>>>0)+((w[i-7]+s1)>>>0))>>>0;} let a=h0,b=h1,c=h2,d=h3,e=h4,f=h5,g=h6,h=h7; for(let i=0;i<64;i++){const s1=((e>>>6)|(e<<26))^((e>>>11)|(e<<21))^((e>>>25)|(e<<7)),ch=(e&f)^((~e)&g),t1=(((h+s1)>>>0)+((ch+k[i])>>>0)+w[i])>>>0,s0=((a>>>2)|(a<<30))^((a>>>13)|(a<<19))^((a>>>22)|(a<<10)),maj=(a&b)^(a&c)^(b&c),t2=(s0+maj)>>>0; h=g;g=f;f=e;e=(d+t1)>>>0;d=c;c=b;b=a;a=(t1+t2)>>>0;} h0=(h0+a)>>>0;h1=(h1+b)>>>0;h2=(h2+c)>>>0;h3=(h3+d)>>>0;h4=(h4+e)>>>0;h5=(h5+f)>>>0;h6=(h6+g)>>>0;h7=(h7+h)>>>0;} return [h0,h1,h2,h3,h4,h5,h6,h7].map(x=>x.toString(16).padStart(8,'0')).join('');}\n\nconst SCOPE='JIF_MONTHLY_TRACKER_SOURCE_REVISIONS_ONLY';\nconst HOST='https://www.mof.gov.jm';\nconst LISTING=HOST+'/central-government-operations-tables/';\nconst MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];\nconst LABELS=['Tax Revenue','Non-Tax Revenue','Total Revenue & Grants','Primary Balance','Fiscal Balance','Compensation of Employees','Capital Expenditure','Interest'];\nconst fail=(code)=>{throw new Error(code);};\nfunction safeWorkbook(url){return typeof url==='string' && /^https:\\/\\/www\\.mof\\.gov\\.jm\\/wp-content\\/uploads\\/[A-Za-z0-9_.-]+\\.xlsx$/.test(url) && !url.includes('..');}\nfunction parseCsv(text){\n if(typeof text!=='string'||text.length>3000000||/^\\s*</.test(text))fail('INVALID_CSV_RESPONSE');\n const rows=[];let row=[],cell='',quote=false;\n text=text.replace(/^\\uFEFF/,'');\n for(let i=0;i<text.length;i++){const c=text[i];if(c==='\"'){if(quote&&text[i+1]==='\"'){cell+='\"';i++;}else if(quote||cell==='')quote=!quote;else fail('INVALID_CSV_QUOTE');}else if(!quote&&(c===','||c==='\\n'||c==='\\r')){row.push(cell);cell='';if(c!==','){if(row.some(x=>x!==''))rows.push(row);row=[];if(c==='\\r'&&text[i+1]==='\\n')i++;}}else cell+=c;}\n if(quote)fail('UNCLOSED_CSV_QUOTE');if(cell!==''||row.length){row.push(cell);if(row.some(x=>x!==''))rows.push(row);}\n const headers=rows.shift();if(!headers||new Set(headers).size!==headers.length)fail('INVALID_CSV_HEADERS');\n return rows.map(r=>{if(r.length!==headers.length)fail('CSV_ROW_WIDTH');return Object.fromEntries(headers.map((h,i)=>[h,r[i]]));});\n}\nfunction parseListing(html,{start,end}={}){\n if(typeof html!=='string'||html.length>3000000||!html.includes('Central Government Operations'))fail('LISTING_STRUCTURE_CHANGED');\n const entries=[];const sections=[...html.matchAll(/<h4\\b[^>]*>([\\s\\S]*?)<\\/h4>([\\s\\S]*?)(?=<h4\\b|$)/gi)];\n for(const m of sections){const title=m[1].replace(/<[^>]+>/g,' ').replace(/\\s+/g,' ').trim();const t=/Central Government Operations Table\\s*[-–—]\\s*([A-Za-z]+)\\s+(\\d{4})/i.exec(title);if(!t)continue;\n const index=MONTHS.findIndex(x=>x.toLowerCase()===t[1].toLowerCase());if(index<0)continue;\n const month=t[2]+'-'+String(index+1).padStart(2,'0');if((start&&month<start)||(end&&month>end))continue;\n const body=m[2].slice(0,10000),link=/<a\\b[^>]*href=[\"']([^\"']+)[\"']/i.exec(body),date=/<p\\b[^>]*>\\s*([A-Za-z]+ \\d{1,2}, \\d{4})\\s*<\\/p>/i.exec(body);if(!link||!date)fail('LISTING_ENTRY_INCOMPLETE');\n let url=link[1].replaceAll('&amp;','&');if(url.startsWith('/'))url=HOST+url;if(!safeWorkbook(url))fail('UNTRUSTED_LISTING_URL');\n const entry={month_sort:month,url,listing_date:date[1]};\n if(!entries.some(x=>JSON.stringify(x)===JSON.stringify(entry)))entries.push(entry);\n }\n if(!entries.length)fail('NO_CGO_LISTING_ENTRIES');return entries;\n}\nfunction planChecks({trackerCsv,extrasCsv,html,baselines,now}){\n const rows=parseCsv(trackerCsv),extras=parseCsv(extrasCsv);const date=new Date(now);if(!Number.isFinite(+date))fail('INVALID_CHECK_TIME');\n const fy=date.getUTCFullYear()-(date.getUTCMonth()<3?1:0);const start=fy+'-04',end=(fy+1)+'-03';const listing=parseListing(html,{start,end});\n const months=[...new Set(rows.map(r=>r.month_sort).filter(x=>/^\\d{4}-\\d{2}$/.test(x)&&x>=start&&x<=end))].sort();if(!months.length)fail('NO_PUBLISHED_MONTHS_IN_FY');\n const tasks=[];\n for(const month of months){const kpis=rows.filter(x=>x.month_sort===month);if(kpis.length!==8||LABELS.some(label=>kpis.filter(x=>x.kpi_label===label).length!==1))fail('INCOMPLETE_PUBLISHED_KPI_SET');\n const extra=extras.filter(x=>x.month_sort===month);if(extra.length!==1||!safeWorkbook(extra[0].source_document_1_url))fail('PUBLISHED_SOURCE_URL_UNVERIFIED');\n const bs=baselines.filter(x=>x.month_sort===month);if(bs.length>1)fail('DUPLICATE_BASELINE');const baseline=bs[0]||null;\n if(baseline&&(!safeWorkbook(baseline.source_url)||!/^[a-f0-9]{64}$/.test(baseline.sha256)||!['VERIFIED_SNAPSHOT_MATCHES_PUBLISHED','ACCEPTED_PUBLISHED_ARCHIVE'].includes(baseline.provenance)))fail('INVALID_BASELINE');\n const ls=listing.filter(x=>x.month_sort===month);if(ls.length!==1)fail('MISSING_OR_AMBIGUOUS_LISTING_MONTH');\n const targets=new Map();const add=(url,role)=>targets.set(url,[...(targets.get(url)||[]),role]);if(baseline)add(baseline.source_url,'BASELINE_URL');add(extra[0].source_document_1_url,'PUBLISHED_URL');add(ls[0].url,'LISTED_URL');\n for(const [url,roles]of targets)tasks.push({check_key:hashBytes(month+'|'+url),month_sort:month,url,roles:roles.join('+'),baseline,listing_date:ls[0].listing_date,checked_at:now});\n }\n if(tasks.length>36)fail('SOURCE_LIMIT_EXCEEDED');return tasks;\n}\nfunction inspect(task,{status,bytes,error},prior=[]){\n if(!safeWorkbook(task.url))fail('UNTRUSTED_TASK_URL');\n let error_code=error?'HTTP_REQUEST_FAILED':'';if(status!==200)error_code='HTTP_STATUS_'+String(status||'MISSING');\n if(!bytes||bytes.length<100||bytes.length>10000000)error_code=error_code||'INVALID_WORKBOOK_SIZE';\n const buffer=Buffer.from(bytes||[]);const tail=buffer.subarray(Math.max(0,buffer.length-65557));\n if(buffer.length&&(!buffer.subarray(0,4).equals(Buffer.from([80,75,3,4]))||!tail.includes(Buffer.from([80,75,5,6]))||!buffer.includes(Buffer.from('xl/workbook.xml'))))error_code=error_code||'NOT_XLSX_ZIP';\n const digest=error_code?'':hashBytes(buffer),base=task.baseline;\n let classification=error_code?'CHECK_FAILED':!base?'BASELINE_REQUIRED':digest!==base.sha256?'SOURCE_BYTES_CHANGED':task.url!==base.source_url?'SOURCE_LINK_CHANGED':'UNCHANGED';\n const case_id=hashBytes([SCOPE,task.month_sort,task.url,digest||error_code].join('|'));\n const matches=prior.filter(x=>x.case_id===case_id);if(matches.length>1)fail('DUPLICATE_OBSERVATION_ROWS');const old=matches[0];\n if(old&&(!Number.isFinite(Date.parse(old.first_seen))||Date.parse(old.first_seen)>Date.parse(task.checked_at)))fail('OBSERVATION_TIME_CONFLICT');\n if(old && (old.month_sort!==task.month_sort||old.url!==task.url||old.observed_sha256!==digest))fail('OBSERVATION_IDENTITY_CONFLICT');\n const observation={case_id,check_key:task.check_key,month_sort:task.month_sort,roles:task.roles,url:task.url,listing_date:task.listing_date,baseline_provenance:base?.provenance||'UNVERIFIED',published_sha256:base?.sha256||'',observed_sha256:digest,observed_size:String(buffer.length),classification,review_required:String(classification!=='UNCHANGED'),first_seen:old?.first_seen||task.checked_at,last_seen:task.checked_at,evidence_file_id:old?.evidence_file_id||'',error_code,semantic_review_status:classification==='UNCHANGED'?'NOT_REQUIRED':'REQUIRED'};\n return {observation,archive_required:!error_code&&classification!=='UNCHANGED'&&!observation.evidence_file_id,archive_name:`${task.month_sort}-${digest}.xlsx`,complete:!error_code};\n}\nfunction summarize(rows,expected){\n if(!Number.isInteger(expected)||expected<1||rows.length!==expected||new Set(rows.map(x=>x.check_key)).size!==expected)fail('INCOMPLETE_CHECK_COVERAGE');\n for(const r of rows){if(!/^[a-f0-9]{64}$/.test(r.check_key)||!/^[a-f0-9]{64}$/.test(r.case_id)||!safeWorkbook(r.url)||!['UNCHANGED','SOURCE_BYTES_CHANGED','SOURCE_LINK_CHANGED','BASELINE_REQUIRED','CHECK_FAILED'].includes(r.classification)||r.review_required!==String(r.classification!=='UNCHANGED')||(r.classification!=='CHECK_FAILED'&&!/^[a-f0-9]{64}$/.test(r.observed_sha256)))fail('INVALID_PERSISTED_OBSERVATION');}\n const count=name=>rows.filter(x=>x.classification===name).length;\n return {scope:SCOPE,checked_sources:rows.length,check_complete:count('CHECK_FAILED')===0,baseline_coverage_complete:count('BASELINE_REQUIRED')===0,unchanged:count('UNCHANGED'),changes:count('SOURCE_BYTES_CHANGED')+count('SOURCE_LINK_CHANGED'),baseline_required:count('BASELINE_REQUIRED'),failed:count('CHECK_FAILED'),public_rows_written:0,subscriber_sends:0,financial_adoption_authorized:false,review_case_ids:[...new Set(rows.filter(x=>x.review_required==='true').map(x=>x.case_id))]};\n}\n\nconst receipt=summarize($input.all().map(x=>x.json),$('Plan Version Checks').all().length);if(!receipt.check_complete||!receipt.baseline_coverage_complete)throw new Error('REVISION_CHECK_REQUIRES_ATTENTION: '+JSON.stringify(receipt));return [{json:{...receipt,scope:'JIF_MONTHLY_TRACKER_SOURCE_REVISIONS_ACCEPTANCE_ONLY',test_only:true,test_case:$('Configuration').first().json.test_case,target_month:$('Configuration').first().json.target_month}}];",
+        "mode": "runOnceForAllItems"
+      }
+    },
+    {
+      "id": "acceptance-post-archive-fault",
+      "name": "TEST ONLY | Post Archive Failure",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1450,
+        1000
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "if($('Configuration').first().json.test_case==='POST_ARCHIVE_FAILURE')throw new Error('INJECTED_POST_ARCHIVE_FAILURE: test evidence uploaded and verified; observation not written');return $input.all();"
+      }
+    }
+  ],
+  "connections": {
+    "Manual Prepublication Check": {
+      "main": [
+        [
+          {
+            "node": "Configuration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Configuration": {
+      "main": [
+        [
+          {
+            "node": "Validate Configuration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Configuration": {
+      "main": [
+        [
+          {
+            "node": "Configured for Isolated Observation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Configured for Isolated Observation": {
+      "main": [
+        [
+          {
+            "node": "Read Published Baselines",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Configuration Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Published Baselines": {
+      "main": [
+        [
+          {
+            "node": "Read Prior Observations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Prior Observations": {
+      "main": [
+        [
+          {
+            "node": "Read Published Tracker CSV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Published Tracker CSV": {
+      "main": [
+        [
+          {
+            "node": "Read Published Extras CSV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Published Extras CSV": {
+      "main": [
+        [
+          {
+            "node": "Read Official CGO Listing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Official CGO Listing": {
+      "main": [
+        [
+          {
+            "node": "Plan Version Checks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Plan Version Checks": {
+      "main": [
+        [
+          {
+            "node": "Loop Official Sources",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Official Sources": {
+      "main": [
+        [
+          {
+            "node": "Complete Revision Check",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "GET Exact Workbook Bytes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET Exact Workbook Bytes": {
+      "main": [
+        [
+          {
+            "node": "Inspect Exact Source",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Inspect Exact Source": {
+      "main": [
+        [
+          {
+            "node": "Archive New Candidate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Archive Candidate Privately": {
+      "main": [
+        [
+          {
+            "node": "Download Archived Candidate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Archived Candidate": {
+      "main": [
+        [
+          {
+            "node": "Verify Archived Bytes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verify Archived Bytes": {
+      "main": [
+        [
+          {
+            "node": "TEST ONLY | Post Archive Failure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Observation Only": {
+      "main": [
+        [
+          {
+            "node": "Upsert Private Observation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upsert Private Observation": {
+      "main": [
+        [
+          {
+            "node": "Loop Official Sources",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Archive New Candidate": {
+      "main": [
+        [
+          {
+            "node": "Archive Candidate Privately",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Prepare Observation Only",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TEST ONLY | Post Archive Failure": {
+      "main": [
+        [
+          {
+            "node": "Upsert Private Observation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Jamaica",
+    "executionTimeout": 1200,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all"
+  },
+  "pinData": {},
+  "tags": []
+}

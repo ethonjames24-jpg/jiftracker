@@ -1,4 +1,4 @@
-# JIF Monthly Tracker — Official Source Revision Monitor v1.0.1
+# JIF Monthly Tracker — Official Source Revision Monitor v1.0.2
 
 New, isolated monthly-tracker package. Existing CGO/preparation/review/publication workflows and Spending Explorer are unchanged.
 
@@ -34,3 +34,5 @@ Case IDs are stable for a period/URL/observed hash. Repeat sequential checks pre
 ## Native transport corrections
 
 Version 1.0.1 fixes the October 28 setup findings: only the two anonymous Google CSV reads follow redirects (maximum 3); both table reads and all three pre-loop text requests execute once so incoming baseline/observation rows cannot fan out requests. Workbook redirects remain disabled, the loop remains serial, and the publisher boundary is unchanged. Do not reimport the setup-gated template over the configured native workflow. Verify native workflow timezone America/Jamaica and timeout 1200 seconds explicitly; the user export omitted them.
+
+The latest configured native export confirms the saved Jamaica timezone, 1200-second timeout, execution saving and owner-error-handler binding. Its exact hashes and listing fail/recovery screenshots are recorded in evidence/NATIVE-CONFIGURATION-1741.json. The shared owner handler was extended only by the new monitor ID; 20 existing-output cases remain identical. Automatic alert delivery is not yet proved. For remaining isolated negative/concurrency/recovery tests, see acceptance/README.md. Build that manual-only test JSON with npm run build:acceptance. It must never replace the configured monitor.

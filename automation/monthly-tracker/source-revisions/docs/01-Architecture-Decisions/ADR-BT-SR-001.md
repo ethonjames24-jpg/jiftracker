@@ -13,3 +13,13 @@ Context: User-run native setup exposed HTTP 307 on anonymous Google CSV exports 
 Decision: permit at most three redirects only on the two fixed anonymous Google CSV reads; run both table reads and three pre-loop text HTTP reads once per execution. Retain strict Ministry workbook URL identity, disabled redirects on exact bytes, serial per-source loop, inactive template and all publication boundaries. Preserve the exact configured native export privately, with a digest-only reference in the repository. Verify native timezone and timeout explicitly because the export omitted them.
 
 Consequences: 5 baseline rows and 8 prior observations no longer multiply HTTP reads into 40 items. The reusable template stays REPORT_ONLY, distinct from the configured OBSERVE instance. Native acceptance advances to IN PROGRESS; native adverse-path/concurrency/recovery, operational settings and scheduling evidence remain required. No financial adoption or Spending Explorer change is authorized by this amendment.
+
+## Owner-alert binding and isolated acceptance amendment
+
+Context: Native saved settings are now verified, listing fail/recovery is user-evidenced, and the existing owner handler rejected the new workflow because only four monthly IDs were allowed.
+
+Decision: Bind the actual monitor to owner handler W6NTH8TqleF7lLll after adding only v407uw3UAd050cn0 and updating rejection wording. Preserve all other nodes, destinations, actions and four existing outputs (20 tested category cases). Store exact before/after exports privately, committing only hashes/provenance. This narrowly scoped shared-handler amendment supersedes the earlier blanket no-existing-workflow-change statement for that allowlist entry alone.
+
+Decision: Build a separate unpublished/manual-only acceptance copy with two new test tables and a fixed new private evidence folder. Reject accepted monitor table IDs, omit the shared error handler, and scope tests to one candidate. Inject missing-baseline/download/hash/post-archive faults only inside the copy. Retain all test artifacts; never use them to restate finance data.
+
+Consequences: Saved settings/binding and listing recovery have evidence. Automatic owner delivery and native adverse-path/concurrency/interrupted-write/scheduling gates remain open. The test-copy ID is not authorized to send through the shared owner handler. Spending Explorer, publisher/feed/guard/ledger and original monthly workflows are unchanged.

@@ -1,10 +1,30 @@
 {
-  "version": "1.0.1",
+  "version": "1.0.2",
   "scope": "MONTHLY_TRACKER_ONLY",
   "files": {
     "README.md": {
-      "sha256": "5337748514ca460f6c4b498ea94fea23552626562ef001d1c90e84df9c0c83b2",
-      "bytes": 4791
+      "sha256": "0a50ff14f79f4790e7d1d6345aa5db841873d2a11a589fd7c8e975a73a75b28a",
+      "bytes": 5397
+    },
+    "acceptance/JIF_Source_Revisions_ISOLATED_ACCEPTANCE_INACTIVE.json": {
+      "sha256": "df46eaf72a56657c98f5e296b90aa2ac68391d05cd467c1197bc762e4c436adb",
+      "bytes": 58974
+    },
+    "acceptance/README.md": {
+      "sha256": "e288caf5ebc835d805ad817a3ea49f79dbbada02150e8d494da047fe11632a05",
+      "bytes": 6096
+    },
+    "acceptance/SPEC.md": {
+      "sha256": "8c06b4d03adeeb16c01c6317db6210a78a7b544b84c92e0d3c992baf49697e70",
+      "bytes": 2014
+    },
+    "acceptance/TEST-OBSERVATIONS-SCHEMA.csv": {
+      "sha256": "ea1d5804a51263783665c6432e12b6510b8ab0d7d6f87a693343f14e76728b1c",
+      "bytes": 715
+    },
+    "acceptance/build-test-workflow.mjs": {
+      "sha256": "6217df27912c5a9ef12d7f076089872a5e9136a9d5c4de6c55e52f0c2e4149fb",
+      "bytes": 4855
     },
     "config/BASELINES-SEED.csv": {
       "sha256": "003c55fe868b586bdde59d9d974012b2f0979c0ece05362ce7f636af33482763",
@@ -23,24 +43,24 @@
       "bytes": 2107
     },
     "docs/01-Architecture-Decisions/ADR-BT-SR-001.md": {
-      "sha256": "a5cec319adb124554327c93dad6c7ae91f9df481c1860d096ffc214dcfda75fa",
-      "bytes": 2939
+      "sha256": "f2687b7e2f987501f70ee1519a0a8a20a30c0773bd8bcc2148a26126d54cf694",
+      "bytes": 4387
     },
     "docs/CONTRACT.md": {
-      "sha256": "52ece53995c5b0833df5b82b164b3c936178fdcdcf4da950f2a99573096a08b6",
-      "bytes": 4292
+      "sha256": "4ccc8524c35f3d141ebfa3d2acf8172852427e5a6f09b90910dc37079caff6a6",
+      "bytes": 4433
     },
     "docs/EXISTING-WORKFLOWS.md": {
       "sha256": "3f2b5721b610b21c91d132ef474223d01caf75c609498921c0e165d2ec93537b",
       "bytes": 2715
     },
     "docs/INSTALL.md": {
-      "sha256": "f29e3f548040e97a56556451df98f01e7391ef6efb95fd1824603b2cb5ba35e8",
-      "bytes": 7435
+      "sha256": "d415339b865068790cbb42ef5bd1fb9faaf3ec43b8a06b27251ef12717be044d",
+      "bytes": 7927
     },
     "docs/NATIVE-ACCEPTANCE.md": {
-      "sha256": "ea9aaed683b536f13397f7d68f58b66e445869fc74b3a5ddb9efb6b4be2796d2",
-      "bytes": 5730
+      "sha256": "120612b47b80c02ca8c08f0417f1ce60a5b592680d71fff20a0617b3bbf144c3",
+      "bytes": 8841
     },
     "docs/SOURCE-REFERENCES.md": {
       "sha256": "ad320907426fcc0486c7c01601a149213f2492ad4e26a002ef17f74af2cb2907",
@@ -54,9 +74,13 @@
       "sha256": "6f485b39253b496abefea448e1d29203b10d38f3b11da4e2defb834307449cfc",
       "bytes": 3736
     },
+    "evidence/NATIVE-CONFIGURATION-1741.json": {
+      "sha256": "4a132bb0e1b55750260dd7a45b755b21c6b862b8bed181508df1487050e25a74",
+      "bytes": 2495
+    },
     "evidence/VALIDATION.md": {
-      "sha256": "af3d5ccb783819c2e71fc77b2e6ac148d790802425ebc709815bbd9b9b342902",
-      "bytes": 3339
+      "sha256": "4006badd550b2e64310d05c2372457210d04a707c4beb27c0084888a0fafd0df",
+      "bytes": 4458
     },
     "evidence/baselines.json": {
       "sha256": "b39b59e21af43f57bd74d584f1bd61f987115133260a0c4cebd1d72ef981ce27",
@@ -67,8 +91,8 @@
       "bytes": 419
     },
     "evidence/node-tests.txt": {
-      "sha256": "7a273c409ec01b225af8ff9ecbebde4405addd28302e08a6086b0d4e9c23f2b6",
-      "bytes": 985
+      "sha256": "32f14cb9f34bc385d58a027697d346fcd547af5249a35b0715b1b513226604f0",
+      "bytes": 1989
     },
     "evidence/workbook-tests.txt": {
       "sha256": "489d2da937a57340639410c43959ad299e46800697e91ec929a7f627d628b0f9",
@@ -115,8 +139,8 @@
       "bytes": 78176
     },
     "package.json": {
-      "sha256": "45ce66befc81821d1082ac430de61dbfd893731cef8aab57fac7a56018f7d428",
-      "bytes": 181
+      "sha256": "e4b2e953333a135cc8aec586bee5ddfc70bd860f31c82d96424b5f3eb84b6070",
+      "bytes": 242
     },
     "requirements.txt": {
       "sha256": "06d28d69e958deafb09f0a44fcae9b548f15e4debc14ebc39aad5f0934856fbf",
@@ -145,6 +169,10 @@
     "src/sha256.mjs": {
       "sha256": "f7589ea6ee5ade187b2e3af3eab769642ccb97b66e89a5a3da1ce812e860628a",
       "bytes": 2157
+    },
+    "tests/acceptance.test.mjs": {
+      "sha256": "38ca388aa8b8dfbdc8ed3bab638054da2d419a911b381722fd255f94ea320d4c",
+      "bytes": 5988
     },
     "tests/monitor.test.mjs": {
       "sha256": "0a7ffe67e4628d98d52db7085d96319da22cba205427035a4d99544f5f1804e6",
