@@ -1,0 +1,35 @@
+name: JIF SE-03 review-only tests
+
+on:
+  pull_request:
+    paths:
+      - 'automation/spending-explorer/se-03-extract-normalize/se03_source_completeness.py'
+      - 'automation/spending-explorer/se-03-extract-normalize/test_se03_source_completeness.py'
+      - 'automation/spending-explorer/se-03-extract-normalize/se03_pdf_continuation_review.py'
+      - 'automation/spending-explorer/se-03-extract-normalize/test_se03_pdf_continuation_review.py'
+      - '.github/workflows/jif-se03-review-tests.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  review-only-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout proposed PR code, without persisted credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Syntax check and run all 31 isolated SE-03 synthetic tests
+        working-directory: automation/spending-explorer/se-03-extract-normalize
+        run: |
+          python -m py_compile se03_source_completeness.py se03_pdf_continuation_review.py test_se03_source_completeness.py test_se03_pdf_continuation_review.py
+          python -m unittest -v test_se03_source_completeness test_se03_pdf_continuation_review
+      - name: No production effects
+        run: echo 'READ-ONLY REVIEW: no official source acquisition, public writes, secrets, deploy, merge or release authorization.'
