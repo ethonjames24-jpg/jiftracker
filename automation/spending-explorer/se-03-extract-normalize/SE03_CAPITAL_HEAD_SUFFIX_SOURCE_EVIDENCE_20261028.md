@@ -33,3 +33,18 @@ Expected outputs are **observations**, not an automatic pass of 143 pages: repor
 ## Remaining gates
 
 Prior exception worklists (112 continuation, 67 economic, 24 programme, 30 vote-level AIA) remain OPEN. Financial/33-field reconstruction of all 2,912 FY26 FACT rows, derived Explorer/Every100 QA, independent CI, SE05/06/07 editorial approvals, SCAN01/SE02 source intake and production release are **NOT ACCEPTED**. No changes to frozen/private/public sheets, active n8n or scanner.
+
+
+## Native execution acceptance — capital Head detection CLOSED / PASS_REVIEW_ONLY (28 October)
+
+The operator's Mac Terminal output from `jif_se03_pdf_capital_head_v2_20261028.sh` supplies the following independent execution receipt, transcribed to `SE03_CAPITAL_HEAD_V2_NATIVE_ACCEPTANCE_20261028.json`:
+- All **3/3** immutable GitHub code blob identities PASS, with source commit `759568c36bef906fea66feacee603494db43ebd6`.
+- **26/26** exact remote-code isolated tests PASS.
+- Controlling As Passed PDF: **23,172,267 bytes**, SHA-256 `32ef2cb30c9498d2c8d9d4597fcaadce9823c13a97fe199acec19247664a3bd6`, identity PASS.
+- The corrected parser processed **716/716 physical pages**, produced 716 page inventory records.
+- Budget 6 pages: **143**; with explicitly detected `C`-suffixed capital Head: **143/143**; without explicit capital Head: **0**; explicit Head/Budget conflicts: **none detected**. Thirteen unique Capital Head codes match the direct source-text list.
+- `SE03_PDF_CAPITAL_HEAD_V2=PASS_REVIEW_ONLY`. Separate local JSON reports were produced, but the assistant has **not independently read those two local files**, only the pasted stdout. Audit status is based on the operator's exact terminal evidence.
+
+**Gate now CLOSED:** capital Head source-heading detection coverage 143/143 in the pinned FY26 PDF. **Other gates remain OPEN:** no private FACT CSV was provided; `FACT_QUEUE_NOT_EXECUTED=TRUE`; no economic-column amount or canonical row mapping accepted; previously unresolved **112 continuation, 67 economic, 24 programme and 30 vote-level AIA** cases are **not cleared**. The 2,912-row/33-field As Passed canonical data re-extraction, DS serving parity and GitHub-hosted PR CI still need separate receipts. Production release remains **NO-GO**. A `fitz` API deprecation warning was nonblocking and does not require a new source-processing rerun.
+
+Next engineering priority: identify a safe local-only, header-exact FY26 FACT export and execute the private review queue against the now-corrected page hierarchy, keeping activity/project/programme/AIA grain distinctions and preserving source authority. Do not write the protected model, publish data or automatically accept any review candidate.
