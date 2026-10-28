@@ -129,7 +129,8 @@
         },
         "returnAll": true
       },
-      "alwaysOutputData": true
+      "alwaysOutputData": true,
+      "executeOnce": true
     },
     {
       "id": "bt-sr-08",
@@ -150,7 +151,8 @@
         },
         "returnAll": true
       },
-      "alwaysOutputData": true
+      "alwaysOutputData": true,
+      "executeOnce": true
     },
     {
       "id": "bt-sr-09",
@@ -169,7 +171,8 @@
           "timeout": 60000,
           "redirect": {
             "redirect": {
-              "followRedirects": false
+              "followRedirects": true,
+              "maxRedirects": 3
             }
           },
           "response": {
@@ -180,6 +183,7 @@
           }
         }
       },
+      "executeOnce": true,
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 2000
@@ -201,7 +205,8 @@
           "timeout": 60000,
           "redirect": {
             "redirect": {
-              "followRedirects": false
+              "followRedirects": true,
+              "maxRedirects": 3
             }
           },
           "response": {
@@ -212,6 +217,7 @@
           }
         }
       },
+      "executeOnce": true,
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 2000
@@ -244,6 +250,7 @@
           }
         }
       },
+      "executeOnce": true,
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 2000

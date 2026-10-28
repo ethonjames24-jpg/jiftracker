@@ -28,3 +28,18 @@ test('generated Plan/Inspect/Verify nodes execute with n8n-style item and binary
  await assert.rejects(run('Verify Archived Bytes',[{json:{}}],{__this:{helpers:{getBinaryDataBuffer:async()=>Buffer.from('different')}}}),/ARCHIVE_READBACK_HASH_MISMATCH/);
 });
 test('configuration gate is false by default and completion rejects missing persisted fields',async()=>{const w=JSON.parse(await readFile(new URL('../workflows/JIF_Monthly_Tracker_Source_Revision_Monitor_INACTIVE.json',import.meta.url),'utf8'));const cfg=w.nodes.find(n=>n.name==='Configuration'),validate=w.nodes.find(n=>n.name==='Validate Configuration');const c=(await new vm.Script('(async function(){'+cfg.parameters.jsCode+'})()').runInNewContext({}))[0].json;const r=await new vm.Script('(async function(){'+validate.parameters.jsCode+'})()').runInNewContext({$input:{first:()=>({json:c})}});assert.equal(r[0].json.configured,false);const gate=w.nodes.find(n=>n.name==='Configured for Isolated Observation');assert.equal(gate.parameters.conditions.conditions[0].leftValue,'={{$json.configured}}');assert.equal(w.connections[gate.name].main[1][0].node,'Configuration Report');assert.throws(()=>summarize([{id:'db-id'}],1),/INVALID_PERSISTED_OBSERVATION/);assert.throws(()=>summarize([],0));});
+
+test('singleton reads prevent five-by-eight fan-out; only Google CSVs follow bounded redirects',async()=>{
+ const w=JSON.parse(await readFile(new URL('../workflows/JIF_Monthly_Tracker_Source_Revision_Monitor_INACTIVE.json',import.meta.url),'utf8'));
+ const byName=name=>w.nodes.find(n=>n.name===name);
+ for(const name of ['Read Published Baselines','Read Prior Observations','Read Published Tracker CSV','Read Published Extras CSV','Read Official CGO Listing'])assert.equal(byName(name).executeOnce,true,name);
+ // Model n8n per-input invocation counts, not a native runtime test.
+ let invocations=byName('Read Prior Observations').executeOnce?1:5;
+ let items=invocations*8;assert.equal(items,8);
+ for(const name of ['Read Published Tracker CSV','Read Published Extras CSV','Read Official CGO Listing']){invocations=byName(name).executeOnce?1:items;assert.equal(invocations,1,name);items=invocations;}
+ for(const name of ['Read Published Tracker CSV','Read Published Extras CSV']){const n=byName(name),r=n.parameters.options.redirect.redirect;assert.equal(r.followRedirects,true);assert.equal(r.maxRedirects,3);assert.equal(n.parameters.authentication,'none');assert.equal(n.parameters.options.response.response.neverError??false,false);}
+ for(const name of ['Read Official CGO Listing','GET Exact Workbook Bytes'])assert.equal(byName(name).parameters.options.redirect.redirect.followRedirects,false,name);
+ for(const name of ['GET Exact Workbook Bytes','Archive Candidate Privately','Download Archived Candidate','Upsert Private Observation'])assert.notEqual(byName(name).executeOnce,true,name);
+ assert.equal(byName('Read Prior Observations').alwaysOutputData,true);
+ assert.equal(w.settings.timezone,'America/Jamaica');assert.equal(w.settings.executionTimeout,1200);
+});

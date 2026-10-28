@@ -1,10 +1,10 @@
 {
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scope": "MONTHLY_TRACKER_ONLY",
   "files": {
     "README.md": {
-      "sha256": "fbb61a37aab39591ecc712d8615f045af505e417b98094bf1fe3f4c83d74f70c",
-      "bytes": 3919
+      "sha256": "5337748514ca460f6c4b498ea94fea23552626562ef001d1c90e84df9c0c83b2",
+      "bytes": 4791
     },
     "config/BASELINES-SEED.csv": {
       "sha256": "003c55fe868b586bdde59d9d974012b2f0979c0ece05362ce7f636af33482763",
@@ -23,8 +23,8 @@
       "bytes": 2107
     },
     "docs/01-Architecture-Decisions/ADR-BT-SR-001.md": {
-      "sha256": "e5e45cfaf091dd4342c2566686056dd9d4c844831312fe12c86fca17f2f5a919",
-      "bytes": 1707
+      "sha256": "a5cec319adb124554327c93dad6c7ae91f9df481c1860d096ffc214dcfda75fa",
+      "bytes": 2939
     },
     "docs/CONTRACT.md": {
       "sha256": "52ece53995c5b0833df5b82b164b3c936178fdcdcf4da950f2a99573096a08b6",
@@ -35,8 +35,12 @@
       "bytes": 2715
     },
     "docs/INSTALL.md": {
-      "sha256": "e6ac684e51884075b6e1ccce7f3740073f13c2e5c0727a15e625db185cbef377",
-      "bytes": 6065
+      "sha256": "f29e3f548040e97a56556451df98f01e7391ef6efb95fd1824603b2cb5ba35e8",
+      "bytes": 7435
+    },
+    "docs/NATIVE-ACCEPTANCE.md": {
+      "sha256": "ea9aaed683b536f13397f7d68f58b66e445869fc74b3a5ddb9efb6b4be2796d2",
+      "bytes": 5730
     },
     "docs/SOURCE-REFERENCES.md": {
       "sha256": "ad320907426fcc0486c7c01601a149213f2492ad4e26a002ef17f74af2cb2907",
@@ -46,9 +50,13 @@
       "sha256": "2ddb7821c7c59f3c9e1a0677aff74c5cc4fc1fdb41c3c7b6e7a82ac42b7ba388",
       "bytes": 2732
     },
+    "evidence/NATIVE-ACCEPTANCE-20261028.json": {
+      "sha256": "6f485b39253b496abefea448e1d29203b10d38f3b11da4e2defb834307449cfc",
+      "bytes": 3736
+    },
     "evidence/VALIDATION.md": {
-      "sha256": "5b5017218e4d567a6a7ec719671f716754e3a1974f279811c30c4e434033f41e",
-      "bytes": 1992
+      "sha256": "af3d5ccb783819c2e71fc77b2e6ac148d790802425ebc709815bbd9b9b342902",
+      "bytes": 3339
     },
     "evidence/baselines.json": {
       "sha256": "b39b59e21af43f57bd74d584f1bd61f987115133260a0c4cebd1d72ef981ce27",
@@ -59,8 +67,8 @@
       "bytes": 419
     },
     "evidence/node-tests.txt": {
-      "sha256": "09296d868b4dcaea3a8c84ff7432a7944e0d75ea821c56144710bd2638c76eaa",
-      "bytes": 1306
+      "sha256": "7a273c409ec01b225af8ff9ecbebde4405addd28302e08a6086b0d4e9c23f2b6",
+      "bytes": 985
     },
     "evidence/workbook-tests.txt": {
       "sha256": "489d2da937a57340639410c43959ad299e46800697e91ec929a7f627d628b0f9",
@@ -107,16 +115,16 @@
       "bytes": 78176
     },
     "package.json": {
-      "sha256": "dd4a26fe1718ad24d25825ae3524e6dc9d67f8a9de0266d2235800a59c7da7ee",
-      "bytes": 163
+      "sha256": "45ce66befc81821d1082ac430de61dbfd893731cef8aab57fac7a56018f7d428",
+      "bytes": 181
     },
     "requirements.txt": {
       "sha256": "06d28d69e958deafb09f0a44fcae9b548f15e4debc14ebc39aad5f0934856fbf",
       "bytes": 16
     },
     "scripts/build-workflow.mjs": {
-      "sha256": "d5f2d352c760c1b1c594acd0ef638602f3418b101606da3e46b9e2be0a461ffb",
-      "bytes": 9349
+      "sha256": "9f922f40231921a1e9ed165a6f6af067e11c59a2c7096b2193d144f545abcd06",
+      "bytes": 9457
     },
     "scripts/reconcile-workbooks.py": {
       "sha256": "6b4e144ae8519bdbe4b6f97e0c71b8b94f2e3f2ff57164020e27b2bc56a36bfc",
@@ -139,16 +147,16 @@
       "bytes": 2157
     },
     "tests/monitor.test.mjs": {
-      "sha256": "0aa0c923cd061adda46add39c6929be89e08e75b05380ffac048bf565063808e",
-      "bytes": 9267
+      "sha256": "0a7ffe67e4628d98d52db7085d96319da22cba205427035a4d99544f5f1804e6",
+      "bytes": 11042
     },
     "tests/workbooks_test.py": {
       "sha256": "046717d99b19337b2da615b6e95f9e5c5e2bd70857d8e9ccd206878bd12d02be",
       "bytes": 1393
     },
     "workflows/JIF_Monthly_Tracker_Source_Revision_Monitor_INACTIVE.json": {
-      "sha256": "f1a7e19bad5c9ddd5012b7c9905b472d401694537ef4b0d8480894c4dc907ea6",
-      "bytes": 57292
+      "sha256": "e6060d9fab0bd7f3f1c51f53f654f7c88529cb76961f7b0ccfb99fe21e240ba6",
+      "bytes": 57491
     }
   }
 }
