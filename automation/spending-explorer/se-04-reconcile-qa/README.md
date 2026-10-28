@@ -51,3 +51,12 @@ Do **not** upload a private FACT workbook or raw government source files into a 
 - [Public feed v1.1](https://docs.google.com/spreadsheets/d/1SWibIHNJzgkWRPb57YiBvV3QHXKwrRrgXzG0fKdvv80/edit)
 - [SCAN-01 remaining native release gates](https://docs.google.com/document/d/1Sf50lBCHDOvqdUJrDG-rukzMFD-MuLTLLKnsErgIKGU/edit)
 - [SE-02 draft PR #39](https://github.com/ethonjames24-jpg/jiftracker/pull/39)
+
+
+## October 28 source-completeness and PDF continuity checkpoint (owner-approved, review-only)
+
+Official CSV comparator v4 owner receipts independently show the FY2026/27 Approved CSV is **byte-identical to the accepted catalogue SHA but INCOMPLETE** (20,962 complete 33-column lines; final 5-column partial record #20,964; missing footer/end newline; raw J$1,422,984,394,000). As Presented CSV is complete and reconciles its J$1,490,511,399,000 gross total, but is **supporting evidence only**, not As Passed authority. The controlling source remains the pinned 716-page As Passed PDF; do not impute missing line amounts. SE-01 no-change byte receipt remains historically valid as a fingerprint check, not an extraction-content acceptance.
+
+New isolated SE-03 files in this draft PR: `se03_source_completeness.py` (hash + structural/financial completeness fail-closed gate), `se03_pdf_continuation_review.py` (strict adjacent-page/section-matching *candidate-only* scope review), and 31 synthetic local tests across their matching test modules (17 + 14 PASS). These are source-only, review-only helpers. The PDF helper is not yet connected to the actual classifier; neither complete official CSV was natively executed against the new gate in this checkpoint. No 2,912-row source-derived extraction or full 33-field parity is accepted.
+
+Detailed receipt/exit rules: [SE03 source completeness and PDF review](../se-03-extract-normalize/SE03_SOURCE_COMPLETENESS_AND_PDF_REVIEW_20261028.md). The next priority is real PDF evidence integration (112 continuation, 67 economic, 24 programme, 30 AIA vote cases), independent 2,912 FACT reproduction, 1,134/11 serving parity, and then SE-05–SE-07 human-gated shadow release. No merge, deploy, production workflow activation or public/frozen model changes.
