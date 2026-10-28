@@ -36,3 +36,13 @@ Previous source-pinned PDF classifier covered 2,882 non-AIA FACT records: 2,679 
 4. SE-05/06 explicit technical/editorial/release approvals, SE-07 shadow readback/rollback; SCAN-01/SE-02 native security before autonomous intake. Preserve historical QA FAIL rows and annotate separately.
 
 **Immutable:** frozen model v1, operational/private model v1.1, released public v1.1, monthly Tracker, scanner, production n8n state. PR remains DRAFT/UNMERGED/NO DEPLOY.
+
+## 28 October — Remote-checkout and native-file test execution checkpoint
+
+Added `.github/workflows/jif-se03-review-tests.yml` on the draft branch: minimal read-only `pull_request`/manual Actions job, `contents:read`, no persistent checkout credentials, no external budget data, no credentials, no staging/public writes. It runs Python compilation and 31 isolated synthetic tests against the **remote PR checkout**. As of the owner's next acceptance checkpoint GitHub has not returned a completed CI run; therefore remote CI remains **PENDING** until a successful run and exact head SHA are independently read back.
+
+Added `se03_native_official_file_acceptance.py` to enforce **expected review-only source dispositions** against user-held pinned CSV bytes, and `run_se03_native_source_checkpoint.sh` as an operator-only launcher. The launcher fetches five **immutable commit-pinned** exact GitHub source/test files into a new local Downloads review directory, verifies their five Git blob SHA-1 IDs, runs the 31 synthetic tests **from GitHub code**, and then reads the two official CSVs already held locally in Downloads. It reports source verdicts, only, without uploading any source, private FACT exports, or modifying the existing model. If the repository requires authentication for raw checkout, the launcher fails; do not embed GitHub tokens or disable access controls to force it.
+
+Expected official source checks: Approved CSV `FAILED_CLOSED_SOURCE_INCOMPLETE` (nonstandard final row, no footer, no final newline); As Presented CSV `SUPPORTING_EVIDENCE_ONLY`, full footer and exactly 23,559 rows. A successful wrapper receipt is `SOURCE_CLASSIFICATION_EXPECTED_PASS_REVIEW_ONLY`. This is explicitly NOT approval of canonical FY2026/27 PDF extraction.
+
+New checker syntax was verified locally and its remote Git blob SHA-1 exactly matches the tested local checker `8fa3e906e127058841dda2b0cdb3fb1a9aed35cf`. The original four SE-03 helper/test modules have local-vs-remote blob differences; do not close their remote parity gate before the launcher or CI runs against pinned remote bytes. Real source-file native receipt has NOT been received yet. 2,912 source-derived records, 33-field parity, PDF boundary integration, programme/AIA rules and end-to-end QA remain open.
