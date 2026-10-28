@@ -1,0 +1,7 @@
+{
+  "source_url": "https://www.mof.gov.jm/central-government-operations-tables/",
+  "retrieval_date": "2026-10-28",
+  "raw_html_sha256": "4f026a0575ba448358083399d105e6c788d1a95487d54b85099dc680b2d99de1",
+  "fixture_sha256": "3f18c9d44f8668e3f2aeac3877f9a48bda405cb0c75e5a10bb247d979179ba04",
+  "normalization": "LF line endings, trailing whitespace removed and tabs expanded to four spaces; workbook bytes unchanged"
+}

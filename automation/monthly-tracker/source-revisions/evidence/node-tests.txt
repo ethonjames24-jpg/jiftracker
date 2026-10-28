@@ -1,0 +1,20 @@
+✔ portable SHA-256 agrees with Node on binary, UTF-8 and boundary sizes (21.846578ms)
+✔ real listing plus the public feed produces all published original/listed checks (23.181598ms)
+✔ CSV rejects HTML, broken quotes and duplicate headers; quoted multiline roundtrip works (0.547531ms)
+✔ untrusted, redirected, missing and ambiguous source identity fail closed (18.658641ms)
+✔ April–June exact candidate bytes open distinct review cases without financial adoption (248.239607ms)
+✔ same candidate reuses the case and evidence ID, retaining first seen (70.958505ms)
+✔ missing baseline never silently blesses the first observed download (33.356648ms)
+✔ HTTP errors, redirects, HTML and empty/truncated binaries cannot report unchanged (12.147171ms)
+✔ partial, duplicate and empty completion cannot report a complete check (0.284164ms)
+✔ serialized workflow is inactive, has no credentials or publication path, and default Code executes in restricted VM (9.684833ms)
+✔ generated Plan/Inspect/Verify nodes execute with n8n-style item and binary helpers (96.860556ms)
+✔ configuration gate is false by default and completion rejects missing persisted fields (6.673911ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 704.280862

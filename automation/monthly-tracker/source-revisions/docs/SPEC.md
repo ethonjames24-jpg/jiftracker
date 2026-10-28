@@ -1,0 +1,13 @@
+# Monthly tracker source revisions v1.0
+
+State: [IN PROGRESS]. Primary route: spec-driven-development, then incremental-impl. Owner approved building the revision register, repeatable detection workflow JSON and Drive documentation on October 28, 2026. Baseline repository main aadfbb1563495e0c924b14c7f1dad81224607998.
+
+Scope: isolated monthly-tracker source revision monitoring, exact-byte version evidence, a manually seeded April–June revision register, and an importable inactive n8n JSON with a daily schedule and manual pre-publication check. Preserve the existing monitor/preparation/review/publisher chain; do not edit or execute it. No live-feed writer, automatic financial adoption, publication, subscriber send or Spending Explorer interaction. Existing public version notes from PR41 remain the public view until separately reviewed changes are implemented.
+
+A changed byte hash creates a source-version review candidate, not a financial correction. Audit original linked and currently listed source URLs; a changed URL without matching original identity is also a candidate. Failed/HTML/error/truncated downloads and changed listing structure must not report unchanged. Review evidence is deterministic per period/baseline/candidate identity, with repeated candidates deduplicated. Newly published months require a verified baseline intake; never silently auto-baseline them.
+
+The workflow may write only its own private evidence location and revision log; native credentials and folder binding must be explicit. It must be importable with transports safely disconnected/disabled until setup and native acceptance; default output must state unconfigured rather than pretend a completed check. No current production integration or activation is claimed without native evidence. Any configuration dependency will be documented with exact setup and test instructions.
+
+Semantic reconciliation: inspect workbook literals/formulas and calculate affected eight-KPI YTD amounts, signed gaps, directional statuses, counts and explanations. Unsupported workbook layouts/formulas require review; cached Excel values alone do not certify recalculation. Use April actual revision, May formula repair and June budget revision as regression cases. Preserve both original and revised bytes. Public adoption needs a revision decision and coordinated amounts/copy/receipts update; the monitor has no authority to do it.
+
+Delivery: tested engine and JSON, seeded private review register, installation/operations/rollback/source contracts and Drive handoff; a branch/PR if repository delivery is appropriate. Existing workstreams and evidence remain intact. Never call local fixture passes native n8n execution or scheduled operation.

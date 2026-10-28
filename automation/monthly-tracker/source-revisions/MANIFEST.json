@@ -1,0 +1,154 @@
+{
+  "version": "1.0.0",
+  "scope": "MONTHLY_TRACKER_ONLY",
+  "files": {
+    "README.md": {
+      "sha256": "fbb61a37aab39591ecc712d8615f045af505e417b98094bf1fe3f4c83d74f70c",
+      "bytes": 3919
+    },
+    "config/BASELINES-SEED.csv": {
+      "sha256": "003c55fe868b586bdde59d9d974012b2f0979c0ece05362ce7f636af33482763",
+      "bytes": 1403
+    },
+    "config/OBSERVATIONS-EMPTY.csv": {
+      "sha256": "8ba27ec35845fcad51d2333130bff8b72aba798e09e8cfc6209c80bf2155495f",
+      "bytes": 222
+    },
+    "config/REVISION-REGISTER.json": {
+      "sha256": "620c14a7ade780b56e1b473d03a91f213114c153485bc8605d8c030ad5c82ef9",
+      "bytes": 8601
+    },
+    "config/baselines.json": {
+      "sha256": "91e0e3f6dd30afec9e840bc2ac338d5988e44a4e0ad478275bd3aacf9cc588c4",
+      "bytes": 2107
+    },
+    "docs/01-Architecture-Decisions/ADR-BT-SR-001.md": {
+      "sha256": "e5e45cfaf091dd4342c2566686056dd9d4c844831312fe12c86fca17f2f5a919",
+      "bytes": 1707
+    },
+    "docs/CONTRACT.md": {
+      "sha256": "52ece53995c5b0833df5b82b164b3c936178fdcdcf4da950f2a99573096a08b6",
+      "bytes": 4292
+    },
+    "docs/EXISTING-WORKFLOWS.md": {
+      "sha256": "3f2b5721b610b21c91d132ef474223d01caf75c609498921c0e165d2ec93537b",
+      "bytes": 2715
+    },
+    "docs/INSTALL.md": {
+      "sha256": "e6ac684e51884075b6e1ccce7f3740073f13c2e5c0727a15e625db185cbef377",
+      "bytes": 6065
+    },
+    "docs/SOURCE-REFERENCES.md": {
+      "sha256": "ad320907426fcc0486c7c01601a149213f2492ad4e26a002ef17f74af2cb2907",
+      "bytes": 1746
+    },
+    "docs/SPEC.md": {
+      "sha256": "2ddb7821c7c59f3c9e1a0677aff74c5cc4fc1fdb41c3c7b6e7a82ac42b7ba388",
+      "bytes": 2732
+    },
+    "evidence/VALIDATION.md": {
+      "sha256": "5b5017218e4d567a6a7ec719671f716754e3a1974f279811c30c4e434033f41e",
+      "bytes": 1992
+    },
+    "evidence/baselines.json": {
+      "sha256": "b39b59e21af43f57bd74d584f1bd61f987115133260a0c4cebd1d72ef981ce27",
+      "bytes": 170
+    },
+    "evidence/listing-provenance.json": {
+      "sha256": "dc2b9393c9eb66bef9014dadbbd454f284aee0e3071c1b9d7fda98964e654251",
+      "bytes": 419
+    },
+    "evidence/node-tests.txt": {
+      "sha256": "09296d868b4dcaea3a8c84ff7432a7944e0d75ea821c56144710bd2638c76eaa",
+      "bytes": 1306
+    },
+    "evidence/workbook-tests.txt": {
+      "sha256": "489d2da937a57340639410c43959ad299e46800697e91ec929a7f627d628b0f9",
+      "bytes": 103
+    },
+    "fixtures/Copy-of-CGO-April-2026-1.xlsx": {
+      "sha256": "ac3cde66886a7c31bdb9bcd53568571ba40405bc60463d1e600e04598257410c",
+      "bytes": 235989
+    },
+    "fixtures/Copy-of-CGO-April-2026.xlsx": {
+      "sha256": "b6c8139f3aba0b2b8a2f89694254e595db5e38e3c08fda27a747e917bfcd742d",
+      "bytes": 235940
+    },
+    "fixtures/Copy-of-CGO-August-2026.xlsx": {
+      "sha256": "9bf6402a7723ad6de9f0603b7dccca83943e9c14d6c9d7b700b1ac6853f2e1cf",
+      "bytes": 243376
+    },
+    "fixtures/Copy-of-CGO-July-2026.xlsx": {
+      "sha256": "12e4668c2c82a391f9b651040f3789c0d06e6d6cea01304896cbf187605f07b0",
+      "bytes": 241799
+    },
+    "fixtures/Copy-of-CGO-June-2026-1.xlsx": {
+      "sha256": "cc6d26e59e8dd4eb036d4f45df1cb6f46e2a03546e2c01f02f9aef23ee69c774",
+      "bytes": 240567
+    },
+    "fixtures/Copy-of-CGO-June-2026.xlsx": {
+      "sha256": "e4e793777b1e62e1ee9dc45d7a25a88653d55c391804e81f7345591e89c80b18",
+      "bytes": 240541
+    },
+    "fixtures/Copy-of-CGO-May-2026-Revised.xlsx": {
+      "sha256": "7ae13521e8191107192793212ec675e087efe3e442718f18ff323bd2741238d1",
+      "bytes": 239362
+    },
+    "fixtures/Copy-of-CGO-May-2026_.xlsx": {
+      "sha256": "e2b2b491e700f6555c7deb30e5e924e0365c70d88625317bce604b35076e4b4a",
+      "bytes": 239187
+    },
+    "fixtures/listing.html.gz": {
+      "sha256": "0bf7c568b463533de580dbc0842f11dc6411f24cb1d1f2ef3c0725ddc1c880a1",
+      "bytes": 92226
+    },
+    "fixtures/published-feed.json": {
+      "sha256": "6826b92b8bcaffaf9c94b89a9f355260670b51122d7c24b9351c1f9575c6208e",
+      "bytes": 78176
+    },
+    "package.json": {
+      "sha256": "dd4a26fe1718ad24d25825ae3524e6dc9d67f8a9de0266d2235800a59c7da7ee",
+      "bytes": 163
+    },
+    "requirements.txt": {
+      "sha256": "06d28d69e958deafb09f0a44fcae9b548f15e4debc14ebc39aad5f0934856fbf",
+      "bytes": 16
+    },
+    "scripts/build-workflow.mjs": {
+      "sha256": "d5f2d352c760c1b1c594acd0ef638602f3418b101606da3e46b9e2be0a461ffb",
+      "bytes": 9349
+    },
+    "scripts/reconcile-workbooks.py": {
+      "sha256": "6b4e144ae8519bdbe4b6f97e0c71b8b94f2e3f2ff57164020e27b2bc56a36bfc",
+      "bytes": 3529
+    },
+    "scripts/verify-baselines.py": {
+      "sha256": "813802992c0b089320d32c9bc050d73b0486de351cfb7f32481bf51b3d8a2fc3",
+      "bytes": 1265
+    },
+    "scripts/workbook_core.py": {
+      "sha256": "32ad74b0e83823022f545457ac50ebfb7964c1b4b6187b762d1519e9253c3c01",
+      "bytes": 5689
+    },
+    "src/monitor.mjs": {
+      "sha256": "efcadca5c16b3d338bad253e60294c189c50b436c1a662ac0ce8dfbcb794e524",
+      "bytes": 8022
+    },
+    "src/sha256.mjs": {
+      "sha256": "f7589ea6ee5ade187b2e3af3eab769642ccb97b66e89a5a3da1ce812e860628a",
+      "bytes": 2157
+    },
+    "tests/monitor.test.mjs": {
+      "sha256": "0aa0c923cd061adda46add39c6929be89e08e75b05380ffac048bf565063808e",
+      "bytes": 9267
+    },
+    "tests/workbooks_test.py": {
+      "sha256": "046717d99b19337b2da615b6e95f9e5c5e2bd70857d8e9ccd206878bd12d02be",
+      "bytes": 1393
+    },
+    "workflows/JIF_Monthly_Tracker_Source_Revision_Monitor_INACTIVE.json": {
+      "sha256": "f1a7e19bad5c9ddd5012b7c9905b472d401694537ef4b0d8480894c4dc907ea6",
+      "bytes": 57292
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "result": "PASS",
+  "baselines": 5,
+  "published_kpis_matched": 40,
+  "restricted_evaluator_cache_checks": 80,
+  "historical_archive_provenance_not_inferred": true
+}

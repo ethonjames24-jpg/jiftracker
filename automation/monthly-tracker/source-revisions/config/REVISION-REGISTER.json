@@ -1,0 +1,219 @@
+{
+  "schema_version": "jif-tracker-source-revisions-v1",
+  "scope": "MONTHLY_TRACKER_ONLY",
+  "cases": [
+    {
+      "case_id": "d595a411283dd8a32c656b8f0737ff7c9650dce6a0c0317435a4f40f7cc1ce28",
+      "month_sort": "2026-04",
+      "detected_date": "2026-10-28",
+      "detection_time_precision": "Date only; original detection clock time not asserted",
+      "original": {
+        "url": "https://www.mof.gov.jm/wp-content/uploads/Copy-of-CGO-April-2026.xlsx",
+        "sha256": "b6c8139f3aba0b2b8a2f89694254e595db5e38e3c08fda27a747e917bfcd742d"
+      },
+      "candidate": {
+        "url": "https://www.mof.gov.jm/wp-content/uploads/Copy-of-CGO-April-2026-1.xlsx",
+        "sha256": "ac3cde66886a7c31bdb9bcd53568571ba40405bc60463d1e600e04598257410c"
+      },
+      "semantic_review": "RECONCILED",
+      "literal_changes": [
+        {
+          "cell": "G18",
+          "tracker_linked": 30857.45496691,
+          "current_listing": 30740.267487490004,
+          "kpi_amount_dependencies": [
+            "Primary Balance:actual",
+            "Fiscal Balance:actual"
+          ]
+        }
+      ],
+      "affected_kpis": [
+        {
+          "month": "2026-04",
+          "kpi": "Primary Balance",
+          "published_actual": "18398.725",
+          "published_budget": "25048.922",
+          "published_status": "Under Pressure",
+          "published_read": "-26.5% weaker than baseline, material pressure",
+          "tracker_actual": "18398.72535687119814",
+          "tracker_budget": "25048.9215127276200465",
+          "tracker_gap_pct": "-26.548832262009314091262744130613742",
+          "listing_actual": "18515.91283629119414",
+          "listing_budget": "25048.9215127276200465",
+          "listing_gap_pct": "-26.080997831052069839524973389578626",
+          "actual_change": "117.18747941999600",
+          "budget_change": "0E-16",
+          "gap_change_pp": "0.467834430957244251737770741035116",
+          "listing_status": "Under Pressure",
+          "status_changed": false,
+          "published_matches_linked_source": true,
+          "actual_cell": "G44",
+          "budget_cell": "H44"
+        },
+        {
+          "month": "2026-04",
+          "kpi": "Fiscal Balance",
+          "published_actual": "7830.405",
+          "published_budget": "13073.644",
+          "published_status": "Under Pressure",
+          "published_read": "-40.1% more negative than baseline, material pressure",
+          "tracker_actual": "7830.40483004119714",
+          "tracker_budget": "13073.6435127276200465",
+          "tracker_gap_pct": "-40.105412676901877911104768244990573",
+          "listing_actual": "7947.59230946119314",
+          "listing_budget": "13073.6435127276200465",
+          "listing_gap_pct": "-39.209048328999090508597993234441516",
+          "actual_change": "117.18747941999600",
+          "budget_change": "0E-16",
+          "gap_change_pp": "0.896364347902787402506775010549057",
+          "listing_status": "Under Pressure",
+          "status_changed": false,
+          "published_matches_linked_source": true,
+          "actual_cell": "G29",
+          "budget_cell": "H29"
+        }
+      ],
+      "individual_status_changes": 0,
+      "editorial_decision": "PENDING",
+      "current_publication_policy": "RETAIN_AS_PUBLISHED_WITH_REVISION_NOTE",
+      "financial_adoption_authorized": false,
+      "reviewer": "",
+      "decision_date": null,
+      "original_publication_preserved": true
+    },
+    {
+      "case_id": "ee92f18bb64096ab54ccf857a2a3c4bf05a712b683674fdcf6055f24dafdaeec",
+      "month_sort": "2026-05",
+      "detected_date": "2026-10-28",
+      "detection_time_precision": "Date only; original detection clock time not asserted",
+      "original": {
+        "url": "https://www.mof.gov.jm/wp-content/uploads/Copy-of-CGO-May-2026-Revised.xlsx",
+        "sha256": "7ae13521e8191107192793212ec675e087efe3e442718f18ff323bd2741238d1"
+      },
+      "candidate": {
+        "url": "https://www.mof.gov.jm/wp-content/uploads/Copy-of-CGO-May-2026_.xlsx",
+        "sha256": "e2b2b491e700f6555c7deb30e5e924e0365c70d88625317bce604b35076e4b4a"
+      },
+      "semantic_review": "RECONCILED",
+      "literal_changes": [
+        {
+          "cell": "O19",
+          "tracker_linked": "=G19-N19",
+          "current_listing": "=I19-N19",
+          "kpi_amount_dependencies": []
+        },
+        {
+          "cell": "K22",
+          "tracker_linked": "=G22-J22",
+          "current_listing": "=I22-J22",
+          "kpi_amount_dependencies": []
+        },
+        {
+          "cell": "O22",
+          "tracker_linked": "=G22-N22",
+          "current_listing": "=I22-N22",
+          "kpi_amount_dependencies": []
+        },
+        {
+          "cell": "K26",
+          "tracker_linked": "=G26-J26",
+          "current_listing": "=K27",
+          "kpi_amount_dependencies": []
+        },
+        {
+          "cell": "O26",
+          "tracker_linked": "=G26-N26",
+          "current_listing": "=O27",
+          "kpi_amount_dependencies": []
+        }
+      ],
+      "affected_kpis": [],
+      "individual_status_changes": 0,
+      "editorial_decision": "PENDING",
+      "current_publication_policy": "RETAIN_AS_PUBLISHED_WITH_REVISION_NOTE",
+      "financial_adoption_authorized": false,
+      "reviewer": "",
+      "decision_date": null,
+      "original_publication_preserved": true
+    },
+    {
+      "case_id": "be08185eb3948e1dd73d2b14d1a969640d5198f1b22c489f510dd506c64a23c6",
+      "month_sort": "2026-06",
+      "detected_date": "2026-10-28",
+      "detection_time_precision": "Date only; original detection clock time not asserted",
+      "original": {
+        "url": "https://www.mof.gov.jm/wp-content/uploads/Copy-of-CGO-June-2026.xlsx",
+        "sha256": "e4e793777b1e62e1ee9dc45d7a25a88653d55c391804e81f7345591e89c80b18"
+      },
+      "candidate": {
+        "url": "https://www.mof.gov.jm/wp-content/uploads/Copy-of-CGO-June-2026-1.xlsx",
+        "sha256": "cc6d26e59e8dd4eb036d4f45df1cb6f46e2a03546e2c01f02f9aef23ee69c774"
+      },
+      "semantic_review": "RECONCILED",
+      "literal_changes": [
+        {
+          "cell": "K18",
+          "tracker_linked": 72546.576,
+          "current_listing": 112880.812,
+          "kpi_amount_dependencies": [
+            "Primary Balance:budget",
+            "Fiscal Balance:budget"
+          ]
+        }
+      ],
+      "affected_kpis": [
+        {
+          "month": "2026-06",
+          "kpi": "Primary Balance",
+          "published_actual": "17930.293",
+          "published_budget": "72247.032",
+          "published_status": "Under Pressure",
+          "published_read": "75.2% below YTD baseline",
+          "tracker_actual": "17930.29297749236177",
+          "tracker_budget": "72247.03193263507047",
+          "tracker_gap_pct": "-75.181965960607194339321266549460357",
+          "listing_actual": "17930.29297749236177",
+          "listing_budget": "31912.79593263507047",
+          "listing_gap_pct": "-43.814722422499318404071441147410108",
+          "actual_change": "0E-14",
+          "budget_change": "-40334.23600000000000",
+          "gap_change_pp": "31.367243538107875935249825402050249",
+          "listing_status": "Under Pressure",
+          "status_changed": false,
+          "published_matches_linked_source": true,
+          "actual_cell": "J44",
+          "budget_cell": "K44"
+        },
+        {
+          "month": "2026-06",
+          "kpi": "Fiscal Balance",
+          "published_actual": "-23762.005",
+          "published_budget": "25806.573",
+          "published_status": "Under Pressure",
+          "published_read": "192.1% below YTD baseline",
+          "tracker_actual": "-23762.00505962763963",
+          "tracker_budget": "25806.57293263507347",
+          "tracker_gap_pct": "-192.07733673764226607730290805060485",
+          "listing_actual": "-23762.00505962763963",
+          "listing_budget": "-14527.66306736492653",
+          "listing_gap_pct": "-63.563850217636326649716774472449453",
+          "actual_change": "0E-14",
+          "budget_change": "-40334.23600000000000",
+          "gap_change_pp": "128.51348652000593942758613357815540",
+          "listing_status": "Under Pressure",
+          "status_changed": false,
+          "published_matches_linked_source": true,
+          "actual_cell": "J29",
+          "budget_cell": "K29"
+        }
+      ],
+      "individual_status_changes": 0,
+      "editorial_decision": "PENDING",
+      "current_publication_policy": "RETAIN_AS_PUBLISHED_WITH_REVISION_NOTE",
+      "financial_adoption_authorized": false,
+      "reviewer": "",
+      "decision_date": null,
+      "original_publication_preserved": true
+    }
+  ]
+}
