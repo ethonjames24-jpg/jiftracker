@@ -58,3 +58,15 @@ Operator output from `jif_se03_pr42_native_checkpoint_20261028.sh`:
 - Corrected pinned Mac launcher `run_se03_native_source_checkpoint.sh` uses immutable source commit `5fbc89f321bd9b2b9a5a30d15538d11feef09cdb` and exact updated Git blob pins `e8f5c3cfc19c0dc299135acb521535c1b8d2c055`, `45922a71da1ac176a4b1902f40df6320aaf39a10`; other three pins unchanged. Expected successful run: 5/5 identities, 34 tests, expected Approved FAILED_CLOSED_SOURCE_INCOMPLETE / Presented SUPPORTING_EVIDENCE_ONLY, and final PASS_REVIEW_ONLY. No release or canonical 2,912-row approval even if all pass.
 
 No PDF processing or 2,912-row canonical source-derived re-extraction was done at this checkpoint. Source authority, existing workbook, historical SE-01 receipts, n8n, scanner and release boundaries unchanged.
+
+## SE03-NATIVE-2026-10-28-V2 — OWNER NATIVE RECEIPT ACCEPTED (classification only)
+
+Owner provided Mac Terminal stdout from `jif_se03_pr42_native_checkpoint_v2_20261028.sh`. Recorded as immutable **source-disposition evidence** in `SE03_NATIVE_SOURCE_CLASSIFICATION_RECEIPT_20261028.json` (transcribed from operator output; not a GitHub CI artifact).
+
+- Five GitHub blob SHA-1 values pinned to source commit `5fbc89f321bd9b2b9a5a30d15538d11feef09cdb` all **PASS**; exact remote PR-code identity verified.
+- **34/34** isolated synthetic tests on those exact remote files: **PASS**.
+- Approved CSV hash `cdb6ce99c678feabb3c3c48cf2bcc06d756762a8240c302f82719cabecb4e7ab`: **identity PASS, completeness FAILED_CLOSED_SOURCE_INCOMPLETE**, with exactly `NONSTANDARD_WIDTH:20964:5`, `TOTAL_FOOTER_MISSING`, `UNTERMINATED_LAST_RECORD`.
+- As Presented CSV hash `d480726d35bb1d694f4f0a48e2fab3038c5968d335dc45b00ab5f51bfb497f1a`: **identity PASS, supporting-only disposition PASS**, no source-completeness anomalies.
+- All **11/11** explicit native checker assertions true. Terminal end: `SE03_PR42_NATIVE_SOURCE_CHECKPOINT=PASS_REVIEW_ONLY`, `FULL_SOURCE_DERIVED_2912_ROW_RECONSTRUCTION=NOT_ACCEPTED`, `PRODUCTION_RELEASE=NO_GO`.
+
+**Gate disposition:** Native official CSV source identity/completeness classification = **CLOSED/PASS (review only)**. Source-to-As-Passed independent extraction, candidate PDF page continuity, 2,912 full financial FACT parity, and DS recomputation remain **OPEN**. GitHub-hosted Actions CI also **PENDING** until a run with completion + correct PR head is observed. Do not promote supporting Presented file to controlling status, treat incomplete Approved as complete, or reinterpret this operator receipt as production approval.
