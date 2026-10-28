@@ -74,6 +74,24 @@ class Tests(unittest.TestCase):
     def test_negative_source_amount(self):
         self.assertTrue(any("NEGATIVE_ALLOCATION" in x for x in self.check(negative=True)["reasons"]))
 
+    def test_real_header_nbsp_vs_double_ascii_space(self):
+        # Equivalence is limited to whitespace within known header labels.
+        original = fixture("AS_PRESENTED")
+        altered = original.replace(b"Int Org/Pub Body\xa0 Desc", b"Int Org/Pub Body  Desc", 1)
+        self.assertNotEqual(original, altered)
+        result = validate_bytes(altered, "AS_PRESENTED", enforce_pin=False)
+        self.assertEqual(result["status"], "SUPPORTING_EVIDENCE_ONLY")
+
+    def test_semantic_header_change_still_fails(self):
+        altered = fixture("APPROVED").replace(b"Fin Pat Type", b"Fin Pat Tipe", 1)
+        with self.assertRaisesRegex(ValueError, "UNRECOGNISED_HEADER mismatches"):
+            validate_bytes(altered, "APPROVED", enforce_pin=False)
+
+    def test_duplicate_normalized_header_still_fails(self):
+        altered = fixture("APPROVED").replace(b"Int Org/Pub Body\xa0 Desc", b"Int Org/Pub Body", 1)
+        with self.assertRaisesRegex(ValueError, "UNRECOGNISED_HEADER"):
+            validate_bytes(altered, "APPROVED", enforce_pin=False)
+
     def test_bad_header_rejected(self):
         with self.assertRaisesRegex(ValueError, "UNRECOGNISED_HEADER"):
             self.check(bad_header=True)
