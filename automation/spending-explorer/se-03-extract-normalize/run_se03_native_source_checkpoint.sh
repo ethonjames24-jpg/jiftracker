@@ -3,7 +3,7 @@
 # No modifications to existing Sheets, PRs, scanners, n8n or production data.
 set -euo pipefail
 
-COMMIT="cb02b4bce6a2b763d2115ddf1fb938145c573f02"
+COMMIT="5fbc89f321bd9b2b9a5a30d15538d11feef09cdb"
 DIR="$HOME/Downloads/JIF_SE03_PR42_Native_Review"
 APPROVED="$HOME/Downloads/JIF_SE03_2026-27_Approved_Estimates.csv"
 PRESENTED="$HOME/Downloads/JIF_SE03_2026-27_As_Presented_Estimates.csv"
@@ -26,7 +26,7 @@ from pathlib import Path
 import hashlib, sys
 folder = Path(sys.argv[1])
 pins = {
-    'se03_source_completeness.py': '16e9d2d896d3b00e6cfecbf7be0260c4d5ea9d9e',
+    'se03_source_completeness.py': 'e8f5c3cfc19c0dc299135acb521535c1b8d2c055',
     'test_se03_source_completeness.py': '6713764831730dd12f6ae2c32c5d8b3c427e95',
     'se03_pdf_continuation_review.py': 'ffc8aa923928a89b1cd19373581def5b035d11f2',
     'test_se03_pdf_continuation_review.py': '6997b778b5656a727ef4911fc94539bc157a527e',
