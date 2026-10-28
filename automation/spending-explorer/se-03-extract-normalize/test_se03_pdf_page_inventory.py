@@ -21,6 +21,70 @@ class PageInventoryTests(unittest.TestCase):
         self.assertEqual(x["explicit"]["programme"], ["163"])
         self.assertEqual(x["explicit"]["activity"], ["10005"])
 
+    def test_source_capital_head_15000c_preserved(self):
+        x=e(["Head 15000C - Office of the Prime Minister", "Budget 6 - Capital",
+             "Programme 186 - Oversight"])
+        self.assertEqual(x["explicit"]["head"], ["15000C"])
+        self.assertEqual(page_evidence(x).head, "15000C")
+        self.assertEqual(x["head_budget_conflicts"], [])
+
+    def test_source_capital_head_other_ministries(self):
+        for code in ("19000C", "20000C", "53000C", "72000C"):
+            with self.subTest(code=code):
+                x=e([f"Head {code} - Ministry", "Budget 6 - Capital"])
+                self.assertEqual(x["explicit"]["head"], [code])
+                self.assertEqual(x["head_budget_conflicts"], [])
+
+    def test_capital_and_recurrent_heads_not_equated(self):
+        a=e(["Head 15000C - Office", "Budget 6 - Capital"],1)
+        b=e(["Head 15000 - Office", "Budget 1 - Recurrent"],2)
+        self.assertNotEqual(page_evidence(a).head, page_evidence(b).head)
+
+    def test_capital_budget_without_suffix_fails_closed(self):
+        x=e(["Head 15000 - Office", "Budget 6 - Capital", "Programme 186 - Oversight"])
+        self.assertEqual(x["head_budget_conflicts"], ["HEAD_BUDGET_CAPITAL_SUFFIX_CONFLICT"])
+        self.assertTrue(page_evidence(x).section_boundary)
+
+    def test_recurrent_budget_with_capital_head_fails_closed(self):
+        x=e(["Head 15000C - Office", "Budget 1 - Recurrent", "Programme 186 - Oversight"])
+        self.assertEqual(x["head_budget_conflicts"], ["HEAD_BUDGET_CAPITAL_SUFFIX_CONFLICT"])
+        self.assertTrue(page_evidence(x).section_boundary)
+
+    def test_source_capital_heading_requires_known_suffix(self):
+        for line in ("Head 15000D - Office", "Head 15000CC - Office",
+                     "Head 15000C", "Head 1500C - Office"):
+            with self.subTest(line=line):
+                self.assertEqual(e([line])["explicit"]["head"], [])
+
+    def test_multiple_capital_heads_fail_closed(self):
+        x=e(["Head 15000C - Office", "Head 19000C - Ministry", "Budget 6 - Capital"])
+        self.assertEqual(x["explicit"]["head"], ["15000C","19000C"])
+        self.assertIn("head", x["multiple_section_headings"])
+        self.assertIsNone(page_evidence(x).head)
+
+    def test_repeated_capital_running_head_deduplicated(self):
+        x=e(["Head 15000C - Office", "Head 15000C - Office", "Budget 6 - Capital"])
+        self.assertEqual(x["explicit"]["head"], ["15000C"])
+        self.assertFalse(x["multiple_section_headings"])
+        self.assertFalse(page_evidence(x).section_boundary)
+
+    def test_capital_continuation_stays_review_only(self):
+        a=e(["Head 15000C - Office", "Budget 6 - Capital", "Programme 186 - Oversight",
+             "Activity 10005 - Management"],1)
+        b=e(["Head 15000C - Office", "Budget 6 - Capital", "Programme 186 - Oversight"],2)
+        r=review_continuation(a,b,{"source_row":"Activity 10005; economic 21; VOTED_ESTIMATE"},1)
+        self.assertEqual(r["status"], "CONTINUATION_SCOPE_CANDIDATE_REVIEW_ONLY")
+        self.assertFalse(r["canonical_row_reconstructed"])
+        self.assertFalse(r["release_authorized"])
+
+    def test_capital_conflict_never_continues(self):
+        a=e(["Head 15000C - Office", "Budget 6 - Capital", "Programme 186 - Oversight",
+             "Activity 10005 - Management"],1)
+        b=e(["Head 15000 - Office", "Budget 6 - Capital", "Programme 186 - Oversight"],2)
+        r=review_continuation(a,b,{"source_row":"Activity 10005; economic 21; VOTED_ESTIMATE"},1)
+        self.assertNotEqual(r["status"], "CONTINUATION_SCOPE_CANDIDATE_REVIEW_ONLY")
+        self.assertFalse(r["release_authorized"])
+
     def test_no_implicit_parent_context(self):
         x = e(["Activity 10005 - Direction and Management"])
         self.assertIsNone(page_evidence(x).head)
