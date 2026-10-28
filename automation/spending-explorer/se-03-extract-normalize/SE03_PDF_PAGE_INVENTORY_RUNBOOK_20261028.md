@@ -67,3 +67,17 @@ The operator ran `bash "$HOME/Downloads/jif_se03_pdf_page_inventory_native_20261
 ```
 
 The launcher uses `python3`, so prepending the venv bin to `PATH` ensures its imports run in the isolated Python environment. The PDF is already present and hash-pinned; the runner should not repeat the public download. Re-verification and 716-page processing are required. Installing the dependency is not a source-extraction acceptance or release approval.
+
+## 28 October — Native 716-page page inventory PASS (review only)
+
+Owner reran the identical source-pinned launcher with an isolated Python 3.13 virtual environment after installing PyMuPDF 2.0. Mac Terminal receipt:
+
+- Three pinned GitHub blob identities **3/3 PASS**; inventory unit tests **16/16 PASS**.
+- `PYMUPDF_IMPORT=PASS`; `PYMUPDF=AVAILABLE`. `fitz` import reports a **non-blocking deprecation warning** (use `pymupdf` in a later explicitly reviewed patch, not a blocker for this evidence receipt).
+- As Passed PDF source SHA-256 `32ef2cb30c9498d2c8d9d4597fcaadce9823c13a97fe199acec19247664a3bd6` and byte length `23,172,267`: **PASS**.
+- `result=PDF_PAGE_INVENTORY_REVIEW_ONLY`, `physical_pages=716`, `page_inventory_record_count=716`; `SE03_PDF_PAGE_INVENTORY=PASS_REVIEW_ONLY`.
+- No private FACT export was passed (`FACT_CSV_NOT_PROVIDED`): `review_queue_records=0`, `queue_status_counts={}`. **This is absence of queue input, not zero unresolved cases.** The **112 continuation / 67 economic / 24 programme / 30 vote AIA** exception queues are **not evaluated or resolved**, and 2,912 canonical reconstruction is **NOT ACCEPTED**. Page-specific heading coverage counts were not printed and must be inspected from the local JSON before making a coverage claim.
+- Report retained solely on operator Mac at `~/Downloads/JIF_SE03_PDF_Page_Review_20261028/se03_pdf_page_inventory_review_only.json`. This path is *local*, not an attachment, not published and not proof that the assistant has read the file.
+- Structured operator-transcribed evidence record in this review branch: `SE03_PDF_PAGE_INVENTORY_NATIVE_RECEIPT_20261028.json`.
+
+**Disposition:** Source-verified 716-page inventory **NATIVE PASS/REVIEW_ONLY**. Following gates remain open: source-derived per-page coverage evaluation, explicit FY26 FACT input mapping and 112/67/24/30 exception classification, PDF-to-canonical 2,912-row/33-field parity, derived DS QA, GitHub-hosted CI, SE05/06/07, SCAN01/SE02. No automatic content acceptance, no publication.
