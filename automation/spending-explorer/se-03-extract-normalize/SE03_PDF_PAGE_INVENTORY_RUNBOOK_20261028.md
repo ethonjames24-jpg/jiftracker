@@ -43,3 +43,27 @@ Do not fabricate the private CSV path, make a public copy or share the raw priva
 Any continuation status, including `CONTINUATION_SCOPE_CANDIDATE_REVIEW_ONLY`, is a human-review proposal only. Must separately resolve 112 prior continuation cases, 67 unmatched economic candidates, 24 programme-grain records and 30 vote-level AIA entries with anchored page evidence, reconstruct all 2,912 FY26 FACT fields independently from As Passed, and rerun the 1,134/11 serving and SE-05/06/07 gates. The completed native CSV source-classification receipt `SE03_NATIVE_SOURCE_CLASSIFICATION_RECEIPT_20261028.json` remains accepted but cannot substitute for PDF proof. SCAN01/SE02 remain mandatory for automatic live acquisition.
 
 **Status:** DRAFT / SOURCE-PINNED / LOCAL SYNTHETIC PASS / FULL NATIVE PDF INSPECTION PENDING / FACT PARITY NOT ACCEPTED / RELEASE NO-GO.
+
+
+## Native owner receipt — PASS until dependency preflight; full scan pending (28 October 2026)
+
+The operator ran `bash "$HOME/Downloads/jif_se03_pdf_page_inventory_native_20261028.sh"` on macOS.
+
+**Observed PASS:** `se03_pdf_page_inventory.py` Git blob `115310bb04a2408c0faa089c8f785258d2af6f2c`, `test_se03_pdf_page_inventory.py` Git blob `ea36d52498ad7fd7445d85d91dd6441d6c326b8e`, `se03_pdf_continuation_review.py` Git blob `ffc8aa923928a89b1cd19373581def5b035d11f2`; `SOURCE_CHECKOUT_IDENTITY=PASS`. All **16/16 remote-code synthetic tests PASS**. The official source was downloaded to the operator's Mac; PDF **23,172,267 bytes** and SHA-256 **`32ef2cb30c9498d2c8d9d4597fcaadce9823c13a97fe199acec19247664a3bd6`** verified `SOURCE_AS_PASSED_PDF_IDENTITY=PASS`.
+
+**Runtime stop:** `ModuleNotFoundError: No module named 'fitz'` at `python3 -c 'import fitz'`; runner printed `PYMUPDF_MISSING`. This is a **local missing PyMuPDF dependency**, not a failed source hash, failed test or PDF extraction verdict. No `se03_pdf_page_inventory_review_only.json` output has been evidenced; **716-page inventory PENDING**, all 112 continuation and other exception cases OPEN.
+
+**Isolated local remediation (no global pip install):**
+
+```bash
+(
+  set -e
+  VENV="$HOME/Downloads/JIF_SE03_PDF_Page_Review_20261028/.venv"
+  python3 -m venv "$VENV"
+  "$VENV/bin/python" -m pip install --only-binary=:all: PyMuPDF
+  "$VENV/bin/python" -c 'import fitz, importlib.metadata; print("PYMUPDF_VERSION=" + importlib.metadata.version("PyMuPDF"))'
+  PATH="$VENV/bin:$PATH" bash "$HOME/Downloads/jif_se03_pdf_page_inventory_native_20261028.sh"
+)
+```
+
+The launcher uses `python3`, so prepending the venv bin to `PATH` ensures its imports run in the isolated Python environment. The PDF is already present and hash-pinned; the runner should not repeat the public download. Re-verification and 716-page processing are required. Installing the dependency is not a source-extraction acceptance or release approval.
