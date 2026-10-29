@@ -1,27 +1,37 @@
-✔ acceptance copy is manual-only, unbound and has only isolated write destinations (1.427971ms)
-✔ setup rejects accepted table IDs, table aliasing and incorrect evidence folder (6.380794ms)
-✔ NORMAL and MISSING_BASELINE isolate one actual candidate without editing baseline rows (72.676666ms)
-✔ native hash guard receives corrupted in-memory readback and rejects it (215.652278ms)
-✔ post-archive fault blocks the upsert edge and normal mode passes observations (2.486851ms)
-✔ download fault uses reserved invalid domain; normal mode uses exact source URL (1.199179ms)
-✔ portable SHA-256 agrees with Node on binary, UTF-8 and boundary sizes (24.052492ms)
-✔ real listing plus the public feed produces all published original/listed checks (18.84481ms)
-✔ CSV rejects HTML, broken quotes and duplicate headers; quoted multiline roundtrip works (0.936533ms)
-✔ untrusted, redirected, missing and ambiguous source identity fail closed (15.653766ms)
-✔ April–June exact candidate bytes open distinct review cases without financial adoption (383.270501ms)
-✔ same candidate reuses the case and evidence ID, retaining first seen (80.73357ms)
-✔ missing baseline never silently blesses the first observed download (35.13203ms)
-✔ HTTP errors, redirects, HTML and empty/truncated binaries cannot report unchanged (16.760897ms)
-✔ partial, duplicate and empty completion cannot report a complete check (0.936594ms)
-✔ serialized workflow is inactive, has no credentials or publication path, and default Code executes in restricted VM (9.190293ms)
-✔ generated Plan/Inspect/Verify nodes execute with n8n-style item and binary helpers (95.427419ms)
-✔ configuration gate is false by default and completion rejects missing persisted fields (5.488448ms)
-✔ singleton reads prevent five-by-eight fan-out; only Google CSVs follow bounded redirects (2.403136ms)
-ℹ tests 19
+
+> jif-monthly-source-revisions@1.0.3 test
+> node --test tests/*.test.mjs
+
+✔ acceptance copy is manual-only, unbound and has only isolated write destinations (3.032129ms)
+✔ setup rejects accepted table IDs, table aliasing and incorrect evidence folder (6.099731ms)
+✔ NORMAL and MISSING_BASELINE isolate one actual candidate without editing baseline rows (48.046379ms)
+✔ native hash guard receives corrupted in-memory readback and rejects it (84.142463ms)
+✔ post-archive fault blocks the upsert edge and normal mode passes observations (1.472035ms)
+✔ download fault uses reserved invalid domain; normal mode uses exact source URL (0.994733ms)
+✔ portable SHA-256 agrees with Node on binary, UTF-8 and boundary sizes (15.503149ms)
+✔ real listing plus the public feed produces all published original/listed checks (12.781647ms)
+✔ CSV rejects HTML, broken quotes and duplicate headers; quoted multiline roundtrip works (0.524612ms)
+✔ untrusted, redirected, missing and ambiguous source identity fail closed (8.637432ms)
+✔ April–June exact candidate bytes open distinct review cases without financial adoption (152.618185ms)
+✔ same candidate reuses the case and evidence ID, retaining first seen (44.150048ms)
+✔ missing baseline never silently blesses the first observed download (17.760239ms)
+✔ HTTP errors, redirects, HTML and empty/truncated binaries cannot report unchanged (8.395096ms)
+✔ partial, duplicate and empty completion cannot report a complete check (0.440858ms)
+✔ serialized workflow is inactive, has no credentials or publication path, and default Code executes in restricted VM (5.62972ms)
+✔ generated Plan/Inspect/Verify nodes execute with n8n-style item and binary helpers (50.9104ms)
+✔ configuration gate is false by default and completion rejects missing persisted fields (2.503431ms)
+✔ singleton reads prevent five-by-eight fan-out; only Google CSVs follow bounded redirects (0.820146ms)
+✔ dry run is offline and missing credentials cannot mutate (1.66577ms)
+✔ active monitor alone is deactivated and independently read back (1.491924ms)
+✔ already inactive monitor is never mutated (0.389172ms)
+✔ wrong identity and unknown state fail before mutation (0.391105ms)
+✔ uncertain writes and denied permission stop without retry or secret disclosure (0.63277ms)
+✔ successful POST cannot conceal active readback (0.295795ms)
+ℹ tests 25
 ℹ suites 0
-ℹ pass 19
+ℹ pass 25
 ℹ fail 0
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 860.502443
+ℹ duration_ms 421.307106

@@ -1,3 +1,7 @@
+# Current evidence — October 29, 2026
+
+The owner already completed NORMAL April–June, all four injected fault cases, and cancellation followed by serial replay #2750. May/June runs were sequential, so overlap remains unverified. The real monitor automatic owner-alert test is separately evidenced. See ../docs/NATIVE-ACCEPTANCE.md and ../docs/RELEASE-CLOSEOUT.md. Keep this test copy unpublished; its latest export is OBSERVE/NORMAL/June, so return it to REPORT_ONLY for storage when next editing it. The procedures below remain reproducible test instructions, not a request to repeat completed tests.
+
 # TEST ONLY — isolated native acceptance
 
 Do not replace the configured monitor. Import this JSON as a NEW workflow. Keep it unpublished. It has no schedule, error-handler binding, credentials, public writer or sender. The clone deliberately checks only the listed April candidate (one source), using the same engine as the real monitor.

@@ -1,3 +1,23 @@
+# Native acceptance — current disposition, October 29, 2026
+
+Route: shipping-launch. State: IN PROGRESS. Scope: Monthly Tracker source revisions only; Spending Explorer excluded. Native evidence was supplied by the owner, not run by the assistant.
+
+Current authoritative checkpoint follows. The dated earlier checkpoints at the end are historical; their open/NOT STARTED statements are superseded where explicitly resolved below. Operational restrictions and recovery: SERIAL-OPERATIONS.md and ROLLBACK.md. Release tracking: RELEASE-CLOSEOUT.md.
+
+## Native closeout checkpoint — 21:42 New York, October 28, 2026
+
+Supersedes earlier NOT STARTED statements for the isolated acceptance kit. User receipts establish NORMAL April/May/June, MISSING_BASELINE, DOWNLOAD_FAILURE, ARCHIVE_HASH_MISMATCH and POST_ARCHIVE_FAILURE outcomes. Native version is 2.25.7, self hosted, filesystem binary mode. May #2745 and June #2746 were sequential; no native overlap is demonstrated. June case: be08185eb3948e1dd73d2b14d1a969640d5198f1b22c489f510dd506c64a23c6.
+
+The test run at 21:27:48 was canceled after 1.721s. Replay #2750 at 21:28:05 succeeded in 18.595s, one source/one change, complete baseline coverage, zero failures/public writes/subscriber sends, no financial adoption. Existing archive reuse branch ran. Cancellation during an archive write is not established; the separate injected post-archive failure tests that deterministic boundary.
+
+Automatic real-monitor failure #2751 at 21:40:54 stopped in 20ms at the isolated intentional-error node. Owner Telegram screenshot shows notifications for #2751 and #2753, consistent with two runs of the temporary minute schedule. Automatic owner delivery is evidenced; the link target and handler execution internals were not inspected. UNCLASSIFIED is expected for this test error. Owner confirmed unpublishing.
+
+Restored native export SHA-256 ce4bb33acf4a01200ac5ec1060286794c8f77f92076eff760a683c2139259b5b has 22 nodes, no test-error node, original graph/parameters restored, no pinned data, active=false, disabled cron 0 0 8 * * *, America/Jamaica timezone, timeout 1200, all execution saving enabled and errorWorkflow W6NTH8TqleF7lLll. Private snapshot: https://drive.google.com/file/d/1wGI2Y82b53gVXYCWercxceK0ghviMa2z/view . Do not commit credential-bearing native exports.
+
+Before final activation, review SERIAL-OPERATIONS.md and consolidate package/Drive documentation. Actual daily scheduled source-check evidence remains outstanding. Temporary alert-test publication is not normal monitor activation. Financial adoption of later April–June variants remains PENDING.
+
+## Historical checkpoints (superseded status; retained provenance)
+
 # Native acceptance progress — October 28, 2026
 
 Route: debug-error-recovery. Registry: IN PROGRESS. Scope: new Monthly Tracker source-revision workflow only. PR #41 website release, existing monthly chain and Spending Explorer remain untouched.

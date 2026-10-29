@@ -23,3 +23,12 @@ Decision: Bind the actual monitor to owner handler W6NTH8TqleF7lLll after adding
 Decision: Build a separate unpublished/manual-only acceptance copy with two new test tables and a fixed new private evidence folder. Reject accepted monitor table IDs, omit the shared error handler, and scope tests to one candidate. Inject missing-baseline/download/hash/post-archive faults only inside the copy. Retain all test artifacts; never use them to restate finance data.
 
 Consequences: Saved settings/binding and listing recovery have evidence. Automatic owner delivery and native adverse-path/concurrency/interrupted-write/scheduling gates remain open. The test-copy ID is not authorized to send through the shared owner handler. Spending Explorer, publisher/feed/guard/ledger and original monthly workflows are unchanged.
+
+
+## October 29 operational closeout amendment
+
+Context: native replay, fault injection, cancellation/replay and automatic owner alert evidence now exists; two attempted overlapping tests ran sequentially. No atomic lock was implemented or proven.
+
+Decision: retain the existing workflow runtime and observation contract. Document an operator-enforced serial operating envelope in SERIAL-OPERATIONS.md: one real workflow/table owner, one daily schedule, unpublish and drain/inspect executions before manual maintenance, no parallel retries. Add a separately invoked, fixed-target unpublish script with an offline default; it is not connected to the n8n workflow and introduces no background automation. Preserve all archived evidence, including partial-write orphans; repair observations only after provenance/hash reconciliation. Use Drive for durable receipts while actual instance pruning remains unknown.
+
+Consequences: concurrency correctness remains unverified; the procedure is not an atomic lock or exactly-once guarantee. API rollback is locally mocked-tested, not native-tested; the native UI unpublish/restoration path has owner evidence. Retention configuration and first normal scheduled receipt remain outstanding. See RELEASE-CLOSEOUT.md for current gate ownership. No financial adoption, public feed change or Spending Explorer action is included.

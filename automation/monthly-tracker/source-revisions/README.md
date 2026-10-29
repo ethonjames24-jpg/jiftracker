@@ -1,4 +1,4 @@
-# JIF Monthly Tracker — Official Source Revision Monitor v1.0.2
+# JIF Monthly Tracker — Official Source Revision Monitor v1.0.3
 
 New, isolated monthly-tracker package. Existing CGO/preparation/review/publication workflows and Spending Explorer are unchanged.
 
@@ -27,12 +27,16 @@ Run `npm test` and `npm run build` in this package. Python semantic tests: `pyth
 
 ## Native evidence boundary
 
-Local fixture and VM checks validate the generated code/topology. They do not by themselves prove native behavior. User-supplied native export/screenshots now establish import, configuration-only execution, first OBSERVE, and sequential replay with eight stored rows and preserved first_seen/evidence IDs. Native acceptance remains IN PROGRESS: negative/recovery/concurrency tests, settings/retention, activation and scheduling remain open. No assistant n8n session was used; no existing workflow was changed or executed.
+Local fixture and VM checks validate the generated code/topology. They do not by themselves prove native behavior. User-supplied native export/screenshots now establish import, configuration-only execution, first OBSERVE, and sequential replay with eight stored rows and preserved first_seen/evidence IDs. Native fault, sequential replay, cancellation/replay and automatic owner-alert evidence is consolidated in docs/NATIVE-ACCEPTANCE.md. Native acceptance remains IN PROGRESS for operational closeout and scheduling. No assistant n8n session was used. The shared owner handler was amended only to allow this monitor; the original four workflow behaviors were preserved.
 
 Case IDs are stable for a period/URL/observed hash. Repeat sequential checks preserve first_seen and reuse an archived evidence ID. This is logical deduplication, not a claimed distributed exactly-once guarantee. Do not overlap scheduled/manual runs until the native concurrency test is accepted. Duplicate stored observation identities fail closed on the next read. Observations contain no editorial decision fields; the separate review register controls adoption decisions.
 
 ## Native transport corrections
 
-Version 1.0.1 fixes the October 28 setup findings: only the two anonymous Google CSV reads follow redirects (maximum 3); both table reads and all three pre-loop text requests execute once so incoming baseline/observation rows cannot fan out requests. Workbook redirects remain disabled, the loop remains serial, and the publisher boundary is unchanged. Do not reimport the setup-gated template over the configured native workflow. Verify native workflow timezone America/Jamaica and timeout 1200 seconds explicitly; the user export omitted them.
+Version 1.0.1 fixes the October 28 setup findings: only the two anonymous Google CSV reads follow redirects (maximum 3); both table reads and all three pre-loop text requests execute once so incoming baseline/observation rows cannot fan out requests. Workbook redirects remain disabled, the loop remains serial, and the publisher boundary is unchanged. Do not reimport the setup-gated template over the configured native workflow. The latest restored native export verifies America/Jamaica and timeout 1200 seconds.
 
-The latest configured native export confirms the saved Jamaica timezone, 1200-second timeout, execution saving and owner-error-handler binding. Its exact hashes and listing fail/recovery screenshots are recorded in evidence/NATIVE-CONFIGURATION-1741.json. The shared owner handler was extended only by the new monitor ID; 20 existing-output cases remain identical. Automatic alert delivery is not yet proved. For remaining isolated negative/concurrency/recovery tests, see acceptance/README.md. Build that manual-only test JSON with npm run build:acceptance. It must never replace the configured monitor.
+The latest configured native export confirms the saved Jamaica timezone, 1200-second timeout, execution saving and owner-error-handler binding. Its exact hashes and listing fail/recovery screenshots are recorded in evidence/NATIVE-CONFIGURATION-1741.json. The shared owner handler was extended only by the new monitor ID; 20 existing-output cases remain identical. Automatic owner Telegram delivery is evidenced for native executions #2751 and #2753. For remaining isolated negative/concurrency/recovery tests, see acceptance/README.md. Build that manual-only test JSON with npm run build:acceptance. It must never replace the configured monitor.
+
+## October 29 release closeout
+
+Read docs/RELEASE-CLOSEOUT.md first for current gates, then docs/SERIAL-OPERATIONS.md and docs/ROLLBACK.md. The restored real monitor remains unpublished with its daily schedule disabled; the test copy remains unpublished. Older evidence files are chronological snapshots, not current status. Version 1.0.3 consolidates evidence and adds a separately invoked containment script; both importable workflow JSON files and the monitor runtime are unchanged. Do not reimport either JSON for this documentation update. Twenty-five JavaScript methods (including six mocked rollback tests) and four workbook methods are the current check set; see evidence/VALIDATION.md for executed results.

@@ -1,0 +1,67 @@
+{
+  "date": "2026-10-29",
+  "provenance": "Owner-supplied native exports, receipts and screenshots; not assistant-run n8n",
+  "native_version": "2.25.7",
+  "binary_mode": "filesystem",
+  "restored_export": {
+    "sha256": "ce4bb33acf4a01200ac5ec1060286794c8f77f92076eff760a683c2139259b5b",
+    "drive_id": "1wGI2Y82b53gVXYCWercxceK0ghviMa2z",
+    "workflow_id": "v407uw3UAd050cn0",
+    "active": false,
+    "nodes": 22,
+    "schedule_disabled": true,
+    "timezone": "America/Jamaica",
+    "execution_timeout": 1200,
+    "error_workflow": "W6NTH8TqleF7lLll"
+  },
+  "native_cases_observed": [
+    "NORMAL_APRIL",
+    "NORMAL_MAY_2745",
+    "NORMAL_JUNE_2746",
+    "MISSING_BASELINE",
+    "DOWNLOAD_FAILURE",
+    "ARCHIVE_HASH_MISMATCH",
+    "POST_ARCHIVE_FAILURE",
+    "INVALID_LISTING_AND_RECOVERY",
+    "SERIAL_REPLAY"
+  ],
+  "cancellation": {
+    "start_local": "2026-10-28 21:27:48 America/New_York",
+    "duration_seconds": 1.721,
+    "execution_id": null,
+    "archive_boundary_proven": false,
+    "replay_execution_id": "2750",
+    "replay_duration_seconds": 18.595,
+    "existing_archive_reused": true
+  },
+  "automatic_owner_alerts": {
+    "source_execution_ids": [
+      "2751",
+      "2753"
+    ],
+    "telegram_delivery_screenshot": true,
+    "handler_execution_ids": null,
+    "normal_source_processing_performed": false
+  },
+  "unverified": [
+    "Concurrent execution correctness",
+    "Instance execution-pruning age/count configuration",
+    "Rollback script against native API",
+    "First normal daily scheduled source check"
+  ],
+  "financial_adoption_authorized": false,
+  "screenshots": [
+    {
+      "filename": "Screenshot 2026-10-28 at 9.28.38\u202fPM.png",
+      "sha256": "30816a83ac82f41e68ff5badc1e13bc9dd8c27b0ba94de352023b12eb688cf54"
+    },
+    {
+      "filename": ".Screenshot 2026-10-28 at 9.41.06\u202fPM.png.jFiBQy",
+      "sha256": "e0da92b69a0f34f4e74b9cf6c66c70f6d3363fba9ba9a634f08943319f497bf0"
+    },
+    {
+      "filename": "Screenshot 2026-10-28 at 9.42.34\u202fPM.png",
+      "sha256": "2c80bc078943d0fac97642beccc3cb45f82ce7f8b9682c8bd25662cc9a9f4d7f"
+    }
+  ]
+}

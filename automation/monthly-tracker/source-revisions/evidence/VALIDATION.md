@@ -1,4 +1,12 @@
-# Validation disposition — October 28, 2026
+# Validation disposition — October 29, 2026
+
+Current local check run: npm test passes 25 JavaScript test methods, zero failures/skips; python tests/workbooks_test.py passes 4 methods. Logs: node-tests.txt and workbook-tests.txt. Six added rollback tests use mocked HTTP, not native API calls. Offline rollback dry-run returns DRY_RUN with zero network requests. Both importable workflow JSON files and runtime source are byte-unchanged from v1.0.2; this patch updates documentation/evidence and adds the separately invoked rollback script/tests.
+
+Current native evidence: NATIVE-CLOSEOUT-20261029.json and docs/NATIVE-ACCEPTANCE.md consolidate user-supplied four injected faults, NORMAL April–June, cancellation/replay #2750, automatic owner alerts #2751/#2753 and restored inactive configuration. These supersede outstanding settings/alert/fault claims in earlier snapshots below. Concurrent correctness, instance pruning, native API rollback and first normal scheduled source-check evidence remain unverified. No live production action was performed by this closeout.
+
+Final review: fixed-target rollback rejects redirects and unknown state, never automatically retries a write, and reports that running executions remain to be inspected. Serial-operation restrictions preserve uncertain writes/orphan evidence and require unpublishing before manual maintenance. They do not establish a distributed lock. Release state remains IN PROGRESS; see docs/RELEASE-CLOSEOUT.md. Review was performed by the same assistant, not an independent reviewer.
+
+## Historical validation — October 28 (superseded status retained)
 
 Local build/verification: 19 Node tests pass, 4 workbook test methods pass, no skips. Five reference baselines reproduce all 40 published KPI rows and independently evaluate/check 80 input cells. The three original/candidate workbook comparisons check 96 cached/evaluated inputs, detecting 1/5/1 literal differences and 2/0/2 amount-affected rows in April/May/June, with zero individual status changes. Counts overlap the baseline exercise and are not 176 distinct cells.
 
