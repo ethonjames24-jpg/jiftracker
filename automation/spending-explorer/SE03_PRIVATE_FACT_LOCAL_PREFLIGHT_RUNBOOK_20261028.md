@@ -68,3 +68,11 @@ bash "$HOME/Downloads/jif_se03_fact_preflight_20261028.sh"
 ```
 
 Operator must still export the private `FACT_Government_Spending` tab as local CSV if absent. **No real-data preflight pass has been observed.** Source-derived 2,912-row reconciliation, the historical 112/67/24/30 queues, GitHub-hosted CI and production release remain open.
+
+## Operator Mac native checkpoint — source and tests PASS; private CSV input gate STOP (28 October 2026)
+
+Operator pasted successful execution of the **corrected** `jif_se03_fact_preflight_20261028.sh`: launcher downloaded (2,519 bytes); pinned GitHub source blob `7cf3a77bb58ecada94e8a402dc07f8708a01ab16` **PASS**, test blob `1af6934e64f24412d5e49ef3e3534b0a094971fe` **PASS**; `PINNED_REMOTE_CODE_IDENTITY=PASS`; `Ran 10 tests in 0.026s / OK` (**10/10 PASS**). No internal GitHub 404. This closes the previously failed launcher source-fetch gate.
+
+The launcher next returned `PRIVATE_FACT_EXPORT_NOT_FOUND_OR_AMBIGUOUS`. It stopped before opening and checking the user's real private FACT CSV, so **no 2,912-row private-data preflight was executed**. This status means zero or more than one matching Downloads CSV, not necessarily an absent export; the actual file inventory has not been inspected. The PDF/economic/33-field proof and 112/67/24/30 historical case worklists remain open.
+
+**Next bounded user action:** in governed workbook `1xaNCRt_vMPxBjB56SuqoUKOyXRpsHnd5lX6t06hsQX0`, activate **FACT_Government_Spending** and download the **current sheet only** as CSV to Mac Downloads, then rerun `bash "$HOME/Downloads/jif_se03_fact_preflight_20261028.sh"`. If ambiguous, run `find "$HOME/Downloads" -maxdepth 1 -iname '*FACT*Spending*.csv' -print`; supply `JIF_SE03_FACT_CSV` with the exact single path, retaining a local-only copy. Do not upload the private CSV, commit it or change any frozen model cells. A real preflight receipt is still required before continuing.
