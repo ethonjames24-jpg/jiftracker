@@ -32,3 +32,20 @@ Local prototype `jif_se03_private_fact_preflight_20261028.py` (169 lines, Git bl
 ## Full project status
 
 Refer to `SE_COMPLETION_GATE_REGISTER_20261028.md`. Three stale `QA_HIER_005–007` failures are scope-based: 316 FY26 subprogrammes + 32 FY25 = 348 all-year, 766 FY26 activity/projects + 74 FY25 = 840 all-year. Historical check statuses still require controlled versioned FY-scoped correction; no live sheet mutation authorized. Draft PR #42 remains unmerged and release NO-GO.
+
+## 2026-10-28 — PR source parity and pinned native launcher added
+
+The exact locally-tested `jif_se03_private_fact_preflight_20261028.py` source has now been committed as `se03_private_fact_preflight.py`, Git blob SHA-1 `7cf3a77bb58ecada94e8a402dc07f8708a01ab16` matching the local 10/10 test run. The 10 synthetic tests were committed as `test_se03_private_fact_preflight.py`, blob SHA-1 `1af6934e64f24412d5e49ef3e3534b0a094971fe`, and retested locally with the exact renamed module: **10/10 PASS**. Read-only CI updated to 70 intended synthetic tests; actual GitHub-hosted run still PENDING.
+
+The versioned `run_se03_private_fact_preflight_native.sh` launcher fetches both files pinned to immutable commit `3b72fc2a09952e4c56868598c577f1b30f37d2d9`, checks their exact Git blob identities, runs ten tests and then the private local CSV review. It automatically identifies the CSV only when **exactly one** Downloads filename matches `*FACT_Government_Spending*.csv`; otherwise provide explicit `JIF_SE03_FACT_CSV=/absolute/private/path.csv`. It uses `~/Downloads/JIF_SE03_PDF_Page_Review_20261028/se03_pdf_page_inventory_capital_v2_review_only.json`, generates `se03_fact_private_review_summary.json` locally with `umask 077` and never uploads the private export.
+
+One-step Mac launcher download:
+```bash
+curl --fail --location --show-error \
+  "https://raw.githubusercontent.com/ethonjames24-jpg/jiftracker/2c7c5ccab7bcb91109832e0bbd2796f555f3ab0b/automation/spending-explorer/se-03-extract-normalize/run_se03_private_fact_preflight_native.sh" \
+  -o "$HOME/Downloads/jif_se03_fact_preflight_20261028.sh"
+bash -n "$HOME/Downloads/jif_se03_fact_preflight_20261028.sh" &&
+bash "$HOME/Downloads/jif_se03_fact_preflight_20261028.sh"
+```
+
+This corrects the earlier note that code was only a conversation artifact. **Only the preflight program and tests are now PR-versioned; real private operator execution remains pending.** No full source-to-value acceptance should be inferred from a preflight PASS.
