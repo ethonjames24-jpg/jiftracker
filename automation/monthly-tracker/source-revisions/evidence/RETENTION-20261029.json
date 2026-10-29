@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-29",
+  "scope": "JIF_MONTHLY_TRACKER_SOURCE_REVISIONS_ONLY",
+  "provenance": "Owner supplied read-only shell output from srv1712153; assistant did not access the host",
+  "container": "n8n-n8n-1",
+  "command": "docker exec n8n-n8n-1 printenv | grep '^EXECUTIONS_DATA_'",
+  "observed_stdout": "",
+  "observed_exit_details": "Command returned to shell prompt; grep exit code not separately shown",
+  "container_environment_override_found": false,
+  "documented_defaults_inferred": {
+    "EXECUTIONS_DATA_PRUNE": true,
+    "EXECUTIONS_DATA_MAX_AGE_hours": 336,
+    "EXECUTIONS_DATA_PRUNE_MAX_COUNT": 10000
+  },
+  "source": "https://docs.n8n.io/deploy/host-n8n/configure-n8n/basic-configuration/use-environment-variables/executions.md",
+  "claim_limit": "Inferred from running container environment and official defaults, not a direct read of internal effective settings or proof of a particular execution's survival; age and count can both matter",
+  "configuration_changed": false,
+  "secrets_recorded": false
+}

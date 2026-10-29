@@ -1,0 +1,104 @@
+{
+  "provenance": "User-supplied native n8n export and screenshots; not assistant-run native executions",
+  "native_workflow_id": "v407uw3UAd050cn0",
+  "native_version_id": "6352dc0b-0b60-4c77-b204-1ebe45558056",
+  "export_sha256": "64a0eec56ca63b684edb8847a586273a7f75d1429ab08c366e806f8dfc9dfe56",
+  "export_bytes": 57594,
+  "private_export_drive_id": "1P6XgIrwirfrUYVOhp61Zs3uFoSZyAKli",
+  "active": false,
+  "node_count": 22,
+  "schedule_disabled": true,
+  "pinned_nodes": [],
+  "connections_match_candidate": true,
+  "nonconfiguration_code_matches_candidate": true,
+  "execute_once_nodes": [
+    "Read Prior Observations",
+    "Read Published Tracker CSV",
+    "Read Published Extras CSV",
+    "Read Official CGO Listing"
+  ],
+  "credential_bindings_node_names_only": [
+    "Archive Candidate Privately",
+    "Download Archived Candidate"
+  ],
+  "native_settings_present": [
+    "availableInMCP",
+    "binaryMode",
+    "executionOrder"
+  ],
+  "native_timezone_explicit": null,
+  "native_execution_timeout_explicit": null,
+  "observed_receipt": {
+    "checked_sources": 8,
+    "check_complete": true,
+    "baseline_coverage_complete": true,
+    "unchanged": 5,
+    "changes": 3,
+    "baseline_required": 0,
+    "failed": 0,
+    "public_rows_written": 0,
+    "subscriber_sends": 0,
+    "financial_adoption_authorized": false
+  },
+  "persisted_observations": {
+    "row_count": 8,
+    "first_seen": "2026-10-28T20:51:10.891Z",
+    "replay_last_seen": "2026-10-28T21:09:41.461Z",
+    "three_evidence_ids_visibly_preserved": true
+  },
+  "unverified": [
+    "Native n8n version and execution IDs",
+    "Explicit workflow timezone and timeout",
+    "Native negative/failure/recovery/concurrency acceptance",
+    "Execution retention and failure handler",
+    "Activation and first real scheduled execution"
+  ],
+  "screenshots": [
+    {
+      "filename": "Screenshot 2026-10-28 at 4.52.13\u202fPM.png",
+      "sha256": "c4ab069085e2c8b0d45d833bbe75308b3556d2870dc1a5b912801268fa6bdf5c"
+    },
+    {
+      "filename": "Screenshot 2026-10-28 at 5.09.56\u202fPM.png",
+      "sha256": "b2db85f3ab2a92a0819778aa5f37ee86b09ab1d0fbfcc8b78b5ff8dd677aa388"
+    },
+    {
+      "filename": "Screenshot 2026-10-28 at 5.10.46\u202fPM.png",
+      "sha256": "97245bfcb82221860bb6b856e83b15ab4117cece8cfeb8acfe196ac253dec06e"
+    }
+  ],
+  "assistant_drive_verification": {
+    "current_xlsx_count": 3,
+    "all_files_created_before_replay": true,
+    "duplicate_candidate_files": 0,
+    "exact_archive_readbacks": [
+      {
+        "id": "1ar5PhtT-Je_4roWU-ircTGVYTB02HQkP",
+        "title": "2026-06-cc6d26e59e8dd4eb036d4f45df1cb6f46e2a03546e2c01f02f9aef23ee69c774.xlsx",
+        "size": "240567",
+        "created_time": "2026-10-28T20:51:24.628Z",
+        "shared": false,
+        "sha256": "cc6d26e59e8dd4eb036d4f45df1cb6f46e2a03546e2c01f02f9aef23ee69c774",
+        "independent_archive_readback_verified": true
+      },
+      {
+        "id": "1CvW9YbGlAeKXaQplP4uOny42EDXanEZz",
+        "title": "2026-05-e2b2b491e700f6555c7deb30e5e924e0365c70d88625317bce604b35076e4b4a.xlsx",
+        "size": "239187",
+        "created_time": "2026-10-28T20:51:19.509Z",
+        "shared": false,
+        "sha256": "e2b2b491e700f6555c7deb30e5e924e0365c70d88625317bce604b35076e4b4a",
+        "independent_archive_readback_verified": true
+      },
+      {
+        "id": "1xdMUmgPrJgQWyyOSNw8Jg4ojRZE-pNwf",
+        "title": "2026-04-ac3cde66886a7c31bdb9bcd53568571ba40405bc60463d1e600e04598257410c.xlsx",
+        "size": "235989",
+        "created_time": "2026-10-28T20:51:14.263Z",
+        "shared": false,
+        "sha256": "ac3cde66886a7c31bdb9bcd53568571ba40405bc60463d1e600e04598257410c",
+        "independent_archive_readback_verified": true
+      }
+    ]
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "provenance": "User-supplied latest native exports and screenshots; assistant VM review only",
+  "monitor": {
+    "id": "v407uw3UAd050cn0",
+    "version_id": "64a3a144-aa93-4664-8515-32894e647075",
+    "sha256": "74737dbdf8f2cfdb543211a0dc7140caaa75a6cb8440eaea2c1c76a6563ee666",
+    "private_drive_file_id": "1BzGZPjKnIPD-adNZDbhI5GOjkmnWUulM",
+    "active": false,
+    "daily_disabled": true,
+    "timezone": "America/Jamaica",
+    "executionTimeout": 1200,
+    "error_workflow": "W6NTH8TqleF7lLll",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true
+  },
+  "owner_alert": {
+    "id": "W6NTH8TqleF7lLll",
+    "version_id": "cd947b21-8163-4c00-9391-3d8ff8ce1520",
+    "sha256": "8dd1242075dd38495bda9ab7f084a2feade84708249cbf6affefb8b6f1f492ac",
+    "private_drive_file_id": "1C_hRaK4DiV_-ax-pHnDLyiEOwVyWppDl",
+    "active": true,
+    "patch_exact": true,
+    "unchanged_other_nodes": true,
+    "unchanged_connections": true,
+    "existing_output_equivalence_cases": 20,
+    "unknown_ids_rejected": 3,
+    "automatic_delivery_verified": false,
+    "export_active_version_id": null
+  },
+  "listing_fault": {
+    "screenshot": "Screenshot 2026-10-28 at 5.22.49\u202fPM.png",
+    "result": "Invalid host stopped listing node before plan/archive/upsert"
+  },
+  "restored_source": {
+    "screenshot": "Screenshot 2026-10-28 at 5.25.12\u202fPM.png",
+    "checked_sources": 8,
+    "unchanged": 5,
+    "changes": 3,
+    "failed": 0,
+    "check_complete": true,
+    "last_seen": "2026-10-28T21:24:54.868Z",
+    "public_rows_written": 0,
+    "subscriber_sends": 0
+  },
+  "test_kit": {
+    "state": "IN PROGRESS",
+    "native_execution": "NOT STARTED",
+    "local_test_methods": 6,
+    "private_folder": "17_yAzffzA8x8EShGdwBtbmUT5AS29Lj7",
+    "evidence_folder": "1_tjDf3qSRxTFHIH_rVh9ErfdQwJksdtX",
+    "workflow_drive_file_id": "1XzoxRWA29krtDHpEbyXgsOtOrCuk_pVX",
+    "local_test_total": 19
+  },
+  "external_calls_by_tests": 0,
+  "screenshots": [
+    {
+      "filename": "Screenshot 2026-10-28 at 5.22.49\u202fPM.png",
+      "sha256": "ad94e3bc7edee6914921fb049ba2314cd8910140a93bca33a46d7d04488030af"
+    },
+    {
+      "filename": "Screenshot 2026-10-28 at 5.25.12\u202fPM.png",
+      "sha256": "bce1198a2d0bbeec92037b53cf93d6df838296ac6f32255a81250ed6d029b7d2"
+    },
+    {
+      "filename": "Screenshot 2026-10-28 at 5.41.33\u202fPM.png",
+      "sha256": "dd502c53a0dadb2cc0b76700c252f3f1854d484d9ad358065784cdde758204b1"
+    }
+  ]
+}
