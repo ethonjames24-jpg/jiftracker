@@ -95,3 +95,24 @@ The sanitized geometry summary and separate `PRIVATE_LOCAL_ONLY` queue were exam
 Critical methodological gate: the existing numerical candidate search is conditioned on `amount_jmd_normalized` already present in FACT. It **cannot** independently substantiate any of the 2,114 otherwise unique monetary candidates. Next source-first extraction must detect printed PDF economic code and monetary text **before** consulting the existing FACT value, establish exact Activity/Capital Project section boundaries and source ownership, then compare internally; output only aggregate non-monetary summaries. Prototype 17 synthetic safety tests PASS locally, real pinned Mac PDF/CSV run PENDING and not PR-versioned executable yet. Review memo: `automation/spending-explorer/se-03-extract-normalize/SE03_GEOMETRY_FULL_QUEUE_AGGREGATE_TRIAGE_20261029.md`.
 
 **Open:** full source-origin 2,912×33 field tie-out, capital/Programme/AIA/continuation source rules, 112/67/24/30 historic adjudications, financial totals and DS tables, FY-scoped QA correction, hosted CI, scanner and explicit owner publication authorization. No protected Sheet, production feed or main-branch mutation; PR #42 remains draft/unmerged.
+
+## 2026-10-29 — source-first PDF cell-text comparison native review-only PASS
+
+The operator ran the immutable-code source-first local prototype on the original As Passed 716-page PDF and private canonical FACT export. **3/3 exact code Git blob fingerprints PASS**, **17/17 synthetic tests PASS**, source PDF SHA `32ef2cb30c9498d2c8d9d4597fcaadce9823c13a97fe199acec19247664a3bd6` and private CSV SHA `8ea4d7ac2b94eb5c8f5831da4b4a989e495e172e23dc6dc5269e6e55555c234c` match previous evidence, **2,912 FY26 rows classified**. Crucially, the extractor reads the printed PDF economic-code and column numeric token before comparing to the FACT amount (still accepts model-provided code/page/measure as locator). The exclusive row statuses are:
+
+| Source-first status | FY26 rows | Disposition |
+| --- | ---: | --- |
+| PDF cell numeric text equals FACT | **2,206** | Review-only cell equality. NOT independently accepted canonical money/33-field record |
+| Printed numeric cell missing or unreadable | **580** | Inspect PDF tokenization/blank printed cell/format; absence not proof of incorrect FACT |
+| PDF cell text differs from FACT | **10** | Potential source/model variance; mandatory exact printed page/column and unit inspection before any correction |
+| Repeated economic code in one source section | **3** | Multiple printed economic rows, no automatic tie |
+| Activity/Project section not unique | **2** | Section identity review; not an amount discrepancy |
+| Programme separate method | **81** | Programme grain not source-accepted |
+| Vote-level AIA separate method | **30** | Vote AIA not source-accepted |
+| **TOTAL** | **2,912** | **No full financial parity / publication** |
+
+The 2,206 equal cells are a step beyond prior amount-conditioned geometry, but **not** complete independent financial source reconstruction. The 580 missing/unreadable and 10 differences require targeted read-only diagnosis; 3 repeated codes and 2 uncertain sections remain separate. The first five reported differences are FACT_EOE_AP_00179, _00494, _00701, _00702 and _00789. The first four appeared in earlier zero amount-conditioned geometry matches; the source-first numeric comparison is an improvement in detection, not yet evidence of a budget error.
+
+**Next local diagnostic prepared only (not executed on native source):** a strict source-pinned exception triage to classify the 580 unreadable token situations (zero tokens, multiple tokens, one unexpected token) and map all ten difference locations without exposing numbers. Existing 17 source-first tests plus 15 new synthetic cases PASS locally (**32/32**); bash syntax PASS. Local conversation ZIP `jif_se03_source_first_exception_triage_20261029.zip`, not PR-merged or native-tested. Summary-only output `se03_source_first_exception_triage_summary.json`, detailed local-only output `se03_source_first_exception_triage_local_queue.json`. Store no private CSV, printed value or full per-row queue in GitHub or Drive. 
+
+**Open:** 580/10/3/2, 81 Programme, 30 AIA, full 2,912×33 canonical source proof, historic 112/67/24/30 worklists, FY-scoped QA and DS parity, CI, scanner, owner approval and production readback. PR #42 draft/open/unmerged; no protected sheet mutation or release.
