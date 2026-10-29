@@ -1,0 +1,54 @@
+{
+  "receipt_id": "JIF-SE03-SOURCE-FIRST-NATIVE-20261029",
+  "observed_on": "2026-10-29",
+  "evidence": "operator Mac Terminal stdout; no local detailed PDF/CSV exposed",
+  "result": "SOURCE_FIRST_ECONOMIC_CELL_TEXT_COMPARISON_REVIEW_ONLY",
+  "source_code_identity": {
+    "pass": 3,
+    "total": 3,
+    "synthetic_tests_pass": 17,
+    "synthetic_tests_total": 17
+  },
+  "source_pdf_sha256": "32ef2cb30c9498d2c8d9d4597fcaadce9823c13a97fe199acec19247664a3bd6",
+  "private_fact_sha256": "8ea4d7ac2b94eb5c8f5831da4b4a989e495e172e23dc6dc5269e6e55555c234c",
+  "fy26_rows_examined": 2912,
+  "exclusive_review_status_counts": {
+    "SOURCE_FIRST_PDF_CELL_TEXT_EQUAL_REVIEW_ONLY": 2206,
+    "PRINTED_VALUE_MISSING_OR_UNREADABLE_REVIEW": 580,
+    "SOURCE_FIRST_PDF_CELL_FACT_AMOUNT_DIFFERENCE_REVIEW": 10,
+    "REPEATED_ECONOMIC_CODE_WITHIN_SECTION_REVIEW": 3,
+    "ACTIVITY_PROJECT_SECTION_NOT_UNIQUE_REVIEW": 2,
+    "PROGRAMME_SEPARATE_SOURCE_METHOD": 81,
+    "AIA_VOTE_SEPARATE_SOURCE_METHOD": 30
+  },
+  "sample_difference_fact_ids_first_five": [
+    "FACT_EOE_AP_00179",
+    "FACT_EOE_AP_00494",
+    "FACT_EOE_AP_00701",
+    "FACT_EOE_AP_00702",
+    "FACT_EOE_AP_00789"
+  ],
+  "source_method": "printed PDF economic code/numeric token located before comparison to existing model amount; still requires exact origin, context, numerical and 33-field adjudication",
+  "risk_notes": [
+    "2206 equality is cell-level review-only, not 2206 approved source facts",
+    "580 missing/unreadable may include blank column, multi-token extraction or unexpected formats; not necessarily missing financial values",
+    "10 differences are candidate discrepancies, not accepted errors; verify printed lines and correct budget fiscal column before changing anything",
+    "81 Programme and 30 AIA methods excluded"
+  ],
+  "approval": {
+    "independent_financial_line_parity_accepted": false,
+    "canonical_2912_33_field_rows_accepted": false,
+    "publication_authorized": false
+  },
+  "private_data_handling": {
+    "source_amount_values_uploaded": false,
+    "protected_sheet_write": false,
+    "raw_private_fact_csv_uploaded": false
+  },
+  "release_state": {
+    "pr": 42,
+    "draft": true,
+    "merged": false,
+    "production": "NO_GO"
+  }
+}
