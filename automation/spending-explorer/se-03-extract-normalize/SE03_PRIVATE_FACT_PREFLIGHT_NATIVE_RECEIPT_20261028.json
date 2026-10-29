@@ -1,0 +1,40 @@
+{
+  "receipt_id": "JIF-SE03-PRIVATE-FACT-PREFLIGHT-NATIVE-20261028",
+  "receipt_date": "2026-10-28",
+  "source_type": "operator_pasted_mac_terminal_stdout_not_independently_uploaded_json",
+  "status": "FACT_REVIEW_QUEUE_PREFLIGHT_PASS_REVIEW_ONLY",
+  "pinned_remote_code_identity": "PASS",
+  "pinned_source_git_blob_sha1": "7cf3a77bb58ecada94e8a402dc07f8708a01ab16",
+  "pinned_test_git_blob_sha1": "1af6934e64f24412d5e49ef3e3534b0a094971fe",
+  "native_tests": {
+    "pass": 10,
+    "ran": 10,
+    "time_sec": 0.027
+  },
+  "source_pdf_sha256": "32ef2cb30c9498d2c8d9d4597fcaadce9823c13a97fe199acec19247664a3bd6",
+  "private_fact_export_sha256": "8ea4d7ac2b94eb5c8f5831da4b4a989e495e172e23dc6dc5269e6e55555c234c",
+  "structure": {
+    "fatal_error_count": 0,
+    "fatal_errors_first_40": [],
+    "fy26_rows": 2912,
+    "fy25_rows_skipped": 2900,
+    "activity_grain": 2801,
+    "programme_grain": 81,
+    "aia_vote": 30,
+    "capital_budget6_rows": 114
+  },
+  "review_status_counts": {
+    "AIA_VOTE_RECONSTRUCTION_REQUIRED": 30,
+    "EXPLICIT_ON_PAGE_CODE_ECON_AMOUNT_NOT_VERIFIED": 2801,
+    "MULTIPLE_OR_CONFLICTING_PAGE_CONTEXT_REVIEW": 269,
+    "PROGRAMME_GRAIN_PDF_REVIEW_REQUIRED": 81
+  },
+  "interpretation": "Review status flags may overlap. 2801 Activity codes found at page-level but PDF economic values not independently matched. 269 multi/context flags are not 269 erroneous rows. 81 programme records do not equal prior 24 programme exceptions. Native output only; local JSON report not separately inspected.",
+  "local_report": "~/Downloads/JIF_SE03_PDF_Page_Review_20261028/se03_fact_private_review_summary.json",
+  "financial_amount_pdf_match_accepted": false,
+  "full_2912_row_33_field_source_reconstruction_accepted": false,
+  "historical_112_67_24_30_exception_cases_resolved": false,
+  "public_sheet_write_performed": false,
+  "publication_authorized": false,
+  "pr_status": "draft_unmerged"
+}

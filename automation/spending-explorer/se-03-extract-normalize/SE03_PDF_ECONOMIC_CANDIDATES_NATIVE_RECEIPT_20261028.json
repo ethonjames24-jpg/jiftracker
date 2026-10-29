@@ -1,0 +1,52 @@
+{
+  "receipt_id": "JIF-SE03-PDF-ECON-CANDIDATES-NATIVE-20261028",
+  "received_date": "2026-10-28",
+  "evidence_type": "operator_supplied_mac_terminal_stdout",
+  "qualification": "source_pinned_native_review_only_not_independent_artifact_readback",
+  "result": "PDF_ECONOMIC_CELL_CANDIDATES_REVIEW_ONLY",
+  "source_identity": {
+    "git_blobs_pass": 7,
+    "git_blobs_total": 7,
+    "git_source_commit": "ff1f8c5b51b5224d466e3fdfdffb5c4bbccf7d77",
+    "private_fact_export_sha256": "8ea4d7ac2b94eb5c8f5831da4b4a989e495e172e23dc6dc5269e6e55555c234c",
+    "as_passed_pdf_sha256": "32ef2cb30c9498d2c8d9d4597fcaadce9823c13a97fe199acec19247664a3bd6"
+  },
+  "execution": {
+    "synthetic_tests_ran": 46,
+    "synthetic_tests_pass": 46,
+    "fy26_rows_examined": 2912,
+    "activity_rows": 2801,
+    "programme_rows": 81,
+    "vote_aia_rows": 30
+  },
+  "activity_geometric_candidate_counts": {
+    "0": 10,
+    "1": 2364,
+    "2+": 427
+  },
+  "exclusive_review_row_status_counts": {
+    "AIA_VOTE_METHOD_REQUIRED": 30,
+    "ECONOMIC_CELL_MULTIPLE_CANDIDATES": 419,
+    "ECONOMIC_CELL_NOT_FOUND_BY_BOUNDING_BOX": 10,
+    "MULTI_SECTION_CONTEXT_REVIEW_REQUIRED": 258,
+    "PROGRAMME_GRAIN_METHOD_REQUIRED": 81,
+    "UNIQUE_ECONOMIC_CELL_CANDIDATE_REVIEW_ONLY": 2114
+  },
+  "derived_review_marginal": {
+    "structurally_eligible_unique_activity_candidates": 2114,
+    "activity_rows_not_eligible_for_unique_candidate": 687,
+    "geometrically_unique_withheld_due_to_multiple_section_context": 250,
+    "geometrically_multiple_withheld_due_to_multiple_section_context": 8
+  },
+  "local_review_report": "~/Downloads/JIF_SE03_PDF_Page_Review_20261028/se03_pdf_economic_candidates_review_only.json",
+  "limits": {
+    "raw_private_csv_uploaded": false,
+    "unique_economic_cell_candidate_is_canonical_source_match": false,
+    "all_2912_source_derived_33_field_records_accepted": false,
+    "financial_line_parity_accepted": false,
+    "historical_specific_exception_worklists_112_67_24_30_resolved": false,
+    "github_hosted_ci_pass_observed": false,
+    "production_release_authorized": false
+  },
+  "disposition": "ACCEPT native PDF cell-candidate classification as review-only; DO NOT close economic/programme/AIA/continuation or production gates."
+}

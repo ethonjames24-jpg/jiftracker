@@ -1,0 +1,71 @@
+{
+  "receipt_id": "JIF-SE03-CAPITALHEAD-V2-20261028",
+  "receipt_date": "2026-10-28",
+  "evidence_type": "operator_pasted_mac_terminal_stdout",
+  "status": "ACCEPTED_REVIEW_ONLY_CAPITAL_HEAD_DETECTION",
+  "source_code_commit": "759568c36bef906fea66feacee603494db43ebd6",
+  "git_blob_identity": {
+    "status": "PASS",
+    "count": 3,
+    "files": {
+      "se03_pdf_page_inventory.py": "c36c95ea80f5ebf143573cb95b87bd0357616f6a",
+      "test_se03_pdf_page_inventory.py": "d17b04e2eb83e73dcab287db7070634b7ae72a72",
+      "se03_pdf_continuation_review.py": "ffc8aa923928a89b1cd19373581def5b035d11f2"
+    }
+  },
+  "tests": {
+    "ran": 26,
+    "passed": 26,
+    "failed": 0,
+    "receipt": "Ran 26 tests in 0.002s; OK"
+  },
+  "pdf": {
+    "bytes": 23172267,
+    "sha256": "32ef2cb30c9498d2c8d9d4597fcaadce9823c13a97fe199acec19247664a3bd6",
+    "identity": "PASS",
+    "pages": 716,
+    "inventory_records": 716
+  },
+  "capital_head_audit": {
+    "result": "CAPITAL_HEAD_DETECTION_REVIEW_ONLY",
+    "budget6_pages": 143,
+    "budget6_pages_with_explicit_c_head": 143,
+    "budget6_pages_without_explicit_head": 0,
+    "head_budget_conflict_pages": [],
+    "distinct_capital_head_codes": [
+      "15000C",
+      "19000C",
+      "20000C",
+      "22000C",
+      "26000C",
+      "28000C",
+      "40000C",
+      "41000C",
+      "42000C",
+      "51000C",
+      "53000C",
+      "69000C",
+      "72000C"
+    ],
+    "former_headless_budget6_pages": 143,
+    "recovered_detected_pages": 143,
+    "local_audit_report": "~/Downloads/JIF_SE03_PDF_Page_Review_20261028/se03_capital_head_v2_audit_summary.json",
+    "local_page_report": "~/Downloads/JIF_SE03_PDF_Page_Review_20261028/se03_pdf_page_inventory_capital_v2_review_only.json"
+  },
+  "limits": {
+    "fact_queue_executed": false,
+    "financial_source_2912_reconstruction_accepted": false,
+    "full_33_field_parity_accepted": false,
+    "publication_authorized": false,
+    "source_case_worklists_remaining": {
+      "continuation": 112,
+      "economic_column": 67,
+      "programme_grain": 24,
+      "vote_aia": 30
+    },
+    "github_hosted_ci_completion_not_proven": true,
+    "local_json_not_uploaded": true,
+    "note": "Counts based on operator's pasted terminal receipt; raw local JSON not independently read in this turn. Page-heading detection does not itself certify any financial amount, source row or FACT identity."
+  },
+  "governance": "PR #42 review only, no merge/deploy/n8n/public/frozen sheet changes"
+}

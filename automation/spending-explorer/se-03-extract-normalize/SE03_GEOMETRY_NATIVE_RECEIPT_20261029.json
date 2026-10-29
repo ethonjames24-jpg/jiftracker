@@ -1,0 +1,55 @@
+{
+  "receipt_id": "JIF-SE03-GEOMETRY-NATIVE-20261029",
+  "recorded_date": "2026-10-29",
+  "evidence_origin": "operator-provided Mac Terminal output (read-only; local JSON not yet uploaded)",
+  "execution_result": "PDF_GEOMETRY_DIAGNOSTIC_REVIEW_ONLY",
+  "code_checks": {
+    "git_blob_identity_pass": 6,
+    "git_blob_identity_total": 6,
+    "local_synthetic_tests_pass": 10,
+    "local_synthetic_tests_total": 10
+  },
+  "source_pin": {
+    "official_as_passed_pdf_sha256": "32ef2cb30c9498d2c8d9d4597fcaadce9823c13a97fe199acec19247664a3bd6",
+    "private_fact_csv_sha256": "8ea4d7ac2b94eb5c8f5831da4b4a989e495e172e23dc6dc5269e6e55555c234c"
+  },
+  "examined_fy2026_27_records": 2912,
+  "exclusive_status_counts": {
+    "AIA_VOTE_METHOD_REQUIRED": 30,
+    "ECONOMIC_CELL_MULTIPLE_CANDIDATES": 419,
+    "ECONOMIC_CELL_NOT_FOUND_BY_BOUNDING_BOX": 10,
+    "MULTI_SECTION_CONTEXT_REVIEW_REQUIRED": 258,
+    "PROGRAMME_GRAIN_METHOD_REQUIRED": 81,
+    "UNIQUE_ECONOMIC_CELL_CANDIDATE_REVIEW_ONLY": 2114
+  },
+  "review_queue_case_count": 798,
+  "distinct_source_pages_per_status": {
+    "AIA_VOTE_METHOD_REQUIRED": 30,
+    "ECONOMIC_CELL_MULTIPLE_CANDIDATES": 111,
+    "ECONOMIC_CELL_NOT_FOUND_BY_BOUNDING_BOX": 8,
+    "MULTI_SECTION_CONTEXT_REVIEW_REQUIRED": 30,
+    "PROGRAMME_GRAIN_METHOD_REQUIRED": 14,
+    "UNIQUE_ECONOMIC_CELL_CANDIDATE_REVIEW_ONLY": 295
+  },
+  "operator_local_paths": {
+    "sanitized_summary": "~/Downloads/JIF_SE03_PDF_Page_Review_20261028/se03_pdf_geometry_review_summary.json",
+    "private_queue": "~/Downloads/JIF_SE03_PDF_Page_Review_20261028/se03_pdf_geometry_local_queue.json"
+  },
+  "forensic_note": "Counts of distinct pages are per category and must not be added to obtain unique pages overall. Local diagnostic uses existing numeric-value comparison to locate geometric matches but outputs only code/position observations without financial amount values. Neither candidate location nor head proximity proves source record correctness.",
+  "acceptance": {
+    "geometry_diagnostic_execution": true,
+    "actual_per_row_positions_independently_reviewed": false,
+    "source_amount_values_exported": false,
+    "candidate_position_is_approval": false,
+    "financial_line_parity_accepted": false,
+    "canonical_2912_33_field_source_reconstruction_accepted": false,
+    "historical_112_67_24_30_exception_lists_resolved": false,
+    "publication_authorized": false
+  },
+  "git_review": {
+    "pr_number": 42,
+    "draft": true,
+    "merged": false
+  },
+  "next_action": "Upload sanitized se03_pdf_geometry_review_summary.json only; review up to eight sample IDs/positions per status before establishing bounded adjudication rules; do not upload private queue or raw FACT CSV."
+}
