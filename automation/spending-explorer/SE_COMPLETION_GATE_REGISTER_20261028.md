@@ -50,3 +50,22 @@ No work in this gate register changes frozen, private operational or public Shee
 User Mac returned `FACT_REVIEW_QUEUE_PREFLIGHT_PASS_REVIEW_ONLY` with 2/2 pinned code blobs PASS, 10/10 tests PASS, **2,912 FY26 / 2,900 FY25 skipped**, FY26 grains 2,801 Activity/81 Programme/30 AIA, 114 Capital, **0 fatal structural errors** and export SHA-256 `8ea4d7ac2b94eb5c8f5831da4b4a989e495e172e23dc6dc5269e6e55555c234c`. Prior pending private CSV and missing download gates CLOSED. Distinguish 269 overlapping multi-section review flags from 269 confirmed financial errors. The original 112/67/24/30 specific worklists and full 2,912/33-field source parity remain OPEN.
 
 NEXT source gate: the versioned read-only PDF economic-cell candidate audit, pinned to seven source blobs and same private CSV SHA; 10 local synthetic PASS and 80 configured hosted test target, but complete source scan and hosted CI PENDING. Run `run_se03_pdf_economic_candidates_native.sh` from the exact reviewed GitHub PR #42 branch commit and return sanitized summary, not the raw CSV. No automatic financial acceptance/public release.
+
+
+## October 28 — real As Passed economic-cell candidate inventory accepted (review only)
+
+User Mac ran the source-pinned economic-candidate tool, **7/7 GitHub code blob IDs PASS** and **46/46 native synthetic tests PASS**, pinned private FY26 CSV hash `8ea4d7ac2b94eb5c8f5831da4b4a989e495e172e23dc6dc5269e6e55555c234c` PASS. Source PDF SHA matches controlling As Passed `32ef2cb30c9498d2c8d9d4597fcaadce9823c13a97fe199acec19247664a3bd6`. The scan examined **2,912/2,912 FY26 FACT rows** and classified each to exactly one review-only status:
+
+| Reported status | Count | Meaning |
+|---|---:|---|
+| UNIQUE_ECONOMIC_CELL_CANDIDATE_REVIEW_ONLY | 2,114 | One qualified PDF geometric candidate, **not** a canonical financial record acceptance |
+| ECONOMIC_CELL_MULTIPLE_CANDIDATES | 419 | Multiple candidate printed economic-cell matches; must resolve line-level context |
+| MULTI_SECTION_CONTEXT_REVIEW_REQUIRED | 258 | Heading ambiguity masks economic status (250 geometrically unique, 8 geometrically multiple) |
+| ECONOMIC_CELL_NOT_FOUND_BY_BOUNDING_BOX | 10 | Existing geometric search did not find an eligible printed cell; not proof missing from PDF |
+| PROGRAMME_GRAIN_METHOD_REQUIRED | 81 | Programme-level source representation not covered by Activity matcher |
+| AIA_VOTE_METHOD_REQUIRED | 30 | Vote-level signed AIA requires separate aggregation/source method |
+| **TOTAL** | **2,912** | **100% review-classified, 0 independently source-derived canonical FACT rows accepted by this scan** |
+
+Activity raw candidate geometry distribution: **0 candidates=10, exactly 1=2,364, at least 2=427**, totaling 2,801 Activity records. 2,364 unique geometric detections differ from 2,114 safely eligible unique candidates because 250 were blocked by multi-section context; 427 geometric multiple differ from 419 otherwise-classified multiple because 8 had multi-section context. Records requiring additional source-context work **687 Activity** (419+258+10), plus **81 Programme and 30 AIA**, totaling **798 cases not yet eligible as a unique Activity numeric candidate**. These are **classification/workload counts** and are **not the same list** as historical 112 continuation, 67 economic, 24 programme, and 30 AIA exceptions; they must not be combined by addition.
+
+**Gate CLOSED:** run-time completeness of review-only source PDF economic candidate scan. **Gates OPEN:** independent validation of printed economic amounts within exact Activity/Project/Programme/Head contexts and full 33-field source-derived 2,912 FACT reconciliation; scope handling for 419 multi-candidate and 258 multi-section; 10 coordinate-missing cases; 81 Programme and 30 vote AIA separate methods; stale FY-scoped QA rows; serving data, frontend, hosted CI, scanner/intake, owner production approval. Keep draft PR, frozen/protected/public Sheet and production feed unchanged. Operator output transcribed into `SE03_PDF_ECONOMIC_CANDIDATES_NATIVE_RECEIPT_20261028.json`; full local diagnostic JSON not independently read in this interaction.
