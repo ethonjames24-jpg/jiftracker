@@ -69,3 +69,21 @@ User Mac ran the source-pinned economic-candidate tool, **7/7 GitHub code blob I
 Activity raw candidate geometry distribution: **0 candidates=10, exactly 1=2,364, at least 2=427**, totaling 2,801 Activity records. 2,364 unique geometric detections differ from 2,114 safely eligible unique candidates because 250 were blocked by multi-section context; 427 geometric multiple differ from 419 otherwise-classified multiple because 8 had multi-section context. Records requiring additional source-context work **687 Activity** (419+258+10), plus **81 Programme and 30 AIA**, totaling **798 cases not yet eligible as a unique Activity numeric candidate**. These are **classification/workload counts** and are **not the same list** as historical 112 continuation, 67 economic, 24 programme, and 30 AIA exceptions; they must not be combined by addition.
 
 **Gate CLOSED:** run-time completeness of review-only source PDF economic candidate scan. **Gates OPEN:** independent validation of printed economic amounts within exact Activity/Project/Programme/Head contexts and full 33-field source-derived 2,912 FACT reconciliation; scope handling for 419 multi-candidate and 258 multi-section; 10 coordinate-missing cases; 81 Programme and 30 vote AIA separate methods; stale FY-scoped QA rows; serving data, frontend, hosted CI, scanner/intake, owner production approval. Keep draft PR, frozen/protected/public Sheet and production feed unchanged. Operator output transcribed into `SE03_PDF_ECONOMIC_CANDIDATES_NATIVE_RECEIPT_20261028.json`; full local diagnostic JSON not independently read in this interaction.
+
+## 2026-10-29 — SE-03 real-PDF geometric positioning audit: native PASS / review only
+
+**Owner Mac output now verifies** exact code identities **6/6 PASS**, synthetic tests **10/10 PASS**, accepted private CSV SHA `8ea4d7ac2b94eb5c8f5831da4b4a989e495e172e23dc6dc5269e6e55555c234c` unchanged and official As Passed PDF SHA `32ef2cb30c9498d2c8d9d4597fcaadce9823c13a97fe199acec19247664a3bd6` unchanged. Run result `PDF_GEOMETRY_DIAGNOSTIC_REVIEW_ONLY` across **2,912** FY2026/27 FACT entries. Native local queue reports **798 cases**, with exclusive statuses and per-category source-page counts:
+
+| Review cohort | Cases | Distinct PDF pages for cohort |
+| --- | ---: | ---: |
+| Multiple numeric matches | 419 | 111 |
+| Multi-section source-page context | 258 | 30 |
+| No candidate in existing bounding box | 10 | 8 |
+| Programme source grain requires method | 81 | 14 |
+| Vote AIA source grain requires method | 30 | 30 |
+| **Local geometry review queue** | **798** | **Do not sum distinct-page counts across cohorts** |
+| Unique eligible Activity numeric candidate (separate review-only cohort) | 2,114 | 295 |
+
+The local queue `se03_pdf_geometry_local_queue.json` and shareable summary `se03_pdf_geometry_review_summary.json` were created according to user stdout; **actual file content has not yet been opened independently in this chat**. The diagnostic uses PDF word and heading Y positions; exported observations omit amount values and do not assign canonical Activity/Project/Programme source rows. **No new financial facts, 33-field canonical records, 112/67/24/30 worklist clearance, Sheet writes, PR merge or publication are accepted.**
+
+**Closed:** execution of source-pinned 798-case geometric inventory. **Next:** owner uploads **only** sanitized summary JSON containing max 8 sample FACT identifiers/Y per status. Review source-page geometry examples; develop separately evidenced adjudication rules without automatically selecting repeated economic amount matches. Source receipt: `automation/spending-explorer/se-03-extract-normalize/SE03_GEOMETRY_NATIVE_RECEIPT_20261029.json`. PR #42 remains DRAFT/OPEN/UNMERGED and production NO-GO.
