@@ -1,4 +1,4 @@
-# JIF Monthly Tracker — Official Source Revision Monitor v1.0.3
+# JIF Monthly Tracker — Official Source Revision Monitor v1.0.4
 
 New, isolated monthly-tracker package. Existing CGO/preparation/review/publication workflows and Spending Explorer are unchanged.
 
@@ -39,4 +39,4 @@ The latest configured native export confirms the saved Jamaica timezone, 1200-se
 
 ## October 29 release closeout
 
-Read docs/RELEASE-CLOSEOUT.md first for current gates, then docs/SERIAL-OPERATIONS.md and docs/ROLLBACK.md. The restored real monitor remains unpublished with its daily schedule disabled; the test copy remains unpublished. Older evidence files are chronological snapshots, not current status. Version 1.0.3 consolidates evidence and adds a separately invoked containment script; both importable workflow JSON files and the monitor runtime are unchanged. Do not reimport either JSON for this documentation update. Twenty-five JavaScript methods (including six mocked rollback tests) and four workbook methods are the current check set; see evidence/VALIDATION.md for executed results.
+Read docs/RELEASE-CLOSEOUT.md first for current gates, then docs/SERIAL-OPERATIONS.md and docs/ROLLBACK.md. The restored real monitor remains unpublished with its daily schedule disabled; the test copy remains unpublished. Older evidence files are chronological snapshots, not current status. Version 1.0.3 consolidated native acceptance and added a separately invoked containment script; v1.0.4 records the owner's read-only retention inspection. No execution-data overrides are present in the running container; documented defaults imply pruning enabled, 336 hours (14 days), 10,000 executions maximum. The two importable workflow JSON files and monitor runtime are unchanged. Do not reimport either JSON for this documentation update. Twenty-five JavaScript methods (including six mocked rollback tests) and four workbook methods are the current check set; see evidence/VALIDATION.md for executed results.

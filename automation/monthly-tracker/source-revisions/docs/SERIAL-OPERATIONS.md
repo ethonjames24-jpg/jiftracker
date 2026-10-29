@@ -16,7 +16,7 @@ Duplicate logical observations, missing/mismatched evidence or uncertain commit 
 
 ## Retention disposition
 
-Workflow settings save successful, failed and manual executions. Instance pruning age/count settings have not been inspected; saving settings alone do not prove retention duration. Preserve acceptance receipts, failed-execution details needed for recovery, workflow snapshots and source evidence in the private Drive handoff before pruning can remove them. Archive workbooks and observation records have no automatic deletion step in this package. Do not change global pruning settings as part of this work. Actual instance retention remains an explicit operational unknown to resolve before relying on saved execution links as durable evidence.
+Workflow settings save successful, failed and manual executions. The owner's October 29 read-only check of the running n8n-n8n-1 container returned no EXECUTIONS_DATA_ variables, including file-backed overrides. Under documented n8n environment-variable defaults, pruning is enabled with a 336-hour (14-day) maximum age and a maximum 10,000 executions. This is an inference from the live container environment and official defaults, not a direct internal-setting readout or a guarantee of duration for a particular execution; the count limit may be reached first. Preserve acceptance receipts, failed-execution details needed for recovery, workflow snapshots and source evidence in the private Drive handoff before pruning. Archive workbooks and observation records have no automatic deletion step in this package. Do not change global pruning settings as part of this work.
 
 ## Completion evidence
 

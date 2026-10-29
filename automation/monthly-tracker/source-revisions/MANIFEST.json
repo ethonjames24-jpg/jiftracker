@@ -1,10 +1,10 @@
 {
-  "version": "1.0.3",
+  "version": "1.0.4",
   "scope": "MONTHLY_TRACKER_ONLY",
   "files": {
     "README.md": {
-      "sha256": "e6bd788a89f7eb97efec747d51261365ad4775e26bbba1d9145ff7504cc3220b",
-      "bytes": 6276
+      "sha256": "146ea90e76fbcbea457ef319306f2bab8210f72e728f0c314056574896abe1a1",
+      "bytes": 6501
     },
     "acceptance/JIF_Source_Revisions_ISOLATED_ACCEPTANCE_INACTIVE.json": {
       "sha256": "df46eaf72a56657c98f5e296b90aa2ac68391d05cd467c1197bc762e4c436adb",
@@ -59,20 +59,20 @@
       "bytes": 8273
     },
     "docs/NATIVE-ACCEPTANCE.md": {
-      "sha256": "f08c3e2a38a1cc53d48ca9b7161c806ef52914642d62b6f80ec8bc1fdaa34a22",
-      "bytes": 11532
+      "sha256": "1beed4a9bf5fb9961fd97fc10aa6596ae01de6ee984e3c6a23466e6b574deae5",
+      "bytes": 11853
     },
     "docs/RELEASE-CLOSEOUT.md": {
-      "sha256": "45c6e68fdea99629d16195e13a1fb06a38df56a8f4b44f6a6d330ed6f82659e3",
-      "bytes": 5206
+      "sha256": "64262c3e412f6cd078bb0a994c06bc8568933d8f7161c1576dc6dd175e153c64",
+      "bytes": 5909
     },
     "docs/ROLLBACK.md": {
       "sha256": "9dbfc0061b11be45195744d800e3ee514bd8d7530a53ac674e87e1d58254a64b",
       "bytes": 4234
     },
     "docs/SERIAL-OPERATIONS.md": {
-      "sha256": "338ff6c4ee9bcc25da1d1f23b9066f7f7ae236e24e020eaf223398a7cd7e9b9d",
-      "bytes": 3441
+      "sha256": "0acaa210c0a92f3c35607922e5c30c068f76c2a9b9e6b04506519d087420f389",
+      "bytes": 3670
     },
     "docs/SOURCE-REFERENCES.md": {
       "sha256": "ad320907426fcc0486c7c01601a149213f2492ad4e26a002ef17f74af2cb2907",
@@ -94,9 +94,13 @@
       "sha256": "4a132bb0e1b55750260dd7a45b755b21c6b862b8bed181508df1487050e25a74",
       "bytes": 2495
     },
+    "evidence/RETENTION-20261029.json": {
+      "sha256": "c5cf41975f3939faeea7919f0587db69dbc6967f81cb2c0388c45f78a67a8dfc",
+      "bytes": 1031
+    },
     "evidence/VALIDATION.md": {
-      "sha256": "bc5703a29dd67ce1362238d6bedd0ac15049a8e310ad6d4ca3443e7b0324968b",
-      "bytes": 6031
+      "sha256": "ea99bbe7c5fa05ed7be31bbdd3b65a353f6c8b31486c2c64d8eb9aca3b3dadff",
+      "bytes": 6292
     },
     "evidence/baselines.json": {
       "sha256": "b39b59e21af43f57bd74d584f1bd61f987115133260a0c4cebd1d72ef981ce27",
@@ -155,7 +159,7 @@
       "bytes": 78176
     },
     "package.json": {
-      "sha256": "73b93631ead47e6fef0cbd4052fc2abf5923bcd261a74b03e9b8fb69266ac703",
+      "sha256": "fe62a9cf5a647ccd9077a026defe3fcfccfda8cec561143b9eaa5b15e8b50992",
       "bytes": 242
     },
     "requirements.txt": {

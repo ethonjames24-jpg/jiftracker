@@ -2,7 +2,7 @@
 
 Route: shipping-launch. State: IN PROGRESS. Scope: Monthly Tracker source revisions only; Spending Explorer excluded. Native evidence was supplied by the owner, not run by the assistant.
 
-Current authoritative checkpoint follows. The dated earlier checkpoints at the end are historical; their open/NOT STARTED statements are superseded where explicitly resolved below. Operational restrictions and recovery: SERIAL-OPERATIONS.md and ROLLBACK.md. Release tracking: RELEASE-CLOSEOUT.md.
+Current authoritative checkpoint follows. On October 29 the owner completed a read-only retention check: the running n8n-n8n-1 container exposes no EXECUTIONS_DATA_ overrides; official defaults imply pruning enabled, 336 hours and at most 10,000 executions. This is inferred, not a direct internal-setting readout. The dated earlier checkpoints at the end are historical; their open/NOT STARTED and retention-unknown statements are superseded where explicitly resolved here and in RELEASE-CLOSEOUT.md. Operational restrictions and recovery: SERIAL-OPERATIONS.md and ROLLBACK.md. Release tracking: RELEASE-CLOSEOUT.md.
 
 ## Native closeout checkpoint — 21:42 New York, October 28, 2026
 
