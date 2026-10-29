@@ -4,10 +4,13 @@ set -euo pipefail
 umask 077
 WORK="$HOME/Downloads/JIF_SE03_PDF_Page_Review_20261028"
 mkdir -p "$WORK"
-PIN_COMMIT="3b72fc2a09952e4c56868598c577f1b30f37d2d9"
+PIN_COMMIT="837ada320e2f54835d2ba66f8656e1acb5a21f16"
 RAW="https://raw.githubusercontent.com/ethonjames24-jpg/jiftracker/$PIN_COMMIT/automation/spending-explorer/se-03-extract-normalize"
 for file in se03_private_fact_preflight.py test_se03_private_fact_preflight.py; do
-  curl --fail --location --silent --show-error --retry 2 --max-time 90 "$RAW/$file" -o "$WORK/$file"
+  if ! curl --fail --location --silent --show-error --retry 2 --max-time 90 "$RAW/$file" -o "$WORK/$file"; then
+    echo "FAILED_CLOSED_PINNED_SOURCE_FETCH file=$file commit=$PIN_COMMIT" >&2
+    exit 2
+  fi
 done
 python3 - "$WORK" <<'PY'
 import hashlib,sys
