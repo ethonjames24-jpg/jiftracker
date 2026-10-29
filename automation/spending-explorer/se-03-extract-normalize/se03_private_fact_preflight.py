@@ -165,6 +165,5 @@ def main() -> int:
     print("REPORT_WRITTEN="+str(a.report))
     return 0 if result["result"] == "FACT_REVIEW_QUEUE_PREFLIGHT_PASS_REVIEW_ONLY" else 2
 
-
 if __name__=="__main__":
     raise SystemExit(main())
