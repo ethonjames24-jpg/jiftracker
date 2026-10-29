@@ -44,3 +44,9 @@ Scope: annual government Spending Explorer, not the separately published monthly
 - Current model release state: `MODEL_APPROVED_RELEASE_NOT_AUTHORIZED`; prior v1.1 versioned feed release is not evidence of Spending Explorer frontend production promotion.
 
 No work in this gate register changes frozen, private operational or public Sheets, user subscriptions, official Ministry data, active n8n workflow, scanner runtime or Cloudflare Pages production deployment. **Full completion requires new receipts; do not mark done from documentation alone.**
+
+## 2026-10-28 operational update — private FACT preflight now ACCEPTED (review only)
+
+User Mac returned `FACT_REVIEW_QUEUE_PREFLIGHT_PASS_REVIEW_ONLY` with 2/2 pinned code blobs PASS, 10/10 tests PASS, **2,912 FY26 / 2,900 FY25 skipped**, FY26 grains 2,801 Activity/81 Programme/30 AIA, 114 Capital, **0 fatal structural errors** and export SHA-256 `8ea4d7ac2b94eb5c8f5831da4b4a989e495e172e23dc6dc5269e6e55555c234c`. Prior pending private CSV and missing download gates CLOSED. Distinguish 269 overlapping multi-section review flags from 269 confirmed financial errors. The original 112/67/24/30 specific worklists and full 2,912/33-field source parity remain OPEN.
+
+NEXT source gate: the versioned read-only PDF economic-cell candidate audit, pinned to seven source blobs and same private CSV SHA; 10 local synthetic PASS and 80 configured hosted test target, but complete source scan and hosted CI PENDING. Run `run_se03_pdf_economic_candidates_native.sh` from the exact reviewed GitHub PR #42 branch commit and return sanitized summary, not the raw CSV. No automatic financial acceptance/public release.
