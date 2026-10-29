@@ -1,0 +1,34 @@
+# SE-03 private FACT export and local-only preflight
+
+**Approved status:** local proof-of-concept preflight built and **10/10 synthetic tests PASS**; not run on the user's private FY26 CSV, and source-to-budget value matches are **NOT** certified. Report-only, no production release. This is a staging/operational runbook; the preflight code is distributed as a standalone ChatGPT conversation artifact, not yet merged or installed in an n8n workflow.
+
+## Grounded source and workbook contract
+
+Connected governed workbook (read only): `1xaNCRt_vMPxBjB56SuqoUKOyXRpsHnd5lX6t06hsQX0`, visible tab **FACT_Government_Spending**. Its export has **exactly 33 ordered columns** from `fact_id` through `budget_type`; row grain: 2,912 FY26 FACTs, 2,801 `Activity`, 81 `Programme`, 30 `Vote`/AIA, of which 114 rows are Capital Budget 6. Capital PDF prints `Project 29532` while the canonical source_row text says `Activity 29532`; preserve that distinction and require source evidence. Frozen source `SRC_EOE_2026_27_PASSED`, version `AS_PASSED`.
+
+## Minimal manual operation
+
+1. Open the operational Google Sheet and activate **FACT_Government_Spending** tab, not the whole workbook or monthly tracker.
+2. Use File → Download → Comma-separated values (.csv) **for current sheet**. Keep it in private Mac Downloads; do not copy/upload the export to GitHub, public Sheets or chat.
+3. Save the provided local `jif_se03_private_fact_preflight_20261028.py` artifact to Downloads. Run:
+
+```bash
+python3 "$HOME/Downloads/jif_se03_private_fact_preflight_20261028.py" \
+  --fact-csv "$HOME/Downloads/FACT_Government_Spending.csv" \
+  --inventory-json "$HOME/Downloads/JIF_SE03_PDF_Page_Review_20261028/se03_pdf_page_inventory_capital_v2_review_only.json" \
+  --report "$HOME/Downloads/JIF_SE03_PDF_Page_Review_20261028/se03_fact_private_review_summary.json"
+```
+
+If the actual CSV is named differently, replace the `--fact-csv` path with its actual file path. The preflight reads and SHA-256-hashes the private CSV; only a **status-count summary, failure codes and sample FACT identifiers** are printed and written locally. It asserts source PDF inventory hash/page count, exact ordered header, unique IDs, date/source identity, source page, FY26 baseline totals, budget suffix, AIA signed-negative status and review-only printed Activity/Project/Programme grain. It never validates PDF economic-column coordinates or financial row acceptance.
+
+**Expected report outcome:** either `FACT_REVIEW_QUEUE_PREFLIGHT_PASS_REVIEW_ONLY` with unresolved categories, or `FAILED_CLOSED` with exact structural reasons. Both outcomes mean `publication_authorized=false`, `full_2912_row_source_reconstruction_accepted=false`.
+
+4. Return **only the sanitized command output or summary JSON**, not the raw private CSV. If a source-context error occurs, investigate the relevant PDF and row; do not auto-correct. Next phase is independently source-derived 2,912/33-field amount and hierarchy reconciliation and historical 112/67/24/30 worklists.
+
+## Current engineering validation
+
+Local prototype `jif_se03_private_fact_preflight_20261028.py` (169 lines, Git blob SHA-1 `7cf3a77bb58ecada94e8a402dc07f8708a01ab16`) compiled, 10/10 synthetic tests PASS. Synthetic cases: Capital source Project vs canonical Activity, absent Head, Head-vote suffix mismatch, source change, wrong PDF pin, duplicate FACT IDs, positive AIA, wrong 33-column header, NaN amount, and refusal to certify financial reconstruction. **No native real-data execution yet.** Tool script is local conversation artifact; it is not an approved PR code module or a completed CI result. This runbook deliberately does not treat a preflight PASS as full source matching.
+
+## Full project status
+
+Refer to `SE_COMPLETION_GATE_REGISTER_20261028.md`. Three stale `QA_HIER_005–007` failures are scope-based: 316 FY26 subprogrammes + 32 FY25 = 348 all-year, 766 FY26 activity/projects + 74 FY25 = 840 all-year. Historical check statuses still require controlled versioned FY-scoped correction; no live sheet mutation authorized. Draft PR #42 remains unmerged and release NO-GO.
