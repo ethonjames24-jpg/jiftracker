@@ -1,0 +1,16 @@
+{
+  "guard": {
+    "name": "JIF SE02 Archive Guard",
+    "columns": ["guard_key", "schema_version", "lock_token", "holder_execution_id", "holder_workflow_id", "acquired_at"],
+    "types": "all string",
+    "seed": "guard-initial-row.csv",
+    "required_rows": 1
+  },
+  "reservations": {
+    "name": "JIF SE02 Archive Reservations",
+    "columns": ["batch_key", "reservation_json"],
+    "types": "all string",
+    "required_initial_rows": 0,
+    "writes": "insert only under SE02 guard; no update/delete"
+  }
+}

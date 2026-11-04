@@ -1,0 +1,2 @@
+guard_key,schema_version,lock_token,holder_execution_id,holder_workflow_id,acquired_at
+JIF_SE02_ARCHIVE_GLOBAL,jif-se02-archive-v1,UNLOCKED,NONE,NONE,NONE
