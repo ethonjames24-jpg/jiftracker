@@ -56,3 +56,49 @@ peer review and controlled human release gates. The prior approved CSV is
 incomplete and remains rejected as a canonical source. Existing historical QA
 evidence is preserved. NO MERGE / DEPLOY / WORKFLOW ACTIVATION.
 
+## Source-only PDF financial candidate — November 8, 2026
+
+`se03_pdf_source_extract.py` reads the pinned 716-page As Passed PDF directly.
+It takes **no staging, crosswalk or FACT input**. Runtime geometry is pinned to
+PyMuPDF 1.26.6. It locates the current-year column from the printed 2026-2027
+and 2027-2028 header centers; complete numeric words must fit inside that cell.
+Crossing/ambiguous numeric tokens, conflicting headers, missing units or broken
+hierarchy/continuity stop extraction. Repeated identical header layouts agree;
+conflicting layouts do not. A Sub Programme heading closes prior Activity scope.
+
+```bash
+python3 se03_pdf_source_extract.py --pdf /private/AsPassed.pdf \
+  --out-dir /private/new-empty-source-review-directory
+```
+
+Output financial records stay local. Programme residuals are explicitly
+**printed programme/economic amount minus all source-extracted detail amounts**;
+they are not represented as printed Activity cells. The two agreeing printed
+AIA summaries per vote produce one negative offset, with both occurrences kept
+as lineage. Grand totals are rejection controls applied after extraction; they
+do not select cells, fill gaps or supply amounts.
+
+Actual source run produced 2,912 candidate records (2,809 Activity/Project,
+73 Programme residual, 30 vote AIA), exact 61/2,821/30 measures and approved
+gross/AIA/net controls. This advances the prior pending source-only financial
+extraction gate; full 33-field reconstruction and release remain unaccepted.
+
+Compare the already extracted candidate separately:
+
+```bash
+python3 se03_pdf_source_compare.py \
+  --candidate-jsonl /private/source_records_LOCAL_ONLY.jsonl \
+  --candidate-sha256 CANDIDATE_SHA256 \
+  --frozen-csv /private/frozen_FACT.csv --frozen-sha256 FROZEN_SHA256
+```
+
+The comparison reports **2,904 exact nine-field matches and eight equal-amount
+grain/page differences**: seven source Activity rows on physical page 446
+correspond to frozen Programme residual rows on page 445; one Activity row on
+page 534 corresponds to a frozen Programme residual on page 532. All 1,134
+Programme/economic financial groups match, including AIA. This is not a derived
+public DS/metadata acceptance. The comparator deliberately returns exit **2**
+for `SOURCE_TOTALS_MATCH_IDENTITY_REVIEW_REQUIRED`; no automatic remapping or
+frozen-model change occurs. See `SE03_SOURCE_PDF_REVIEW_20261108.md` and its
+aggregate receipt for exact evidence, review findings and unresolved decisions.
+

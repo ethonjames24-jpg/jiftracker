@@ -1,0 +1,172 @@
+{
+  "base_commit": "a8739d550f08878f25a58263aaac4dcad369e8ee",
+  "checkpoint": "JIF-SE03-SOURCE-PDF-FINANCIAL-CANDIDATE-20261108",
+  "code_sha256": {
+    "se03_pdf_source_compare.py": "16d45a31daf42b4189c321c283c38f1e7661a99928dcc940d8c31fc770bedb3f",
+    "se03_pdf_source_extract.py": "034923aa5b26871eae1dfd9058cc3d49432cc8d6f663015feda462f5463b3dae",
+    "test_se03_pdf_source_compare.py": "e81a0deacf6b2ee54c8ade922e3a4980ef60c81515ba751e229ed71f69bd5ae7",
+    "test_se03_pdf_source_extract.py": "0db98c495b851c99cb76b9a861216913d96fd6de96d28dabd934b8a71c8c8205"
+  },
+  "comparison": {
+    "candidate_sha256": "b927e1d4488286b19d39399f58f04a7d66b407fe7162cdd4c46fa0e94b1a7896",
+    "exact_shared_field_matches": 2904,
+    "frozen_grain_counts": {
+      "ACTIVITY": 2801,
+      "PROGRAMME": 81,
+      "VOTE": 30
+    },
+    "frozen_missing_signatures": 8,
+    "frozen_rows": 2912,
+    "frozen_sha256": "ee8862f085244219328ca9703c9d3e5496cca8e6bb7c1aa22b28e64368f48e2d",
+    "full_33_field_fact_parity_verified": false,
+    "identity_differences": [
+      {
+        "amount_equal": true,
+        "economic_code": "21",
+        "frozen_page": "445",
+        "kind": "SOURCE_ACTIVITY_VS_FROZEN_PROGRAMME",
+        "programme_key": "40000_04_02_001",
+        "source_activity_key": "40000_04_02_001_01_10005",
+        "source_page": "446"
+      },
+      {
+        "amount_equal": true,
+        "economic_code": "22",
+        "frozen_page": "445",
+        "kind": "SOURCE_ACTIVITY_VS_FROZEN_PROGRAMME",
+        "programme_key": "40000_04_02_001",
+        "source_activity_key": "40000_04_02_001_01_10005",
+        "source_page": "446"
+      },
+      {
+        "amount_equal": true,
+        "economic_code": "23",
+        "frozen_page": "445",
+        "kind": "SOURCE_ACTIVITY_VS_FROZEN_PROGRAMME",
+        "programme_key": "40000_04_02_001",
+        "source_activity_key": "40000_04_02_001_01_10005",
+        "source_page": "446"
+      },
+      {
+        "amount_equal": true,
+        "economic_code": "24",
+        "frozen_page": "445",
+        "kind": "SOURCE_ACTIVITY_VS_FROZEN_PROGRAMME",
+        "programme_key": "40000_04_02_001",
+        "source_activity_key": "40000_04_02_001_01_10005",
+        "source_page": "446"
+      },
+      {
+        "amount_equal": true,
+        "economic_code": "25",
+        "frozen_page": "445",
+        "kind": "SOURCE_ACTIVITY_VS_FROZEN_PROGRAMME",
+        "programme_key": "40000_04_02_001",
+        "source_activity_key": "40000_04_02_001_01_10005",
+        "source_page": "446"
+      },
+      {
+        "amount_equal": true,
+        "economic_code": "29",
+        "frozen_page": "445",
+        "kind": "SOURCE_ACTIVITY_VS_FROZEN_PROGRAMME",
+        "programme_key": "40000_04_02_001",
+        "source_activity_key": "40000_04_02_001_01_10005",
+        "source_page": "446"
+      },
+      {
+        "amount_equal": true,
+        "economic_code": "32",
+        "frozen_page": "445",
+        "kind": "SOURCE_ACTIVITY_VS_FROZEN_PROGRAMME",
+        "programme_key": "40000_04_02_001",
+        "source_activity_key": "40000_04_02_001_01_10005",
+        "source_page": "446"
+      },
+      {
+        "amount_equal": true,
+        "economic_code": "27",
+        "frozen_page": "532",
+        "kind": "SOURCE_ACTIVITY_VS_FROZEN_PROGRAMME",
+        "programme_key": "41051_10_04_326",
+        "source_activity_key": "41051_10_04_326_24_12816",
+        "source_page": "534"
+      }
+    ],
+    "identity_differences_approved": false,
+    "programme_economic_financial_groups_compared": 1134,
+    "programme_economic_financial_groups_different": 0,
+    "publication_authorized": false,
+    "result": "SOURCE_TOTALS_MATCH_IDENTITY_REVIEW_REQUIRED",
+    "source_candidate_rows": 2912,
+    "source_extra_signatures": 8,
+    "source_grain_counts": {
+      "ACTIVITY": 2809,
+      "PROGRAMME": 73,
+      "VOTE": 30
+    },
+    "unclassified_frozen_missing_signatures": 0,
+    "unclassified_source_extra_signatures": 0
+  },
+  "comparison_cli_exit": 2,
+  "frozen_model_modified": false,
+  "full_33_field_reconstruction_verified": false,
+  "identity_differences_approved": false,
+  "independent_review": {
+    "findings_repaired": 2,
+    "repair_verification": "Boundary reviewer independently reran 37 tests and both original reproducers.",
+    "review_passes": 2,
+    "scope": "Four new code/test files and comparator dependencies; focused tests; candidate/comparison receipts. Not every PDF cell visually rechecked by reviewers."
+  },
+  "n8n_or_scanner_executed": false,
+  "operational_model_modified": false,
+  "public_feed_modified": false,
+  "publication_authorized": false,
+  "review_date_local": "2026-11-08",
+  "runtime": {
+    "PyMuPDF": "1.26.6",
+    "python": "3.12.14"
+  },
+  "source_run": {
+    "aia_jmd": -48730045000,
+    "fact_or_staging_input_used_for_extraction": false,
+    "full_33_field_fact_reconstruction_verified": false,
+    "grain_counts": {
+      "ACTIVITY": 2809,
+      "PROGRAMME": 73,
+      "VOTE": 30
+    },
+    "gross_jmd": 1490511399000,
+    "measure_counts": {
+      "APPROPRIATIONS_IN_AID": 30,
+      "AUTHORIZED_BY_LAW": 61,
+      "VOTED_ESTIMATE": 2821
+    },
+    "net_jmd": 1441781354000,
+    "pages_examined": 716,
+    "printed_aia_occurrences": 60,
+    "programme_summary_cells": 1104,
+    "publication_authorized": false,
+    "pymupdf_version": "1.26.6",
+    "records": 2912,
+    "result": "SOURCE_FINANCIAL_EXTRACTION_REVIEW_ONLY",
+    "source_pdf_bytes": 23172267,
+    "source_pdf_sha256": "32ef2cb30c9498d2c8d9d4597fcaadce9823c13a97fe199acec19247664a3bd6",
+    "source_records_sha256": "b927e1d4488286b19d39399f58f04a7d66b407fe7162cdd4c46fa0e94b1a7896"
+  },
+  "tests": {
+    "failures_final": 0,
+    "hosted_ci_verified": false,
+    "independent_review_regression_red_phase": "Two new focused tests failed before boundary-crossing and sub-programme-scope repairs. Both pass after repair.",
+    "initial_full_source_failure": "PRINTED_FISCAL_COLUMN_HEADERS_NOT_UNIQUE at physical page171; repeated identical source headers now deduplicated by geometry, conflicting layouts rejected.",
+    "new_source_comparator": 7,
+    "new_source_extractor": 30,
+    "prior_unique_tests": 145,
+    "total_unique_final": 182
+  },
+  "visual_source_pages_inspected": [
+    69,
+    446,
+    534
+  ]
+}
