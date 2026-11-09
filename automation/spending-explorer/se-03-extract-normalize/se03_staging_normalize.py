@@ -55,7 +55,7 @@ def parse_csv(path: Path, required: tuple[str, ...]) -> tuple[bytes, list[dict[s
 
 def exact_amount(value: str) -> int:
     s = value.strip()
-    if not s or not re.fullmatch(r"-?[0-9][0-9,]*", s):
+    if not s or not re.fullmatch(r"-?(?:[0-9]+|[0-9]{1,3}(?:,[0-9]{3})+)", s):
         raise Rejected("INVALID_JMD_AMOUNT")
     try:
         number = Decimal(s.replace(",", ""))
@@ -72,10 +72,14 @@ def activity_crosswalk(rows: list[dict[str, str]]) -> dict[str, str]:
         old = row["old_activity_id"].strip()
         new = row["resolved_activity_id"].strip()
         status = row["review_status"].strip()
-        if not old or not new or not status.endswith("QA_PASS"):
+        if not old or not new or status != "RESOLVED_QA_PASS":
             continue
-        if not old.startswith("ACT_") or not new.startswith("ACT_") or "_NA_" in new:
+        legacy = re.fullmatch(r"ACT_([0-9]+_[0-9]+_[0-9]+_[0-9]+)_NA_([0-9]+)", old)
+        resolved = re.fullmatch(r"ACT_([0-9]+_[0-9]+_[0-9]+_[0-9]+)_([0-9]+)_([0-9]+)", new)
+        if not legacy or not resolved:
             raise Rejected("CROSSWALK_UNRESOLVED")
+        if (legacy[1], legacy[2]) != (resolved[1], resolved[3]):
+            raise Rejected("CROSSWALK_CHANGES_ACTIVITY_IDENTITY")
         previous = out.get(old)
         if previous is not None and previous != new:
             raise Rejected("AMBIGUOUS_CROSSWALK")
@@ -119,9 +123,12 @@ def normalize(staging: list[dict[str, str]], crosswalk: dict[str, str],
                 if not canonical_id:
                     raise Rejected("UNRESOLVED_ACTIVITY_SUBPROGRAMME")
                 canonical_key = canonical_id[4:]
-            if etype == "A" and len(canonical_key.split("_")) != 6:
+            components = canonical_key.split("_")
+            if etype == "A" and (len(components) != 6 or
+                                    not all(re.fullmatch(r"[0-9]+", p) for p in components)):
                 raise Rejected("INVALID_ACTIVITY_KEY_STRUCTURE")
-            if etype == "P" and len(canonical_key.split("_")) != 4:
+            if etype == "P" and (len(components) != 4 or
+                                    not all(re.fullmatch(r"[0-9]+", p) for p in components)):
                 raise Rejected("INVALID_PROGRAMME_KEY_STRUCTURE")
             if etype == "V" and not re.fullmatch(r"\d{4,5}",raw_key):
                 raise Rejected("INVALID_VOTE_KEY_STRUCTURE")

@@ -1,0 +1,134 @@
+{
+  "checkpoint": "JIF-SE03-STAGING-CONNECTED-PARITY-20261108",
+  "code_sha256": {
+    "se03_staging_fact_parity.py": "38fb5f33870ffc3abe04e1ff418bc49abbe561567ad99cf68d161d69eb7ab0c0",
+    "se03_staging_normalize.py": "ccf24928e7092e600214f9c00057e2823e2ecc07584f8742fc52fbb1dc138cfb",
+    "test_se03_staging_fact_parity.py": "27ce4a826e53e39454a529d801c2fd62cb6a201d05ea6b841b2a605e44822371",
+    "test_se03_staging_normalize.py": "9b99fb397883e37914971fab115a2b0f007cd9979368ce0de375133b1de925ed"
+  },
+  "eaa_resume_authorized": false,
+  "historical_parity": {
+    "existing_fact_table_comparison": {
+      "changed_rows": 0,
+      "compared_field_count": 33,
+      "extra_ids": 0,
+      "frozen_rows": 2912,
+      "missing_ids": 0,
+      "operational_fy26_rows": 2912,
+      "original_pdf_extraction_verified": false,
+      "release_authorized": false,
+      "result": "FACT_TABLE_PASS_REVIEW_ONLY"
+    },
+    "input_sha256": {
+      "crosswalk": "6c132071fd1bddd38d807c98eae28044de237987f8c8a6644c62fa3ce1b5ba23",
+      "frozen": "ee8862f085244219328ca9703c9d3e5496cca8e6bb7c1aa22b28e64368f48e2d",
+      "operational": "7b2817004d54e3a321dd4fe11c67bbfc6f5b2901342beb5439b83f20bdaf172a",
+      "staging": "6b4b3f23cf28de6c4972d458513cc4ecbafd1c6ce7af976a6a91ecd4f2c7378a"
+    },
+    "normalization": {
+      "aia_jmd": -48730045000,
+      "errors": {},
+      "fact_record_parity_verified": false,
+      "gross_jmd": 1490511399000,
+      "measure_counts": {
+        "APPROPRIATIONS_IN_AID": 30,
+        "AUTHORIZED_BY_LAW": 61,
+        "VOTED_ESTIMATE": 2821
+      },
+      "net_jmd": 1441781354000,
+      "original_pdf_extraction_verified": false,
+      "public_release_authorized": false,
+      "record_count": 2912,
+      "source_rows_read": 2912,
+      "status": "NORMALIZED_REVIEW_ONLY"
+    },
+    "original_pdf_extraction_verified": false,
+    "release_authorized": false,
+    "result": "HISTORICAL_STAGING_PARITY_REVIEW_ONLY",
+    "staging_projection": {
+      "duplicate_frozen_signatures": 0,
+      "duplicate_normalized_signatures": 0,
+      "extra_signatures": 0,
+      "frozen_rows": 2912,
+      "full_33_field_staging_parity_verified": false,
+      "missing_signatures": 0,
+      "normalized_rows": 2912,
+      "original_pdf_extraction_verified": false,
+      "projection_fields": [
+        "source_id",
+        "fiscal_year",
+        "measure_type",
+        "entity_type",
+        "canonical_entity_key",
+        "economic_code",
+        "amount_jmd",
+        "source_page",
+        "recurrent_or_capital"
+      ],
+      "release_authorized": false,
+      "result": "PROJECTION_PASS_REVIEW_ONLY"
+    }
+  },
+  "implementation_base": "351099429598fadc33df660b2c9e88a269d3e964",
+  "production_changed": false,
+  "provenance": "Bounded read-only connected Google Sheets FORMATTED_VALUE capture, locally serialized CSV with trailing cells padded to header width. Not original operator-export bytes; not an atomic cross-workbook snapshot. No official PDF read in this checkpoint.",
+  "public_release_authorized": false,
+  "review_date_local": "2026-11-08",
+  "route_state": "IN PROGRESS",
+  "runtime": {
+    "python": "3.12.14"
+  },
+  "se04_multiyear": {
+    "errors": {},
+    "full_source_extraction_tested": false,
+    "private_sheet_live_readback_tested_by_this_cli": false,
+    "public_serving_parity_tested_by_this_cli": false,
+    "release_authorized": false,
+    "result": "QA_PASS_REVIEW_ONLY",
+    "sha256": "7b2817004d54e3a321dd4fe11c67bbfc6f5b2901342beb5439b83f20bdaf172a",
+    "years": {
+      "2025/26": {
+        "aia_jmd": -49133377000,
+        "blank_activity_rows_in_mixed_grain": 31,
+        "blank_aia_source_pages": 31,
+        "blank_subprogramme_rows_in_mixed_grain": 31,
+        "gross_jmd": 1309182355000,
+        "measure_counts": {
+          "APPROPRIATIONS_IN_AID": 31,
+          "AUTHORIZED_BY_LAW": 64,
+          "VOTED_ESTIMATE": 2805
+        },
+        "net_jmd": 1260048978000,
+        "rows": 2900
+      },
+      "2026/27": {
+        "aia_jmd": -48730045000,
+        "blank_activity_rows_in_mixed_grain": 111,
+        "blank_aia_source_pages": 0,
+        "blank_subprogramme_rows_in_mixed_grain": 111,
+        "gross_jmd": 1490511399000,
+        "measure_counts": {
+          "APPROPRIATIONS_IN_AID": 30,
+          "AUTHORIZED_BY_LAW": 61,
+          "VOTED_ESTIMATE": 2821
+        },
+        "net_jmd": 1441781354000,
+        "rows": 2912
+      }
+    }
+  },
+  "source_first_exceptions_closed": false,
+  "source_reconstruction_2912x33_verified": false,
+  "tests": {
+    "failures_final": 0,
+    "hosted_ci_verified": false,
+    "independent_peer_review_performed": false,
+    "new_parity": 12,
+    "original_normalizer": 14,
+    "prior_se03": 80,
+    "red_phase": "New regressions initially produced 9 failing subcases across four test methods before repair.",
+    "revised_normalizer": 19,
+    "se04": 34,
+    "total_final_suite": 145
+  }
+}

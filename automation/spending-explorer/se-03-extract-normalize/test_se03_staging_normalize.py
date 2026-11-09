@@ -78,5 +78,40 @@ class Tests(unittest.TestCase):
         self.assertEqual(receipt["status"],"FAILED_CLOSED")
         self.assertIn("EXPECTED_ROW_COUNT_MISMATCH",receipt["errors"])
 
+    def test_status_suffix_is_not_review_approval(self):
+        for status in ("NOT_QA_PASS", "REJECTED_QA_PASS", "QA_PASS"):
+            with self.subTest(status=status):
+                mapping = activity_crosswalk([{
+                    "old_activity_id": "ACT_01000_01_01_163_NA_10005",
+                    "resolved_activity_id": "ACT_01000_01_01_163_01_10005",
+                    "review_status": status,
+                }])
+                _, receipt = normalize([
+                    row("V", "A", "01000_01_01_163_NA_10005")
+                ], mapping, False)
+                self.assertEqual(receipt["status"], "FAILED_CLOSED")
+
+    def test_mapping_cannot_change_programme_or_activity(self):
+        for target in ("ACT_02000_01_01_163_01_10005",
+                       "ACT_01000_01_01_163_01_10006"):
+            with self.subTest(target=target), self.assertRaises(Rejected):
+                activity_crosswalk([{
+                    "old_activity_id": "ACT_01000_01_01_163_NA_10005",
+                    "resolved_activity_id": target,
+                    "review_status": "RESOLVED_QA_PASS",
+                }])
+
+    def test_empty_activity_key_components_rejected(self):
+        _, receipt = normalize([row(key="01000__01_163_01_10001")], {}, False)
+        self.assertEqual(receipt["status"], "FAILED_CLOSED")
+
+    def test_malformed_grouped_amount_rejected(self):
+        for value in ("1,,000", "100,", "1,00"):
+            with self.subTest(value=value), self.assertRaises(Rejected):
+                exact_amount(value)
+
+    def test_valid_grouped_amount(self):
+        self.assertEqual(exact_amount("-1,234,567"), -1234567)
+
 if __name__=="__main__":
     unittest.main()

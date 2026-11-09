@@ -3,6 +3,9 @@ name: JIF SE-03 review-only tests
 on:
   pull_request:
     paths:
+      - 'automation/spending-explorer/se-03-extract-normalize/se03_staging*.py'
+      - 'automation/spending-explorer/se-03-extract-normalize/test_se03_staging*.py'
+      - 'automation/spending-explorer/se-04-reconcile-qa/*.py'
       - 'automation/spending-explorer/se-03-extract-normalize/se03_source_completeness.py'
       - 'automation/spending-explorer/se-03-extract-normalize/test_se03_source_completeness.py'
       - 'automation/spending-explorer/se-03-extract-normalize/se03_pdf_continuation_review.py'
@@ -40,3 +43,12 @@ jobs:
           python -m unittest -v test_se03_source_completeness test_se03_pdf_continuation_review test_se03_pdf_page_inventory test_se03_private_fact_preflight test_se03_pdf_economic_review
       - name: No production effects
         run: echo 'READ-ONLY REVIEW: no official source acquisition, public writes, secrets, deploy, merge or release authorization.'
+      - name: Run historical staging normalization and projection tests
+        working-directory: automation/spending-explorer/se-03-extract-normalize
+        run: |
+          python -m py_compile se03_staging_normalize.py se03_staging_fact_parity.py
+          python -m unittest -v test_se03_staging_normalize test_se03_staging_fact_parity
+      - name: Run offline SE-04 financial-control tests
+        working-directory: automation/spending-explorer/se-04-reconcile-qa
+        run: python -m unittest -v test_se04_multiyear test_se04_reconcile
+
