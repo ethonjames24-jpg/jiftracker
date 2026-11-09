@@ -1,0 +1,77 @@
+{
+  "profile_id": "SE03_FROZEN_V1_COMPAT_20261109_V1",
+  "scope": "Owner-approved offline compatibility development/review; no frozen-model adoption or release.",
+  "source_id": "SRC_EOE_2026_27_PASSED",
+  "fiscal_year": "2026/27",
+  "candidate_sha256": "b927e1d4488286b19d39399f58f04a7d66b407fe7162cdd4c46fa0e94b1a7896",
+  "frozen_csv_sha256": "ee8862f085244219328ca9703c9d3e5496cca8e6bb7c1aa22b28e64368f48e2d",
+  "measure_type": "VOTED_ESTIMATE",
+  "recurrent_or_capital": "RECURRENT",
+  "rules": [
+    {
+      "rule_id": "COMPAT_MLSS_21",
+      "source_activity_key": "40000_04_02_001_01_10005",
+      "economic_code": "21",
+      "source_page": "446",
+      "canonical_programme_key": "40000_04_02_001",
+      "canonical_reference_page": "445"
+    },
+    {
+      "rule_id": "COMPAT_MLSS_22",
+      "source_activity_key": "40000_04_02_001_01_10005",
+      "economic_code": "22",
+      "source_page": "446",
+      "canonical_programme_key": "40000_04_02_001",
+      "canonical_reference_page": "445"
+    },
+    {
+      "rule_id": "COMPAT_MLSS_23",
+      "source_activity_key": "40000_04_02_001_01_10005",
+      "economic_code": "23",
+      "source_page": "446",
+      "canonical_programme_key": "40000_04_02_001",
+      "canonical_reference_page": "445"
+    },
+    {
+      "rule_id": "COMPAT_MLSS_24",
+      "source_activity_key": "40000_04_02_001_01_10005",
+      "economic_code": "24",
+      "source_page": "446",
+      "canonical_programme_key": "40000_04_02_001",
+      "canonical_reference_page": "445"
+    },
+    {
+      "rule_id": "COMPAT_MLSS_25",
+      "source_activity_key": "40000_04_02_001_01_10005",
+      "economic_code": "25",
+      "source_page": "446",
+      "canonical_programme_key": "40000_04_02_001",
+      "canonical_reference_page": "445"
+    },
+    {
+      "rule_id": "COMPAT_MLSS_29",
+      "source_activity_key": "40000_04_02_001_01_10005",
+      "economic_code": "29",
+      "source_page": "446",
+      "canonical_programme_key": "40000_04_02_001",
+      "canonical_reference_page": "445"
+    },
+    {
+      "rule_id": "COMPAT_MLSS_32",
+      "source_activity_key": "40000_04_02_001_01_10005",
+      "economic_code": "32",
+      "source_page": "446",
+      "canonical_programme_key": "40000_04_02_001",
+      "canonical_reference_page": "445"
+    },
+    {
+      "rule_id": "COMPAT_CPFSA_27",
+      "source_activity_key": "41051_10_04_326_24_12816",
+      "economic_code": "27",
+      "source_page": "534",
+      "canonical_programme_key": "41051_10_04_326",
+      "canonical_reference_page": "532"
+    }
+  ],
+  "publication_authorized": false
+}

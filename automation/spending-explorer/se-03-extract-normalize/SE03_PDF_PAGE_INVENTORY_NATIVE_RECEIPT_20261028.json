@@ -1,0 +1,58 @@
+{
+  "receipt_id": "JIF-SE03-PDFPAGE-2026-10-28-NATIVE",
+  "source": "owner-supplied Mac Terminal stdout, not a GitHub CI artifact",
+  "source_code_commit": "e1364db149bc0ff3d6d28b44c6e2aff70be2feaa",
+  "source_git_blobs": {
+    "se03_pdf_page_inventory.py": "115310bb04a2408c0faa089c8f785258d2af6f2c",
+    "test_se03_pdf_page_inventory.py": "ea36d52498ad7fd7445d85d91dd6441d6c326b8e",
+    "se03_pdf_continuation_review.py": "ffc8aa923928a89b1cd19373581def5b035d11f2"
+  },
+  "identity": "SOURCE_CHECKOUT_IDENTITY=PASS",
+  "synthetic_tests": {
+    "count": 16,
+    "passed": 16,
+    "failed": 0,
+    "output": "Ran 16 tests in 0.002s; OK"
+  },
+  "dependency": {
+    "name": "PyMuPDF",
+    "reported_version": "2.0",
+    "import": "PASS",
+    "python_import_alias": "fitz",
+    "warning": "FutureWarning: fitz API deprecated; use import pymupdf in future."
+  },
+  "controlling_pdf": {
+    "source_name": "FY2026/27 As Passed Estimates of Expenditure",
+    "bytes": 23172267,
+    "sha256": "32ef2cb30c9498d2c8d9d4597fcaadce9823c13a97fe199acec19247664a3bd6",
+    "identity": "PASS",
+    "pages": 716
+  },
+  "execution": {
+    "result": "PDF_PAGE_INVENTORY_REVIEW_ONLY",
+    "page_inventory_record_count": 716,
+    "physical_pages": 716,
+    "review_queue_records": 0,
+    "queue_status_counts": {},
+    "fact_csv_provided": false,
+    "stdout_end": "SE03_PDF_PAGE_INVENTORY=PASS_REVIEW_ONLY",
+    "report_location": "~/Downloads/JIF_SE03_PDF_Page_Review_20261028/se03_pdf_page_inventory_review_only.json"
+  },
+  "gate_disposition": "PAGE_INVENTORY_NATIVE_EXECUTION_ACCEPTED_REVIEW_ONLY",
+  "not_verified": [
+    "per-page heading extraction coverage counts (not included in stdout)",
+    "112 continuation case decisions (no private FACT CSV)",
+    "67 unmatched economic candidates",
+    "24 programme-grain entries",
+    "30 vote-level AIA entries",
+    "independent As Passed extraction of all 2912 FY2026/27 FACT records",
+    "full 33-field source parity",
+    "GitHub Actions hosted CI"
+  ],
+  "fixed_controls": {
+    "canonical_2912_source_reconstruction_accepted": false,
+    "publication_authorized": false,
+    "merge_or_deploy_authorized": false
+  },
+  "evidence_nature": "Transcribed owner-supplied terminal output only. This JSON record contains no private FACT dataset or full source PDF content."
+}

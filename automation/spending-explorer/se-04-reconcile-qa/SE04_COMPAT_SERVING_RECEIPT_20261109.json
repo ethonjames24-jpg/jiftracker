@@ -1,0 +1,211 @@
+{
+  "base_commit": "a4e527065773fc8d73d5d487b4a2e16d8c58d740",
+  "canonical_serving": {
+    "canonical": {
+      "compared_fields": 33,
+      "field_differences": {},
+      "foreign_key_and_parent_checks_passed": true,
+      "independent_33_field_source_reconstruction": false,
+      "publication_authorized": false,
+      "records": 2912,
+      "reference_only_fields": [
+        "fact_id",
+        "import_batch_id",
+        "loaded_at"
+      ]
+    },
+    "frozen_serving": {
+      "display_rounding_tolerance_per_value": "0.005 percentage points plus 1e-12 numeric serialization allowance",
+      "every100_categories": 11,
+      "every100_display_sum": "100.00",
+      "every100_sum_tolerance": "0.055",
+      "financial_amounts_exact": true,
+      "labels_and_source_metadata_match": true,
+      "net_jmd": 1441781354000,
+      "other_year_every100_rows_not_source_verified": 0,
+      "other_year_spending_rows_not_source_verified": 0,
+      "publication_authorized": false,
+      "spending_max_percentage_error": "0.004999024283400463507450797564",
+      "spending_rows": 1134
+    },
+    "fy25_independent_source_extraction_verified": false,
+    "hierarchy_scope": {
+      "fy25_additions_are_not_full_fy25_dimension_universe": true,
+      "historical_qa_fail_rows_modified": false,
+      "introduction_cohorts": {
+        "op_activity": {
+          "additional_fy25_origin_records": 74,
+          "combined_unique_records": 840,
+          "fy26_origin_records": 766
+        },
+        "op_subprogramme": {
+          "additional_fy25_origin_records": 32,
+          "combined_unique_records": 348,
+          "fy26_origin_records": 316
+        }
+      }
+    },
+    "input_sha256": {
+      "DIM_Activity": "bc8358c4c8e1a6272120fbb8b03ca34f6cc0f31a0d2f40959d45a17f0273dac0",
+      "DIM_Economic_Classification": "791eb3c71056303c9e34559bb6b94289f2f0dd40735568e5def04715f8756b2c",
+      "DIM_Function": "2420886321c3f34ffd04c2c7f4454ed62ea718ff8dd90be47ce601c0c439d0a1",
+      "DIM_Funding_Source": "7207ca68bad4893c4d4fe6d4a8e70b5281f5b0cef9508d5e2a352394d19cf982",
+      "DIM_Location": "a75c160ae84c711056d8a084594d3b49914f09388eb589159ab6f2b05708364c",
+      "DIM_Organisation": "552015d1aabbbc694901a7e2711701383d0975d682a3f169d117175b4caec8f3",
+      "DIM_Period": "2ad6302bc639438e0faa4cb761814710c186bab4a4c07cc04492c2c9034bfd55",
+      "DIM_Programme": "34db9786ddf5272f74d191df579bc9afa182b42ccd78d8385d8c33ed51515dc3",
+      "DIM_SubFunction": "f3ffa5929c8ea7d38111c9eab2546619f1ed1fac0f4937ed382abe72ba92cc98",
+      "DIM_SubProgramme": "7c06649cd0fbce3559acd219e2257d6c1ad6fd7787a1cb7957569a562810446d",
+      "DIM_Vote": "c0fe40c51b65827a99421afcb928e17b1159cc34da8611189e539df5a950400b",
+      "DS_Every100": "236b568a7a85d3f5d2b114ac2436d2251060f41ab1edb4536e8ef4e917410860",
+      "DS_SpendingExplorer": "8162e5a9e9d591e2a7222cc1e1c7476023debc900af91c31e016e5ec73f99107",
+      "MAP_Public_Categories": "c902632a4cea875018c961eec808f4a4a1a0b79571d9464b6aff72609f42061b",
+      "Source_Catalog": "40fc4d9613d5e3927e8faadbfe6286c0d4efca03da60b5beb54f59f12a4f9b68",
+      "compat": "35c598e6673416894cf6062097cbd17caad91e52eb6287cd0b51d640fdd61ebe",
+      "frozen": "ee8862f085244219328ca9703c9d3e5496cca8e6bb7c1aa22b28e64368f48e2d",
+      "op_activity": "6ad66df8212578283addf0f4cf5eb05e46c9f039d9f56ecd4e1dff260e98eef6",
+      "op_subprogramme": "151ae3d7d946957d8555caed4bb63ab37a402cb2cca5834b3d64613cae7d8202",
+      "public_every100": "cd0f644359ddf0474b3ea54c9592a180a263508d68cc8332d50d267b0cfb2318",
+      "public_spending": "9f8d3391147422146befee0b0e171cc68b464016289fac58fdab522c4f8649dc"
+    },
+    "public_fy26_serving": {
+      "display_rounding_tolerance_per_value": "0.005 percentage points plus 1e-12 numeric serialization allowance",
+      "every100_categories": 11,
+      "every100_display_sum": "99.9999999932",
+      "every100_sum_tolerance": "0.055",
+      "financial_amounts_exact": true,
+      "labels_and_source_metadata_match": true,
+      "net_jmd": 1441781354000,
+      "other_year_every100_rows_not_source_verified": 11,
+      "other_year_spending_rows_not_source_verified": 1122,
+      "publication_authorized": false,
+      "spending_max_percentage_error": "4.87653393525576139E-10",
+      "spending_rows": 1134
+    },
+    "publication_authorized": false,
+    "result": "CANONICAL_REPLAY_AND_SERVING_QA_REVIEW_ONLY"
+  },
+  "checkpoint": "JIF-SE03-SE04-FROZEN-V1-COMPAT-AND-SERVING-20261109",
+  "code_sha256": {
+    "se-03-extract-normalize/se03_frozen_v1_compat.py": "db3528a7ca5d53fd445906f793bb846fca6cda16e56258345c959ecf7db852b3",
+    "se-03-extract-normalize/se03_frozen_v1_compat_rules.json": "44f49d1836b268c0778f4a39d3ee636e55bdaae0567da67581a1c2ae6761a125",
+    "se-03-extract-normalize/test_se03_frozen_v1_compat.py": "ef5e0bf1760f9fa8471948e0b739476e5fd461ececac0b0a6b88748ea34285ca",
+    "se-04-reconcile-qa/se04_canonical_serving.py": "5fbfc6107d5c16d124eb704250dbc382322c873ea698fe8b5c962e301f8bef74",
+    "se-04-reconcile-qa/test_se04_canonical_serving.py": "1c1c240b202b7257839c8a3ff9e35aa8cbc2b711f7d47e46e676307c0399511d"
+  },
+  "compatibility": {
+    "financial_fields_changed": 0,
+    "frozen_csv_sha256": "ee8862f085244219328ca9703c9d3e5496cca8e6bb7c1aa22b28e64368f48e2d",
+    "frozen_model_modified": false,
+    "mapped_rows": 8,
+    "original_physical_evidence_preserved": true,
+    "parity": {
+      "duplicate_frozen_signatures": 0,
+      "duplicate_normalized_signatures": 0,
+      "extra_signatures": 0,
+      "frozen_rows": 2912,
+      "full_33_field_staging_parity_verified": false,
+      "missing_signatures": 0,
+      "normalized_rows": 2912,
+      "original_pdf_extraction_verified": false,
+      "projection_fields": [
+        "source_id",
+        "fiscal_year",
+        "measure_type",
+        "entity_type",
+        "canonical_entity_key",
+        "economic_code",
+        "amount_jmd",
+        "source_page",
+        "recurrent_or_capital"
+      ],
+      "release_authorized": false,
+      "result": "PROJECTION_PASS_REVIEW_ONLY"
+    },
+    "profile_id": "SE03_FROZEN_V1_COMPAT_20261109_V1",
+    "profile_sha256": "44f49d1836b268c0778f4a39d3ee636e55bdaae0567da67581a1c2ae6761a125",
+    "projected_records_sha256": "35c598e6673416894cf6062097cbd17caad91e52eb6287cd0b51d640fdd61ebe",
+    "publication_authorized": false,
+    "records": 2912,
+    "result": "FROZEN_V1_COMPAT_PROJECTION_REVIEW_ONLY",
+    "rule_hits": {
+      "COMPAT_CPFSA_27": 1,
+      "COMPAT_MLSS_21": 1,
+      "COMPAT_MLSS_22": 1,
+      "COMPAT_MLSS_23": 1,
+      "COMPAT_MLSS_24": 1,
+      "COMPAT_MLSS_25": 1,
+      "COMPAT_MLSS_29": 1,
+      "COMPAT_MLSS_32": 1
+    },
+    "source_candidate_rewritten": false,
+    "source_candidate_sha256": "b927e1d4488286b19d39399f58f04a7d66b407fe7162cdd4c46fa0e94b1a7896"
+  },
+  "frontend_function_contract": {
+    "accepted_all_year_every100_rows": 22,
+    "accepted_all_year_spending_rows": 2256,
+    "browser_or_dom_test_performed": false,
+    "candidate_publication_authorized": false,
+    "existing_public_feed_release_gate": {
+      "authorized": true,
+      "checks": {
+        "aia_treatment_approved": true,
+        "contract_version_supported": true,
+        "currency_supported": true,
+        "model_version_supported": true,
+        "publication_released": true,
+        "release_authorized": true
+      },
+      "code": "AUTHORIZED",
+      "message": "The approved Government Spending Explorer dataset is released."
+    },
+    "fy26_aia_rows": 30,
+    "fy26_every100_rows": 11,
+    "fy26_net_jmd": 1441781354000,
+    "fy26_spending_rows": 1134,
+    "node_version": "v24.22.1",
+    "repository_revision": "a4e527065773fc8d73d5d487b4a2e16d8c58d740",
+    "result": "EXISTING_FRONTEND_FUNCTION_CONTRACT_PASS_REVIEW_ONLY",
+    "source_blob_pins": [
+      {
+        "path": "config.js",
+        "sha": "a6941070567f58d4fea4a272388f8ea85a0164a2"
+      },
+      {
+        "path": "services/spendingExplorer.js",
+        "sha": "166ab12a7fbeddc8bf4bf3ea65e04c11c3980d7b"
+      },
+      {
+        "path": "utils/spendingExplorerModel.js",
+        "sha": "c70ff0e1fc2fbbc1de76973b1cd15d00559bea3f"
+      }
+    ],
+    "warnings": []
+  },
+  "frozen_csv_bytes_unchanged": true,
+  "frozen_operational_public_sheets_modified": false,
+  "full_independent_33_field_source_reconstruction_verified": false,
+  "input_provenance": "Bounded read-only connected Sheets captures locally serialized UTF8/LF with trailing blank cells padded. Pins refer to serialized captured bytes, not native CSV exports or an atomic cross-workbook transaction.",
+  "n8n_scanner_executed": false,
+  "owner_authorization_scope": "Approved explicit eight-row offline compatibility mapping preserving frozen v1, followed by canonical and serving QA; no model write/merge/release.",
+  "publication_authorized": false,
+  "review_date_local": "2026-11-09",
+  "reviews": {
+    "canonical_serving": "Reviewed real replay/serving and cohort checks. Independently reproduced/verified whitespace-ID and required-string repairs; 25 focused tests and actual replay.",
+    "compatibility": "Recomputed actual projection; verified all2912 complete physical-evidence objects, exact8 transformations, no financial changes or input-byte changes; 10 focused tests.",
+    "independent_scoped_reviewers": 2,
+    "production_acceptance": false
+  },
+  "runtime": {
+    "python": "3.12.14"
+  },
+  "source_candidate_bytes_unchanged": true,
+  "tests": {
+    "hosted_ci_verified": false,
+    "new_canonical_serving": 25,
+    "new_compatibility": 10,
+    "prior_unique": 182,
+    "review_regression_red_phase": "Two ID tests failed before whitespace guard repair; two required-string tests failed before blank label/URL repair. All repaired and independently retested.",
+    "total_unique_final": 217
+  }
+}

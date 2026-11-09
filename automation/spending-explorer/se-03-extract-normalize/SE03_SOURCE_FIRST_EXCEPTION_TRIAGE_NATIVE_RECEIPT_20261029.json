@@ -1,0 +1,131 @@
+{
+  "receipt_id": "JIF-SE03-SOURCE-FIRST-EXCEPTION-TRIAGE-NATIVE-20261029",
+  "observed_on": "2026-10-29",
+  "evidence_source": "operator-provided Mac terminal stdout in chat; local summary JSON itself not independently received",
+  "code_integrity": {
+    "pinned_source_module_blobs_pass": 5,
+    "total": 5,
+    "local_regression_tests_pass": 32,
+    "total_regression_tests": 32
+  },
+  "result": "SOURCE_FIRST_EXCEPTION_DETAIL_REVIEW_ONLY",
+  "fy26_fact_rows_examined": 2912,
+  "source_first_status_counts": {
+    "ACTIVITY_PROJECT_SECTION_NOT_UNIQUE_REVIEW": 2,
+    "AIA_VOTE_SEPARATE_SOURCE_METHOD": 30,
+    "PRINTED_VALUE_MISSING_OR_UNREADABLE_REVIEW": 580,
+    "PROGRAMME_SEPARATE_SOURCE_METHOD": 81,
+    "REPEATED_ECONOMIC_CODE_WITHIN_SECTION_REVIEW": 3,
+    "SOURCE_FIRST_PDF_CELL_FACT_AMOUNT_DIFFERENCE_REVIEW": 10,
+    "SOURCE_FIRST_PDF_CELL_TEXT_EQUAL_REVIEW_ONLY": 2206
+  },
+  "unreadable_cell_format_reasons": {
+    "MULTIPLE_TOKENS_EXPECTED_AMOUNT_COLUMN": 579,
+    "ZERO_TOKENS_EXPECTED_AMOUNT_COLUMN": 1
+  },
+  "unreadable_by_grain": {
+    "ACTIVITY_RECURRENT": 544,
+    "PROJECT_CAPITAL": 36
+  },
+  "unreadable_by_economic_code": {
+    "ECON_21": 229,
+    "ECON_22": 27,
+    "ECON_23": 28,
+    "ECON_24": 29,
+    "ECON_25": 158,
+    "ECON_27": 35,
+    "ECON_28": 5,
+    "ECON_29": 13,
+    "ECON_31": 5,
+    "ECON_32": 49,
+    "ECON_33": 1,
+    "ECON_99": 1
+  },
+  "difference_by_grain": {
+    "ACTIVITY_RECURRENT": 7,
+    "PROJECT_CAPITAL": 3
+  },
+  "difference_by_economic_code": {
+    "ECON_21": 1,
+    "ECON_25": 4,
+    "ECON_27": 1,
+    "ECON_28": 1,
+    "ECON_32": 2,
+    "ECON_99": 1
+  },
+  "difference_samples": [
+    {
+      "fact_id": "FACT_EOE_AP_00179",
+      "page": 69,
+      "grain": "ACTIVITY_RECURRENT",
+      "econ": "ECON_25"
+    },
+    {
+      "fact_id": "FACT_EOE_AP_00494",
+      "page": 177,
+      "grain": "PROJECT_CAPITAL",
+      "econ": "ECON_32"
+    },
+    {
+      "fact_id": "FACT_EOE_AP_00701",
+      "page": 238,
+      "grain": "ACTIVITY_RECURRENT",
+      "econ": "ECON_21"
+    },
+    {
+      "fact_id": "FACT_EOE_AP_00702",
+      "page": 238,
+      "grain": "ACTIVITY_RECURRENT",
+      "econ": "ECON_99"
+    },
+    {
+      "fact_id": "FACT_EOE_AP_00789",
+      "page": 257,
+      "grain": "PROJECT_CAPITAL",
+      "econ": "ECON_25"
+    },
+    {
+      "fact_id": "FACT_EOE_AP_00883",
+      "page": 300,
+      "grain": "ACTIVITY_RECURRENT",
+      "econ": "ECON_28"
+    },
+    {
+      "fact_id": "FACT_EOE_AP_01017",
+      "page": 335,
+      "grain": "PROJECT_CAPITAL",
+      "econ": "ECON_32"
+    },
+    {
+      "fact_id": "FACT_EOE_AP_01778",
+      "page": 495,
+      "grain": "ACTIVITY_RECURRENT",
+      "econ": "ECON_27"
+    },
+    {
+      "fact_id": "FACT_EOE_AP_01999",
+      "page": 548,
+      "grain": "ACTIVITY_RECURRENT",
+      "econ": "ECON_25"
+    },
+    {
+      "fact_id": "FACT_EOE_AP_02001",
+      "page": 548,
+      "grain": "ACTIVITY_RECURRENT",
+      "econ": "ECON_25"
+    }
+  ],
+  "private_fact_csv_sha256": "8ea4d7ac2b94eb5c8f5831da4b4a989e495e172e23dc6dc5269e6e55555c234c",
+  "official_pdf_sha256": "32ef2cb30c9498d2c8d9d4597fcaadce9823c13a97fe199acec19247664a3bd6",
+  "interpretation": "579 two-token rows are parser ambiguity, NOT proven split-number tokens or incorrect budget amounts; one row zero tokens. Each of ten differences has one readable numeric token but numeric/source correctness remains unadjudicated.",
+  "next_step": "Run separately packaged read-only two-token word-layout categorization on Mac; 46/46 tests passed only locally in preparation, real PDF results pending.",
+  "release": {
+    "financial_line_parity_accepted": false,
+    "canonical_2912_33_field_source_rows_accepted": false,
+    "historical_112_67_24_30_resolved": false,
+    "private_monetary_text_exported": false,
+    "protected_data_modified": false,
+    "production_authorized": false,
+    "pr42_draft_unmerged": true
+  }
+}

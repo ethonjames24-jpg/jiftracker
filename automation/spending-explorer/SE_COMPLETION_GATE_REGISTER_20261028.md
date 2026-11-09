@@ -1,0 +1,186 @@
+# Jamaica In Focus — Spending Explorer full-completion gate register
+
+**As of 2026-10-28 | DRAFT PR #42 | RELEASE = NO-GO**
+
+Scope: annual government Spending Explorer, not the separately published monthly Budget Tracker. This document records validated evidence, open acceptance criteria, ownership, and correct sequencing. Counts below are source-specific rather than a speculative percent-complete.
+
+## Source-to-release gates
+
+| Gate | Current finding | Disposition / objective proof required |
+| --- | --- | --- |
+| SE-01 source monitoring | Five-source baseline accepted, MONITORED_NO_CHANGE recorded; byte identity distinct from completeness | Accepted *historical baseline*, ongoing monitoring. No fictional CHANGED receipt |
+| SE-02 acquisition/archive | n8n workflow `I37vL2CouMUNCYxw` REPORT_ONLY, transport disabled, PR #39 open | **OPEN:** immutable native archive receipt and guard re-entry, content scan, protected credentials, retention, retries, concurrency controls |
+| SCAN-01 security qualification | ClamAV clean/EICAR/hash/unauth/oversize basic tests previously passed | **OPEN:** real content/limit, signature freshness/reload, concurrency/size & transport contract; no production promotion |
+| SE-03 original Approved CSV | Exact source SHA matches; file truncated (nonstandard five-field record, missing footer/newline) | **CLOSED source disposition:** FAILED_CLOSED_SOURCE_INCOMPLETE, cannot use as canonical FY26 extraction |
+| SE-03 As Presented CSV | Exact source hash and complete footer; supporting only | **CLOSED source disposition:** SUPPORT_ONLY, never replace As Passed |
+| SE-03 As Passed 716-page PDF | 23,172,267 bytes, SHA-256 `32ef2cb30c9498d2c8d9d4597fcaadce9823c13a97fe199acec19247664a3bd6`; page inventory 716/716 | **CLOSED identity/page-inventory execution** (review-only) |
+| SE-03 Capital Heads | Native exact-code 26/26 tests; Budget 6 pages 143/143 explicit printed `C`-suffix Head; zero detected conflicts | **CLOSED heading-detection gate**, not economic/FACT verification |
+| SE-03 economic-line evidence | Earlier direct exact economic evidence 2,679/2,912; historic 112 continuation, 67 ambiguous economic, 24 programme grain, 30 AIA distinct queues | **OPEN:** independently source-anchored, page-specific 33-field FACT audit with separate Capital Project, Programme and Vote AIA methods. Do not equate previously flagged queues with all rows at those grains |
+| SE-03 frozen FY26 FACT basis | `FACT_Government_Spending` has 2,912 FY2026/27 rows (2,801 source_row Activity, 81 Programme, 30 Vote; 114 Budget 6). Frozen gross J$1,490,511,399,000; AIA −J$48,730,045,000; net J$1,441,781,354,000 | **Existing governed model / NOT independent As Passed source re-extraction.** Export privately as **current-sheet CSV only**, header exact 33 fields, no writes |
+| SE-04 dimension scope integrity | Live `DIM_SubProgramme`: 316 FY26 records (303 Presented + 13 Passed), 32 FY25 additions = 348 all-years. `DIM_Activity`: 766 FY26 (413 Presented + 353 Passed), 74 FY25 additions = 840 all-years | **Source-period discrepancy EXPLAINED**, not missing FY26 dimension records. Historic QA_HIER_005/006/007 still store FAIL from unscoped global totals. **OPEN:** fix/check FY-scoped QA with approved non-destructive versioned correction; no overwriting frozen model or deleting FY25 additions |
+| SE-04 linked model | Freeze `GSE-V1|FY2026/27|FACT2912|NET1441781354000|HEAD60|VOTE73|FUNC10|SUBFUNC55|PROG211|SUBPROG316|ACT766|CAT11|QA53`; prior 309 activity links marked resolved, 1,093 FACT foreign keys relinked | Existing model-level approval is historical. **OPEN:** independent exact source/field parity and replayability |
+| SE-05 serving tables | `DS_SpendingExplorer` 1,134 rows and `DS_Every100` 11 rows in frozen model; signed AIA separate negative category | **OPEN:** recompute from verified canonical FACT; check category, gross/net, J$100 denominator, no double count, complete source link and machine readable API |
+| SE-06 frontend | Frozen contract v1 route `/?view=spending`; source workbook separate from monthly tracker; v1.1 multi-year public-versioned feed previously released but frontend promotion pending | **OPEN:** full Spending Explorer integration, source-proven browser tests, accessibility/mobile/performance checks and monthly Tracker regression |
+| SE-07 release | README_Control says DEVELOPMENT, MODEL_APPROVED_RELEASE_NOT_AUTHORIZED; PR #42 is draft/unmerged | **NO-GO:** human approval after independent evidence and CI. Cloudflare PR bot reports a successful **branch-preview** at head `51f785c`; a preview auto-deployment is not a production promotion |
+| GitHub-hosted review CI | PR-specific completed run not observed; no checks on inspected head | **OPEN:** require actual completed PR-head build/test receipt and independent peer review, not just local operator tests |
+
+## Order of execution to full completion
+
+1. **Source-evidence baseline:** keep verified PDF and Capital C-suffix parser pinned. Export only the private `FACT_Government_Spending` tab as local CSV and validate exact 33-column contract, FY26 count, page/vote identity, Capital Project vs recurrent Activity, programme vs AIA grammar in local read-only preflight. Never upload this private export to GitHub or public Drive. A preflight status is a **queue-preparation** gate only.
+2. **SE-03 definitive financial evidence:** run pinned PDF economic-column matching for every FY26 FACT row and triage the four historic worklists. For each disposition save physical page + printed Head/Budget/Programme/Project/Activity + exact column-value evidence; require separate written vote AIA mechanism. Reconstruct 2,912 source-derived FACT rows independently; compare every required field and amounts to frozen data. No guessed carry-forward across changed sections.
+3. **SE-04 scope-safe reconciliation:** retain FY2025/26 additions and v1 freeze. Replace unscoped hierarchy QA checks only via new reviewed FY-scoped control/version, prove 316/766 FY26 and 32/74 FY25 separately; rerun signed AIA and gross/net tie-outs. Recompute serving outputs 1,134/11 after data-source QA.
+4. **SE-05 and SE-06 readiness:** validate versioned v1/v1.1 contract, category mappings, source citations, mobile accessibility and existing monthly tracker isolation; collect production-equivalent CI and captured screenshot receipts.
+5. **SE-02/SCAN-01 hardening:** secure acquisition/archives, current signature reload, size/concurrency controls, source change only on byte fingerprint evidence. Keep separate from annual pre-release manual baseline unless automatic acquisition qualification proven.
+6. **SE-07 release:** owner reviews source reconciliation, warnings/risks and preview QA. Explicit separate authorization required to merge and promote the Spending Explorer; verify production readback, rollback and monitoring.
+
+## Execution evidence and no-go controls
+
+- [Draft PR #42](https://github.com/ethonjames24-jpg/jiftracker/pull/42), no merge or production release.
+- [Source completeness and 34-test native receipt](automation/spending-explorer/se-03-extract-normalize/SE03_NATIVE_SOURCE_CLASSIFICATION_RECEIPT_20261028.json)
+- [716-page inventory native receipt](automation/spending-explorer/se-03-extract-normalize/SE03_PDF_PAGE_INVENTORY_NATIVE_RECEIPT_20261028.json)
+- [Capital Head 143/143 native receipt](automation/spending-explorer/se-03-extract-normalize/SE03_CAPITAL_HEAD_V2_NATIVE_ACCEPTANCE_20261028.json)
+- [Capital source evidence](automation/spending-explorer/se-03-extract-normalize/SE03_CAPITAL_HEAD_SUFFIX_SOURCE_EVIDENCE_20261028.md)
+- Google Drive: Document 17 SE-03/04 Engineering Handoff; Doc 11 workflow specification; Doc 01 Master Index.
+- Current model release state: `MODEL_APPROVED_RELEASE_NOT_AUTHORIZED`; prior v1.1 versioned feed release is not evidence of Spending Explorer frontend production promotion.
+
+No work in this gate register changes frozen, private operational or public Sheets, user subscriptions, official Ministry data, active n8n workflow, scanner runtime or Cloudflare Pages production deployment. **Full completion requires new receipts; do not mark done from documentation alone.**
+
+## 2026-10-28 operational update — private FACT preflight now ACCEPTED (review only)
+
+User Mac returned `FACT_REVIEW_QUEUE_PREFLIGHT_PASS_REVIEW_ONLY` with 2/2 pinned code blobs PASS, 10/10 tests PASS, **2,912 FY26 / 2,900 FY25 skipped**, FY26 grains 2,801 Activity/81 Programme/30 AIA, 114 Capital, **0 fatal structural errors** and export SHA-256 `8ea4d7ac2b94eb5c8f5831da4b4a989e495e172e23dc6dc5269e6e55555c234c`. Prior pending private CSV and missing download gates CLOSED. Distinguish 269 overlapping multi-section review flags from 269 confirmed financial errors. The original 112/67/24/30 specific worklists and full 2,912/33-field source parity remain OPEN.
+
+NEXT source gate: the versioned read-only PDF economic-cell candidate audit, pinned to seven source blobs and same private CSV SHA; 10 local synthetic PASS and 80 configured hosted test target, but complete source scan and hosted CI PENDING. Run `run_se03_pdf_economic_candidates_native.sh` from the exact reviewed GitHub PR #42 branch commit and return sanitized summary, not the raw CSV. No automatic financial acceptance/public release.
+
+
+## October 28 — real As Passed economic-cell candidate inventory accepted (review only)
+
+User Mac ran the source-pinned economic-candidate tool, **7/7 GitHub code blob IDs PASS** and **46/46 native synthetic tests PASS**, pinned private FY26 CSV hash `8ea4d7ac2b94eb5c8f5831da4b4a989e495e172e23dc6dc5269e6e55555c234c` PASS. Source PDF SHA matches controlling As Passed `32ef2cb30c9498d2c8d9d4597fcaadce9823c13a97fe199acec19247664a3bd6`. The scan examined **2,912/2,912 FY26 FACT rows** and classified each to exactly one review-only status:
+
+| Reported status | Count | Meaning |
+|---|---:|---|
+| UNIQUE_ECONOMIC_CELL_CANDIDATE_REVIEW_ONLY | 2,114 | One qualified PDF geometric candidate, **not** a canonical financial record acceptance |
+| ECONOMIC_CELL_MULTIPLE_CANDIDATES | 419 | Multiple candidate printed economic-cell matches; must resolve line-level context |
+| MULTI_SECTION_CONTEXT_REVIEW_REQUIRED | 258 | Heading ambiguity masks economic status (250 geometrically unique, 8 geometrically multiple) |
+| ECONOMIC_CELL_NOT_FOUND_BY_BOUNDING_BOX | 10 | Existing geometric search did not find an eligible printed cell; not proof missing from PDF |
+| PROGRAMME_GRAIN_METHOD_REQUIRED | 81 | Programme-level source representation not covered by Activity matcher |
+| AIA_VOTE_METHOD_REQUIRED | 30 | Vote-level signed AIA requires separate aggregation/source method |
+| **TOTAL** | **2,912** | **100% review-classified, 0 independently source-derived canonical FACT rows accepted by this scan** |
+
+Activity raw candidate geometry distribution: **0 candidates=10, exactly 1=2,364, at least 2=427**, totaling 2,801 Activity records. 2,364 unique geometric detections differ from 2,114 safely eligible unique candidates because 250 were blocked by multi-section context; 427 geometric multiple differ from 419 otherwise-classified multiple because 8 had multi-section context. Records requiring additional source-context work **687 Activity** (419+258+10), plus **81 Programme and 30 AIA**, totaling **798 cases not yet eligible as a unique Activity numeric candidate**. These are **classification/workload counts** and are **not the same list** as historical 112 continuation, 67 economic, 24 programme, and 30 AIA exceptions; they must not be combined by addition.
+
+**Gate CLOSED:** run-time completeness of review-only source PDF economic candidate scan. **Gates OPEN:** independent validation of printed economic amounts within exact Activity/Project/Programme/Head contexts and full 33-field source-derived 2,912 FACT reconciliation; scope handling for 419 multi-candidate and 258 multi-section; 10 coordinate-missing cases; 81 Programme and 30 vote AIA separate methods; stale FY-scoped QA rows; serving data, frontend, hosted CI, scanner/intake, owner production approval. Keep draft PR, frozen/protected/public Sheet and production feed unchanged. Operator output transcribed into `SE03_PDF_ECONOMIC_CANDIDATES_NATIVE_RECEIPT_20261028.json`; full local diagnostic JSON not independently read in this interaction.
+
+## 2026-10-29 — SE-03 real-PDF geometric positioning audit: native PASS / review only
+
+**Owner Mac output now verifies** exact code identities **6/6 PASS**, synthetic tests **10/10 PASS**, accepted private CSV SHA `8ea4d7ac2b94eb5c8f5831da4b4a989e495e172e23dc6dc5269e6e55555c234c` unchanged and official As Passed PDF SHA `32ef2cb30c9498d2c8d9d4597fcaadce9823c13a97fe199acec19247664a3bd6` unchanged. Run result `PDF_GEOMETRY_DIAGNOSTIC_REVIEW_ONLY` across **2,912** FY2026/27 FACT entries. Native local queue reports **798 cases**, with exclusive statuses and per-category source-page counts:
+
+| Review cohort | Cases | Distinct PDF pages for cohort |
+| --- | ---: | ---: |
+| Multiple numeric matches | 419 | 111 |
+| Multi-section source-page context | 258 | 30 |
+| No candidate in existing bounding box | 10 | 8 |
+| Programme source grain requires method | 81 | 14 |
+| Vote AIA source grain requires method | 30 | 30 |
+| **Local geometry review queue** | **798** | **Do not sum distinct-page counts across cohorts** |
+| Unique eligible Activity numeric candidate (separate review-only cohort) | 2,114 | 295 |
+
+The local queue `se03_pdf_geometry_local_queue.json` and shareable summary `se03_pdf_geometry_review_summary.json` were created according to user stdout; **actual file content has not yet been opened independently in this chat**. The diagnostic uses PDF word and heading Y positions; exported observations omit amount values and do not assign canonical Activity/Project/Programme source rows. **No new financial facts, 33-field canonical records, 112/67/24/30 worklist clearance, Sheet writes, PR merge or publication are accepted.**
+
+**Closed:** execution of source-pinned 798-case geometric inventory. **Next:** owner uploads **only** sanitized summary JSON containing max 8 sample FACT identifiers/Y per status. Review source-page geometry examples; develop separately evidenced adjudication rules without automatically selecting repeated economic amount matches. Source receipt: `automation/spending-explorer/se-03-extract-normalize/SE03_GEOMETRY_NATIVE_RECEIPT_20261029.json`. PR #42 remains DRAFT/OPEN/UNMERGED and production NO-GO.
+
+## 2026-10-29 — independent review of uploaded 798-case geometry queue
+
+The sanitized geometry summary and separate `PRIVATE_LOCAL_ONLY` queue were examined locally and reconciled: exactly **798 distinct FACT IDs**, no duplicates, all physical PDF pages 1–716; per-status counts/page sets match the sanitized summary; **190 distinct source pages** in union. The row-level queue is NOT placed in GitHub or Drive. Verified aggregate patterns: **419** multiple candidates = 418 double, one triple (397 recurrent/22 Capital); of these **332** have one printed Activity/Project heading with matched numeric candidates above and below, and **87** have multiple on-page Activity headings. **258** multi-section = 250 one geometric candidate and 8 two. **10** bounding-box zero = 8 recurrent/2 Capital. Separate **81** Programme and **30** vote AIA. Physical page 19 explicitly repeats Activity 10354 within Sub Programme 20 and 21. These are **not resolved monetary records** or the historic exception lists.
+
+Critical methodological gate: the existing numerical candidate search is conditioned on `amount_jmd_normalized` already present in FACT. It **cannot** independently substantiate any of the 2,114 otherwise unique monetary candidates. Next source-first extraction must detect printed PDF economic code and monetary text **before** consulting the existing FACT value, establish exact Activity/Capital Project section boundaries and source ownership, then compare internally; output only aggregate non-monetary summaries. Prototype 17 synthetic safety tests PASS locally, real pinned Mac PDF/CSV run PENDING and not PR-versioned executable yet. Review memo: `automation/spending-explorer/se-03-extract-normalize/SE03_GEOMETRY_FULL_QUEUE_AGGREGATE_TRIAGE_20261029.md`.
+
+**Open:** full source-origin 2,912×33 field tie-out, capital/Programme/AIA/continuation source rules, 112/67/24/30 historic adjudications, financial totals and DS tables, FY-scoped QA correction, hosted CI, scanner and explicit owner publication authorization. No protected Sheet, production feed or main-branch mutation; PR #42 remains draft/unmerged.
+
+## 2026-10-29 — source-first PDF cell-text comparison native review-only PASS
+
+The operator ran the immutable-code source-first local prototype on the original As Passed 716-page PDF and private canonical FACT export. **3/3 exact code Git blob fingerprints PASS**, **17/17 synthetic tests PASS**, source PDF SHA `32ef2cb30c9498d2c8d9d4597fcaadce9823c13a97fe199acec19247664a3bd6` and private CSV SHA `8ea4d7ac2b94eb5c8f5831da4b4a989e495e172e23dc6dc5269e6e55555c234c` match previous evidence, **2,912 FY26 rows classified**. Crucially, the extractor reads the printed PDF economic-code and column numeric token before comparing to the FACT amount (still accepts model-provided code/page/measure as locator). The exclusive row statuses are:
+
+| Source-first status | FY26 rows | Disposition |
+| --- | ---: | --- |
+| PDF cell numeric text equals FACT | **2,206** | Review-only cell equality. NOT independently accepted canonical money/33-field record |
+| Printed numeric cell missing or unreadable | **580** | Inspect PDF tokenization/blank printed cell/format; absence not proof of incorrect FACT |
+| PDF cell text differs from FACT | **10** | Potential source/model variance; mandatory exact printed page/column and unit inspection before any correction |
+| Repeated economic code in one source section | **3** | Multiple printed economic rows, no automatic tie |
+| Activity/Project section not unique | **2** | Section identity review; not an amount discrepancy |
+| Programme separate method | **81** | Programme grain not source-accepted |
+| Vote-level AIA separate method | **30** | Vote AIA not source-accepted |
+| **TOTAL** | **2,912** | **No full financial parity / publication** |
+
+The 2,206 equal cells are a step beyond prior amount-conditioned geometry, but **not** complete independent financial source reconstruction. The 580 missing/unreadable and 10 differences require targeted read-only diagnosis; 3 repeated codes and 2 uncertain sections remain separate. The first five reported differences are FACT_EOE_AP_00179, _00494, _00701, _00702 and _00789. The first four appeared in earlier zero amount-conditioned geometry matches; the source-first numeric comparison is an improvement in detection, not yet evidence of a budget error.
+
+**Next local diagnostic prepared only (not executed on native source):** a strict source-pinned exception triage to classify the 580 unreadable token situations (zero tokens, multiple tokens, one unexpected token) and map all ten difference locations without exposing numbers. Existing 17 source-first tests plus 15 new synthetic cases PASS locally (**32/32**); bash syntax PASS. Local conversation ZIP `jif_se03_source_first_exception_triage_20261029.zip`, not PR-merged or native-tested. Summary-only output `se03_source_first_exception_triage_summary.json`, detailed local-only output `se03_source_first_exception_triage_local_queue.json`. Store no private CSV, printed value or full per-row queue in GitHub or Drive. 
+
+**Open:** 580/10/3/2, 81 Programme, 30 AIA, full 2,912×33 canonical source proof, historic 112/67/24/30 worklists, FY-scoped QA and DS parity, CI, scanner, owner approval and production readback. PR #42 draft/open/unmerged; no protected sheet mutation or release.
+
+## 2026-10-29 — source-first 590-case exception triage native PASS / review only
+
+Operator Mac terminal returned **5/5 exact Git blob IDs PASS**, **32/32 local tests PASS**, accepted private CSV SHA `8ea4d7ac2b94eb5c8f5831da4b4a989e495e172e23dc6dc5269e6e55555c234c` and official PDF SHA `32ef2cb30c9498d2c8d9d4597fcaadce9823c13a97fe199acec19247664a3bd6`; source-first 2,912 status baseline unchanged (2,206 equal **review-only**, 580 unreadable, 10 source text differences, 3 same-section repeated economic codes, 2 uncertain Activity/Project sections, 81 Programme, 30 AIA).
+
+**580 unreadable cells**: **579 MULTIPLE_TOKENS_EXPECTED_AMOUNT_COLUMN**, **1 ZERO_TOKENS_EXPECTED_AMOUNT_COLUMN**; by source grain **544 recurrent Activity / 36 Capital Project**. Two tokens are NOT evidence of a split printed number; they might be separate full numeric words, nearby annotations or text extraction geometry. **Ten different amounts**: **seven recurrent and three Capital**, each one readable PDF token in current expected column; not yet independently adjudicated as real budget errors. Difference physical pages: 69 (1), 177 (1), 238 (2), 257 (1), 300 (1), 335 (1), 495 (1), 548 (2). Economic codes: 21:1, 25:4, 27:1, 28:1, 32:2, 99:1.
+
+**Gate CLOSED:** 590-case native diagnostic executed and counted. **Gates OPEN:** printed numeric token disambiguation (579), zero-token source (1), 10 apparent differences, 3 economic-code repeats, 2 section ambiguities, 81 Programme and 30 AIA, original 112/67/24/30 worklists and all 2,912 33-field source records. Do not alter frozen amounts or infer public financial correctness. Structured evidence: `SE03_SOURCE_FIRST_EXCEPTION_TRIAGE_NATIVE_RECEIPT_20261029.json` (transcribed operator stdout, not independently opened local report JSON).
+
+**NEXT read-only trial packaged in conversation, Mac execution pending:** `jif_se03_source_first_two_token_layout_20261029.zip` (local files only, 7/7 expected exact code pins, 46/46 synthetic tests locally PASS, Bash -n PASS). Classifies the two printed words into distinct full amounts, one amount + annotation, possible split value, overlap/different baseline, or unparseable fragments **without choosing financial amounts**. Expected sanitized output `se03_source_first_two_token_layout_summary.json`; full 579-case local queue must NOT be uploaded. Source module pin `e758bd0384af3c12987eb9334c694d0f1c4b53bc`, test module pin `4bc51e7692b972528bf609ec7bbd0810d5f3f409`. No production/model changes, PR #42 draft unmerged, NO-GO.
+
+
+
+## November 8, 2026 — historical staging execution and scoped parity
+
+Current checkpoint: JIF-SE03-STAGING-CONNECTED-PARITY-20261108. Original 14 staging tests now executed PASS. Tightened approval status, activity-identity, key-component and amount guards after 9 failing regression subcases; revised 19 normalizer and 12 comparator tests PASS. Together with 80 prior SE03 and 34 SE04 tests, 145 final local tests PASS. Hosted CI and independent peer review are NOT claimed.
+
+Bounded read-only connected Sheets capture, locally serialized as CSV: 2,912 staging lines / 309 reviewed links normalize with exact 61/2821/30 measures and frozen gross/AIA/net totals. All 2,912 rows match frozen FACT on the explicit nine-field multiset projection, zero missing/extra/duplicate signatures. Separate existing operational FY26 vs frozen FACT comparison matches 2,912 IDs across 33 fields, zero missing/extra/changed rows. SE04 CLI on 5,812 operational records passes both fiscal-year financial controls. These byte pins are for this locally serialized connected capture, NOT earlier operator CSV bytes or original government source acceptance.
+
+New reproducible offline command se03_staging_fact_parity.py requires four CSV SHA256 pins, emits aggregate receipts only and always denies release. Staging budget_number and budget_type are blank; no fields inferred. Nine-field staging parity does NOT reconstruct all 33 FACT fields. See se-03-extract-normalize/SE03_STAGING_CONNECTED_ACCEPTANCE_20261108.json and SE03_STAGING_CONNECTED_REVIEW_20261108.md.
+
+Original controlling PDF extraction, 579+1 token ownership and 10 differences/3 repeats/2 sections, 81 Programme/30 AIA, FY25 source reconstruction, year-scoped hierarchy QA, DS serving recomputation, scanner/intake and controlled release remain OPEN. Original Approved CSV remains rejected as incomplete. EAA remains paused; Checkpoint C is not resumed. No model/public Sheet, workflow, scanner, main merge or production change. PR42 stays DRAFT/UNMERGED; automatic pipeline production NO-GO.
+
+
+## November 8, 2026 — source-only PDF financial candidate executed
+
+Checkpoint JIF-SE03-SOURCE-PDF-FINANCIAL-CANDIDATE-20261108. Original accepted 716-page As Passed PDF recovered read-only from Drive, exact 23,172,267 bytes and SHA256 32ef2cb30c9498d2c8d9d4597fcaadce9823c13a97fe199acec19247664a3bd6. New se03_pdf_source_extract.py takes NO FACT/staging/crosswalk input. It reads printed FY headers, complete cell geometry, exact thousands-unit values and explicit hierarchy, with adjacent-page/context guards and PyMuPDF1.26.6 pin. Final source CLI exit0: 2,912 financial candidate records, 61/2821/30 measures; 2,809 Activity/Project / 73 derived Programme residual / 30 signed vote AIA. Exact gross 1,490,511,399,000; AIA -48,730,045,000; net 1,441,781,354,000. Programme residuals are source summary minus all source detail and explicitly labeled arithmetic. Sixty agreeing printed AIA occurrences become thirty negative offsets, never double-counted. Candidate SHA256 b927e1d4488286b19d39399f58f04a7d66b407fe7162cdd4c46fa0e94b1a7896; row-level output stays local.
+
+Separate se03_pdf_source_compare.py on the frozen connected capture: 2,904 exact nine-field signatures; eight equal-amount Activity-vs-Programme/page differences, zero unclassified differences, all 1,134 Programme/economic financial groups equal. Seven source rows: Head40000 Programme001 SubProgramme01 Activity10005 physicalpage446 vs frozen Programme rows page445, economic21/22/23/24/25/29/32. One source row: Head41051 Programme326 SubProgramme24 Activity12816 page534 vs frozen Programme row page532, economic27. Comparator deliberately exits2 with SOURCE_TOTALS_MATCH_IDENTITY_REVIEW_REQUIRED; do NOT call this accepted exact parity. No frozen identities or values changed.
+
+Final unique synthetic suite 182/182 PASS: prior145 +30 new extraction +7 comparison. Initial PDF run failed closed on repeated identical year headers at page171; same-geometry repeats now accepted, conflicting layouts rejected. Two independent scoped reviewers ran tests/read candidate evidence; crossing-token ambiguity and stale Activity scope at a new SubProgramme were reproduced as two failing tests, repaired, then independently retested (37 focused PASS). No full-cell visual independent audit or hosted CI claimed. Parent rendered/inspected physicalpages69,446,534 and read pages445/532.
+
+This advances source financial extraction beyond the older amount-conditioned diagnostics; it does NOT automatically erase/close historical worklists, resolve eight grain decisions, reconstruct all33 governed metadata fields, test FY25 source, verify actual DS public metadata/mappings, complete scanner/SE02, human decisions or SE07 release. Approved CSV remains rejected; Presented supporting only. See SE03_SOURCE_PDF_FINANCIAL_RECEIPT_20261108.json and SE03_SOURCE_PDF_REVIEW_20261108.md for review pack and explicit compatibility/adoption options. EAA and corrected CheckpointC paused. PR42 draft/unmerged, production NO-GO; no financial Sheet/public feed/workflow/scanner/production write or activation.
+
+
+## November9,2026 — approved FY26 compatibility and serving QA
+
+Checkpoint JIF-SE03-SE04-FROZEN-V1-COMPAT-AND-SERVING-20261109. Owner approved explicit compatibility mapping preserving frozen v1. Separate pinned eight-rule profile applied exactly once per rule:2,912/2,912 exact nine-field matches, no missing/extra/duplicates, zero financial changes, all complete physical-source evidence objects retained. Original source candidate and frozen CSV bytes unchanged. Raw eight-difference receipt preserved; no new Activity-grain adoption.
+
+Canonical replay derives source/hierarchy fields and governed dimension/category metadata, explicitly carrying fact_id/import_batch_id/loaded_at as baseline references. All2,912 rows match33 frozen fields, zero differences; foreign keys/parents, category priority, vote/budget/year/sign pass. Independent33-field source reconstruction remains false. Both frozen and public FY26 serving:1,134 groups and11 Every100 categories exact financial amounts, labels/source metadata and display rounding pass. Financial amounts/net are exact; only percentage display has0.005pp tolerance plus1e-12;11-category sum bound0.055. Frozen Every100 sum100.00; published stored sum99.9999999932.
+
+Current operational cohort scope:316 FY26-origin+32 FY25 additions=348 SubProgramme;766+74=840 Activity, all IDs unique. Introduction cohorts are not full FY25 dimension coverage. Historic FAIL rows untouched. Public FY25 rows1122/11 are explicitly not independently source-certified by this FY26 QA.
+
+Existing exact GitHub frontend functions ran against captured public CSVs under Node24.22.1:2,256 spending/22 summaries accepted overall, FY26 filter1,134/11, exact net,30 AIA,zero warnings. Existing feed release controls evaluate true; this does NOT authorize the new candidate. No browser/DOM/network-production check claimed and no frontend edits.
+
+217/217 final unique synthetic tests PASS (prior182+10 compatibility+25 canonical/serving). Two independent scoped reviews; four ID/required-string regression cases failed before repair and pass afterwards, independently retested. All new code remains offline/review-only. See se-04-reconcile-qa/SE04_COMPAT_SERVING_RECEIPT_20261109.json and SE04_COMPAT_SERVING_REVIEW_20261109.md.
+
+OPEN: independent FY25 source reconstruction, explicit historical-worklist closure, hosted CI, general new-source/batch integration, SE02/SCAN01, durable SE05/06 human review and SE07 shadow/readback/rollback/release. EAA/CheckpointC paused. PR42 draft/unmerged, no workbook/feed/workflow/scanner/subscriber/production write, execution, activation or merge. Automatic pipeline production NO-GO.
+
+
+## November 9, 2026 — FY25 financial extraction and scanner/archive preparation
+
+Checkpoint JIF-SE03-FY25-SOURCE-IDENTITY-REVIEW-20261109. Existing FY25 As Passed Drive archive (27,466,667 bytes/694 pages) was read without a new live acquisition. SHA256 3b198b92fe575454fa22ce20c6e7da7bf55d713f8c5bef506bc3ff08301276aa was first recorded here on November9; no prior cryptographic pin match is claimed. Source-only extraction independently yields2,900 records:2,869 Activity/Project +31 signed AIA,64 authorized/2,805 voted/31AIA, zero Programme residuals. Exact gross1,309,182,355,000; AIA-49,133,377,000; net1,260,048,978,000. Candidate SHA0522476ddf8cbbc95ea9e5ad6f56c9d5199169f9dff69e9b1c20ea00fb25d627.
+
+Against the existing operational FY25 capture:2,773 exact nine-field matches,95 sub-programme codes +1 activity code +31 baseline-omitted AIA pages; zero unclassified. All1,122 programme/economic groups financially equal. The activity-code case also creates1 baseline duplicate financial identity (not a duplicate FACT ID and not an additional128th discrepancy). Final comparison deliberately FAILED_CLOSED/exit2, retaining diagnostics. No compatibility/adoption/correction is approved or applied. FY25 full33-field reconstruction/canonical replay/public-serving certification remains unverified.
+
+Bounded FY25 parser profile handles explanatory subtable totals; FY26 default profile preserved. Full pinned FY26 extraction rerun:2,912 records, exact prior b927e1d4488286b19d39399f58f04a7d66b407fe7162cdd4c46fa0e94b1a7896 output hash. Final187SE03+59SE04=246 unique local synthetic tests PASS. Two scoped independent reviewers; parsed-byte hash binding and source natural-identity guards repaired, final24FY25 tests and actual blocked comparison independently retested. Hosted CI remains unverified. Aggregate evidence: se-03-extract-normalize/SE03_FY25_SOURCE_RECEIPT_20261109.json; source/disposition memo and code review alongside it.
+
+Historical112/67/24/30 and later diagnostic memberships are not individually closed. Accessible project-task/QA/RECON tables and aggregate/sample receipts do not provide complete original membership. Require private per-case source-evidence/disposition join; no inferred closure from new aggregate totals.
+
+SCAN01_SE02_ACCEPTANCE_HANDOFF_20261109.md now documents historical native baseline, current PR39 repository graph and required refreshed readiness/signature-generation/drain/recovery/archive acceptance. Parent rechecked current generated JSON blob71b0e520b4991b84a60176f39fe9ed3b6146f8a9 at PR39 head61e9356966025fab9e948a3603ddc330f3641c6d:91,984bytes/24nodes/8disabled/0credentials/0schedules/inactive. This is repository evidence, not live n8n acceptance. No native scanner/archive command was run.
+
+Remaining five work blocks: (1) FY25 identity disposition and original per-case closure; (2) native scanner/archive qualification; (3) general source/batch pipeline and provenance; (4) durable human decisions; (5) hosted CI/shadow/browser/mobile/readback/rollback/release. EAA and corrected CheckpointC paused. PR42 draft/unmerged, no model/feed/workflow/scanner/subscriber/production changes; automatic pipeline production NO-GO.
+
+
+### Hosted CI follow-up at the FY25 implementation
+
+First commit823b610b69a9476dcda8ec4fb49dddfdc836c18e produced run42716822286 failure/zerojobs. Local YAML parsing reproduced a pre-existing scalar syntax error in the no-production-effects echo line; a literal-block repair passed local parsing. Corrected revision24d6bd48fb396ae2ac550976ce01bcba01cfbd3f produced run42716999213 and one review-only-tests job129501003293, but that job failed before any step with no runner name. Job logs404 and connector-unsupported annotations prevented confirming the underlying pre-step cause. Hosted acceptance is BLOCKED, not a246-test hosted PASS or an observed test failure. Preserve local246PASS and independent FY25 retest as separate evidence. Cloudflare automatic branch-preview success at24d6bd4 is not production promotion. Next CI proof: inspect that job's native annotations, remediate the confirmed pre-step cause, and obtain actual successful steps at the unchanged tested code or a reviewed successor.
