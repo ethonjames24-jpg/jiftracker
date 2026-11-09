@@ -60,3 +60,15 @@ Official CSV comparator v4 owner receipts independently show the FY2026/27 Appro
 New isolated SE-03 files in this draft PR: `se03_source_completeness.py` (hash + structural/financial completeness fail-closed gate), `se03_pdf_continuation_review.py` (strict adjacent-page/section-matching *candidate-only* scope review), and 31 synthetic local tests across their matching test modules (17 + 14 PASS). These are source-only, review-only helpers. The PDF helper is not yet connected to the actual classifier; neither complete official CSV was natively executed against the new gate in this checkpoint. No 2,912-row source-derived extraction or full 33-field parity is accepted.
 
 Detailed receipt/exit rules: [SE03 source completeness and PDF review](../se-03-extract-normalize/SE03_SOURCE_COMPLETENESS_AND_PDF_REVIEW_20261028.md). The next priority is real PDF evidence integration (112 continuation, 67 economic, 24 programme, 30 AIA vote cases), independent 2,912 FACT reproduction, 1,134/11 serving parity, and then SE-05–SE-07 human-gated shadow release. No merge, deploy, production workflow activation or public/frozen model changes.
+
+
+
+## November9,2026 — frozen-v1 compatibility and serving replay
+
+The owner-approved eight-rule source compatibility projection is in the adjacent SE03 folder, with pinned source/frozen/profile identities and original physical evidence preserved. All2,912 shared-field signatures now match frozen v1, without rewriting the source or model.
+
+`se04_canonical_serving.py` reconstructs the frozen33-column replay from source financial/hierarchy fields and approved reference dimensions/mappings, carrying only fact_id/import_batch_id/loaded_at as baseline provenance references. This is not independent reconstruction of those old provenance fields or a new ingestion. It checks key uniqueness, foreign keys, parent links, annual scope, sign, category precedence and exact field equality; then derives financial groups and validates1,134 Spending Explorer rows and11 Every100 categories against both frozen and public FY26 serving captures. Monetary amounts and denominator exact; display percentage tolerance0.005pp plus1e-12, sum tolerance0.055 for11 categories. Actual published Every100 stored sum99.9999999932 is presentation precision, not missing funds.
+
+Bounded operational introduction-cohort checks also verify316+32=348 SubProgramme and766+74=840 Activity, without modifying historical QA FAIL records or calling FY25 additions the full FY25 universe. FY25 source extraction remains open.
+
+Run `python3 -m unittest -q test_se04_canonical_serving`. The offline CLI requires an explicit local input manifest with each relative file and SHA256, the manifest's own SHA256, and a fresh output directory. No network, Sheet writer or release authority. See SE04_COMPAT_SERVING_REVIEW_20261109.md and SE04_COMPAT_SERVING_RECEIPT_20261109.json for manifest names, actual results, inherited-field limits and217-test evidence. Private replay/captures stay outside GitHub.

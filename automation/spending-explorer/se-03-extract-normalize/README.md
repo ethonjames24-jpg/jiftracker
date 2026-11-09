@@ -102,3 +102,37 @@ for `SOURCE_TOTALS_MATCH_IDENTITY_REVIEW_REQUIRED`; no automatic remapping or
 frozen-model change occurs. See `SE03_SOURCE_PDF_REVIEW_20261108.md` and its
 aggregate receipt for exact evidence, review findings and unresolved decisions.
 
+## Approved frozen-v1 compatibility projection — November 9, 2026
+
+The owner approved the explicit eight-row compatibility mapping, preserving
+frozen v1. `se03_frozen_v1_compat.py` applies the pinned profile in
+`se03_frozen_v1_compat_rules.json` only to the already pinned source candidate.
+Every rule must match exactly once. Only entity grain/key and v1 reference page
+are changed; financial values/source/year/measure/economic class/vote/budget stay
+identical. All original physical source records, including page/Y/geometry and
+derivations, remain together under `physical_source_evidence` on every output
+record. The source candidate is not overwritten.
+
+```bash
+python3 se03_frozen_v1_compat.py \
+  --candidate-jsonl /private/source_records_LOCAL_ONLY.jsonl \
+  --frozen-csv /private/frozen_FACT.csv --out-dir /private/new-compat-directory
+```
+
+Actual compatibility run: eight rules matched once each, **2,912/2,912 exact
+nine-field signatures**, no missing/extra/duplicate signatures, zero financial
+changes. The previous raw source-vs-frozen eight-difference receipt remains
+unchanged; the separate compatibility layer supplies the approved disposition.
+This is not new Activity-grain model adoption or a release approval.
+
+Canonical and serving follow-through is implemented in the adjacent SE-04
+`se04_canonical_serving.py`. It checks governed dimension parents, derives
+canonical fields/category mappings, explicitly carries three baseline replay
+references (`fact_id`, `import_batch_id`, `loaded_at`), and compares all 33 fields.
+This is a **baseline replay**, not independent reconstruction of those three
+provenance fields from the PDF. Private replay rows and full source evidence
+stay outside GitHub. See
+`../se-04-reconcile-qa/SE04_COMPAT_SERVING_REVIEW_20261109.md` and its aggregate
+receipt for FY26 frozen/public serving parity, hierarchy cohorts and remaining
+gates. No financial Sheet, feed, workflow, scanner or production state changed.
+

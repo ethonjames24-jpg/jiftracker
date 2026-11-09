@@ -5,6 +5,8 @@ on:
     paths:
       - 'automation/spending-explorer/se-03-extract-normalize/se03_staging*.py'
       - 'automation/spending-explorer/se-03-extract-normalize/test_se03_staging*.py'
+      - 'automation/spending-explorer/se-03-extract-normalize/se03_frozen_v1_compat*'
+      - 'automation/spending-explorer/se-03-extract-normalize/test_se03_frozen_v1_compat.py'
       - 'automation/spending-explorer/se-03-extract-normalize/se03_pdf_source*.py'
       - 'automation/spending-explorer/se-03-extract-normalize/test_se03_pdf_source*.py'
       - 'automation/spending-explorer/se-04-reconcile-qa/*.py'
@@ -52,10 +54,13 @@ jobs:
           python -m unittest -v test_se03_staging_normalize test_se03_staging_fact_parity
       - name: Run offline SE-04 financial-control tests
         working-directory: automation/spending-explorer/se-04-reconcile-qa
-        run: python -m unittest -v test_se04_multiyear test_se04_reconcile
+        run: python -m unittest -v test_se04_multiyear test_se04_reconcile test_se04_canonical_serving
       - name: Run source-only PDF geometry and comparison synthetic tests
         working-directory: automation/spending-explorer/se-03-extract-normalize
         run: |
           python -m py_compile se03_pdf_source_extract.py se03_pdf_source_compare.py
           python -m unittest -v test_se03_pdf_source_extract test_se03_pdf_source_compare
+      - name: Run frozen-v1 compatibility projection tests
+        working-directory: automation/spending-explorer/se-03-extract-normalize
+        run: python -m unittest -v test_se03_frozen_v1_compat
 
