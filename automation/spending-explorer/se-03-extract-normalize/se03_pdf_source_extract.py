@@ -34,15 +34,15 @@ class SourceRejected(ValueError):
     pass
 
 
-def table_columns(words: list) -> dict:
+def table_columns(words: list,current_year="2026-2027",following_year="2027-2028") -> dict:
     """Derive the current/law cells from adjacent printed fiscal-year headers."""
     pairs = []
     for current in words:
-        if current[4] != "2026-2027" or not (125 < current[1] < 750 and 330 < current[0] < 450):
+        if current[4] != current_year or not (125 < current[1] < 750 and 330 < current[0] < 450):
             continue
         center = (current[0]+current[2])/2
         for following in words:
-            if following[4] != "2027-2028" or abs(current[1]-following[1]) >= 1.6:
+            if following[4] != following_year or abs(current[1]-following[1]) >= 1.6:
                 continue
             next_center = (following[0]+following[2])/2
             width = next_center-center
@@ -82,6 +82,16 @@ def read_cell(words: list, y: float, bounds: tuple[float,float]) -> tuple[int,di
     return amount, {"cell_left":left,"cell_right":right,"word_bbox":list(word[:4])}
 
 
+def read_label_cell(words: list,bbox:tuple,bounds:tuple[float,float]) -> tuple[int,dict]:
+    """Align summary labels and smaller numeric fonts by printed row centers."""
+    center=(bbox[1]+bbox[3])/2
+    aligned=[w for w in words if abs((w[1]+w[3])/2-center)<1.6
+             and bounds[0]<=w[0] and w[2]<bounds[1]]
+    if len(aligned)!=1:
+        raise SourceRejected("SUMMARY_LABEL_CELL_NOT_UNIQUE")
+    return read_cell(words,aligned[0][1],bounds)
+
+
 def page_lines(page) -> list:
     result=[]
     for block in page.get_text("dict").get("blocks",[]):
@@ -92,7 +102,7 @@ def page_lines(page) -> list:
     return result
 
 
-def extract_pages(pages) -> dict:
+def extract_pages(pages,current_year="2026-2027",following_year="2027-2028",*,explanatory_subtables=False) -> dict:
     """Pure geometry parser; pages yield (physical_page, line tuples, words)."""
     details,summaries,aia = [],[],[]
     active,subprogramme,previous_context = None,None,None
@@ -111,7 +121,7 @@ def extract_pages(pages) -> dict:
         if context!=previous_context:
             active,subprogramme=None,None
         previous_context=context
-        events=[]
+        events=[];aia_labels={}
         for box,text in lines:
             y=box[1]
             if not 130<y<750:
@@ -124,7 +134,9 @@ def extract_pages(pages) -> dict:
                 if box[0]<100 and (m:=re.match(pattern,text,re.I)):
                     events.append((y,0,kind,m[1]));break
             else:
-                if text.startswith(("Total Activity","Total Project")):
+                if text.startswith(("Total Activity","Total Project")) and (
+                    not explanatory_subtables or re.match(r"^Total\s+(?:Activity|Project)\s+[0-9]{5}\s*[-–—]",text)
+                ):
                     events.append((y,0,"end_detail",""))
                 elif text.startswith("Analysis of Expenditure"):
                     events.append((y,0,"summary",""))
@@ -132,18 +144,19 @@ def extract_pages(pages) -> dict:
                     events.append((y,0,"end_summary",""))
                 elif text.startswith("Less Appropriations-In-Aid"):
                     events.append((y,0,"aia",""))
+                    aia_labels[y]=box
         for word in words:
             if 20<word[0]<40 and 130<word[1]<750 and re.fullmatch(r"[0-9]{2}",word[4]):
                 events.append((word[1],1,"economic",word[4]))
         columns=None
 
-        def cell(y,measure):
+        def cell(y,measure,label_bbox=None):
             nonlocal columns
             if not any(re.search(r"\$\s*['’]\s*000",text) for _,text in lines):
                 raise SourceRejected("PRINTED_THOUSANDS_UNIT_MISSING")
             if columns is None:
-                columns=table_columns(words)
-            return read_cell(words,y,columns[measure])
+                columns=table_columns(words,current_year,following_year)
+            return read_label_cell(words,label_bbox,columns[measure]) if label_bbox else read_cell(words,y,columns[measure])
 
         for y,_,kind,code in sorted(events):
             if kind=="sub":
@@ -165,7 +178,7 @@ def extract_pages(pages) -> dict:
             elif kind=="aia":
                 if not all(k in context for k in ("head","budget")):
                     raise SourceRejected("AIA_VOTE_CONTEXT_MISSING")
-                amount,geometry=cell(y,"V")
+                amount,geometry=cell(y,"V",aia_labels[y])
                 if amount:
                     aia.append(dict(context,page=physical_page,y=y,amount=-amount,geometry=geometry))
             elif kind=="economic" and active:
@@ -180,7 +193,7 @@ def extract_pages(pages) -> dict:
     return {"details":details,"programme_summaries":summaries,"aia_observations":aia}
 
 
-def canonical(row:dict,grain:str,method:str) -> dict:
+def canonical(row:dict,grain:str,method:str,source_id="SRC_EOE_2026_27_PASSED",fiscal_year="2026/27") -> dict:
     head=row["head"]
     if head.endswith("C") != (row["budget"]=="6"):
         raise SourceRejected("HEAD_BUDGET_SUFFIX_CONFLICT")
@@ -190,7 +203,7 @@ def canonical(row:dict,grain:str,method:str) -> dict:
     if grain=="ACTIVITY":
         parts += [row["subprogramme"],row["code"]]
     return {
-        "source_id":"SRC_EOE_2026_27_PASSED","fiscal_year":"2026/27",
+        "source_id":source_id,"fiscal_year":fiscal_year,
         "measure_type":"APPROPRIATIONS_IN_AID" if grain=="VOTE" else MEASURES[row["measure"]],
         "entity_type":grain,"canonical_entity_key":"_".join(parts),
         "economic_code":"AIA" if grain=="VOTE" else row["economic"],
@@ -202,7 +215,7 @@ def canonical(row:dict,grain:str,method:str) -> dict:
     }
 
 
-def derive_records(observations:dict) -> list[dict]:
+def derive_records(observations:dict,source_id="SRC_EOE_2026_27_PASSED",fiscal_year="2026/27") -> list[dict]:
     details=observations["details"]
     totals=Counter()
     detail_refs=defaultdict(list)
@@ -210,7 +223,7 @@ def derive_records(observations:dict) -> list[dict]:
         key=tuple(row[k] for k in GROUP_FIELDS)
         totals[key]+=row["amount"]
         detail_refs[key].append({"page":row["page"],"y":row["y"]})
-    records=[canonical(row,"ACTIVITY","PRINTED_DETAIL_CELL") for row in details]
+    records=[canonical(row,"ACTIVITY","PRINTED_DETAIL_CELL",source_id,fiscal_year) for row in details]
     summaries={}
     for row in observations["programme_summaries"]:
         key=tuple(row[k] for k in GROUP_FIELDS)
@@ -224,7 +237,7 @@ def derive_records(observations:dict) -> list[dict]:
         if residual<0:
             raise SourceRejected("NEGATIVE_PROGRAMME_RESIDUAL")
         if residual:
-            record=canonical(dict(row,amount=residual),"PROGRAMME","PROGRAMME_SUMMARY_LESS_SOURCE_DETAILS")
+            record=canonical(dict(row,amount=residual),"PROGRAMME","PROGRAMME_SUMMARY_LESS_SOURCE_DETAILS",source_id,fiscal_year)
             record["derivation"]={"printed_programme_amount":row["amount"],
                                   "source_detail_amount_sum":totals[key],"detail_refs":detail_refs[key]}
             records.append(record)
@@ -236,7 +249,7 @@ def derive_records(observations:dict) -> list[dict]:
         if len(rows)!=2 or len({r["amount"] for r in rows})!=1:
             raise SourceRejected("AIA_REPEATED_SUMMARIES_NOT_TWO_IDENTICAL_AMOUNTS")
         first=min(rows,key=lambda r:(r["page"],r["y"]))
-        record=canonical(first,"VOTE","NEGATIVE_PRINTED_AIA_DEDUCTION_ONCE")
+        record=canonical(first,"VOTE","NEGATIVE_PRINTED_AIA_DEDUCTION_ONCE",source_id,fiscal_year)
         record["source_occurrences"]=[{"page":r["page"],"y":r["y"]} for r in rows]
         records.append(record)
     return records

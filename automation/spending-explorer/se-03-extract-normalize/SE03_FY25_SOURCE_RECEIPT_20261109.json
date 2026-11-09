@@ -1,0 +1,101 @@
+{
+  "archive_retrieval": "READ_ONLY_EXISTING_DRIVE_ARCHIVE_NOT_NEW_LIVE_ACQUISITION",
+  "baseline_capture_kind": "LOCALLY_SERIALIZED_BOUNDED_CONNECTED_CAPTURE_NOT_NATIVE_EXPORT_OR_ATOMIC_TRANSACTION",
+  "canonical_fy25_33_field_replay_verified": false,
+  "checkpoint": "JIF-SE03-FY25-SOURCE-IDENTITY-REVIEW-20261109",
+  "code_sha256": {
+    "se03_pdf_source_extract.py": "19e08fa97b9e40f8c73ce9c1e76f4fda78cf6027df07c382d92cb039e532a69a",
+    "se03_pdf_source_fy25.py": "36df04f3a55e2d335e31974869347df579c736943cffd7e5732b96f3261a4b1d",
+    "test_se03_pdf_source_extract.py": "d8cbe0c9606f6f886bd56298c7203b0e31db3c2df8302349f61af7c44b18ed35",
+    "test_se03_pdf_source_fy25.py": "cd4b979d3a21be3bca655d8b1b2d135b8d765856876e9c23b081d6d02a0c5103"
+  },
+  "comparison": {
+    "baseline_capture_sha256": "7b2817004d54e3a321dd4fe11c67bbfc6f5b2901342beb5439b83f20bdaf172a",
+    "baseline_duplicate_financial_identities": 1,
+    "baseline_missing_signatures": 127,
+    "candidate_sha256": "0522476ddf8cbbc95ea9e5ad6f56c9d5199169f9dff69e9b1c20ea00fb25d627",
+    "controls": {
+      "aia_jmd": -49133377000,
+      "gross_jmd": 1309182355000,
+      "measure_counts": {
+        "APPROPRIATIONS_IN_AID": 31,
+        "AUTHORIZED_BY_LAW": 64,
+        "VOTED_ESTIMATE": 2805
+      },
+      "net_jmd": 1260048978000,
+      "records": 2900
+    },
+    "difference_class_counts": {
+      "BASELINE_AIA_PAGE_OMITTED": 31,
+      "SOURCE_ACTIVITY_CODE_DIFFERENCE": 1,
+      "SOURCE_SUBPROGRAMME_CODE_DIFFERENCE": 95
+    },
+    "exact_row_parity_verified": false,
+    "exact_shared_field_matches": 2773,
+    "full_33_field_fact_reconstruction_verified": false,
+    "historical_baseline_rows": 2900,
+    "identity_differences_approved": false,
+    "programme_economic_groups_compared": 1122,
+    "programme_economic_groups_different": 0,
+    "publication_authorized": false,
+    "result": "FAILED_CLOSED",
+    "source_candidate_rows": 2900,
+    "source_extra_signatures": 127,
+    "unclassified_baseline_signatures": 0,
+    "unclassified_source_signatures": 0
+  },
+  "extraction": {
+    "aia_jmd": -49133377000,
+    "archive_pin_first_recorded": "2026-11-09",
+    "fact_or_staging_input_used_for_extraction": false,
+    "gross_jmd": 1309182355000,
+    "matched_prior_cryptographic_pin": false,
+    "measure_counts": {
+      "APPROPRIATIONS_IN_AID": 31,
+      "AUTHORIZED_BY_LAW": 64,
+      "VOTED_ESTIMATE": 2805
+    },
+    "net_jmd": 1260048978000,
+    "pages_examined": 694,
+    "printed_aia_occurrences": 62,
+    "programme_residual_records": 0,
+    "publication_authorized": false,
+    "pymupdf_version": "1.26.6",
+    "records": 2900,
+    "result": "SOURCE_FINANCIAL_EXTRACTION_REVIEW_ONLY",
+    "source_pdf_bytes": 27466667,
+    "source_pdf_sha256": "3b198b92fe575454fa22ce20c6e7da7bf55d713f8c5bef506bc3ff08301276aa",
+    "source_records_sha256": "0522476ddf8cbbc95ea9e5ad6f56c9d5199169f9dff69e9b1c20ea00fb25d627"
+  },
+  "fy25_public_serving_source_certified": false,
+  "fy26_regression": {
+    "records": 2912,
+    "result": "IDENTICAL_PINNED_SOURCE_OUTPUT",
+    "source_records_sha256": "b927e1d4488286b19d39399f58f04a7d66b407fe7162cdd4c46fa0e94b1a7896"
+  },
+  "historical_worklist_individual_closure_verified": false,
+  "model_or_public_feed_changed": false,
+  "native_execution_performed": false,
+  "new_127_differences_are_original_worklist_membership_proof": false,
+  "publication_authorized": false,
+  "scanner_archive_preparation_only": true,
+  "scope": "OFFLINE_REVIEW_ONLY",
+  "source_archive_drive_id": "1-Pn-5hk4ieRk1f80rKf54R6gGVO9AlDf",
+  "source_catalogue_id": "SRC_EOE_2025_26_PASSED",
+  "source_catalogue_official_url": "https://www.mof.gov.jm/wp-content/uploads/2025-2026-Estimates-of-Expenditure_AS-PASSED-1.pdf",
+  "state": "BLOCKED",
+  "validation": {
+    "final_collision_fix_independently_retested": true,
+    "hosted_ci_verified": false,
+    "independent_final_fy25_tests_passed": 24,
+    "independent_final_real_comparison_exit_code": 2,
+    "independent_scoped_reviews": 2,
+    "local_se03_tests_passed": 187,
+    "local_se04_tests_passed": 59,
+    "review_findings_repaired": [
+      "BIND_BASELINE_HASH_TO_ACTUALLY_PARSED_BYTES",
+      "REJECT_DUPLICATE_SOURCE_FINANCIAL_IDENTITIES_AND_BLOCK_BASELINE_COLLISION_ACCEPTANCE"
+    ],
+    "unique_local_tests_passed": 246
+  }
+}

@@ -4,7 +4,7 @@ from pathlib import Path
 
 from se03_pdf_source_extract import (
     SourceRejected, canonical, derive_records, extract, extract_pages,
-    read_cell, table_columns,
+    read_cell, table_columns,read_label_cell,
 )
 
 
@@ -38,6 +38,18 @@ def bundle(details=(),summaries=(),aia=()):
 
 
 class Tests(unittest.TestCase):
+    def test_summary_label_and_smaller_amount_font_align_by_center(self):
+        words=[(402,691.8,423,699.5,'5,888.0',0,0,0)]
+        self.assertEqual(read_label_cell(words,(52,689.1,138,700.2),(379,429))[0],5888000)
+
+    def test_summary_label_alignment_rejects_two_amounts(self):
+        words=[(395,691.8,405,699.5,'1.0',0,0,0),(410,691.8,423,699.5,'2.0',0,0,0)]
+        with self.assertRaises(SourceRejected):read_label_cell(words,(52,689.1,138,700.2),(379,429))
+
+    def test_explicit_fy25_header_pair_cannot_select_fy26_pair(self):
+        words=[word('2025-2026',386,421,150),word('2026-2027',436,471,150),word('2027-2028',486,521,150)]
+        self.assertEqual(table_columns(words,'2025-2026','2026-2027')['V'],(378.5,428.5))
+
     def test_headers_define_current_and_law_columns(self):
         columns=table_columns(fixture()[2])
         self.assertEqual(columns["V"],(378.5,428.5))
@@ -122,6 +134,15 @@ class Tests(unittest.TestCase):
         n,lines,words=fixture();lines += [line("Total Activity 10001 - Example",230)]
         words += [word("22",25,32,250),word("-",375,377,250),word("333.0",395,427,250)]
         self.assertEqual(len(extract_pages([(n,lines,words)])["details"]),1)
+
+    def test_explanatory_subtable_total_does_not_close_activity(self):
+        for label in ("Total Activity 10001", "Total Activity -10001"):
+            n,lines,words=fixture();lines += [line(label,210)]
+            self.assertEqual(len(extract_pages([(n,lines,words)],explanatory_subtables=True)["details"]),1)
+
+    def test_default_profile_keeps_historical_total_boundary(self):
+        n,lines,words=fixture();lines += [line("Total Activity 10001",210)]
+        self.assertEqual(len(extract_pages([(n,lines,words)])["details"]),0)
 
     def test_new_subprogramme_cannot_reuse_previous_activity(self):
         n,lines,words=fixture();lines += [line("Sub Programme 02 - New section",230)]

@@ -58,8 +58,8 @@ jobs:
       - name: Run source-only PDF geometry and comparison synthetic tests
         working-directory: automation/spending-explorer/se-03-extract-normalize
         run: |
-          python -m py_compile se03_pdf_source_extract.py se03_pdf_source_compare.py
-          python -m unittest -v test_se03_pdf_source_extract test_se03_pdf_source_compare
+          python -m py_compile se03_pdf_source_extract.py se03_pdf_source_compare.py se03_pdf_source_fy25.py
+          python -m unittest -v test_se03_pdf_source_extract test_se03_pdf_source_compare test_se03_pdf_source_fy25
       - name: Run frozen-v1 compatibility projection tests
         working-directory: automation/spending-explorer/se-03-extract-normalize
         run: python -m unittest -v test_se03_frozen_v1_compat
