@@ -92,3 +92,5 @@ membership closure and browser/mobile tests still require their own artifacts,
 runtime contracts and execution receipts.
 
 Hosted run42716822286 at the first FY25 commit823b610 failed with zero jobs. Local PyYAML parsing reproduced a pre-existing unquoted YAML scalar error in the no-production-effects echo line; converted that run entry to a literal block. Local YAML parsing now passes. Hosted acceptance remains pending the corrected revision's actual run; the zero-job failure is not a test failure or a PASS.
+
+Corrected workflow revision24d6bd48fb396ae2ac550976ce01bcba01cfbd3f created actual hosted run42716999213/job129501003293, then failed with zero steps and no runner name. Test code was not executed. Job logs returned404; annotation subresource was unsupported by the connector. Root cause beyond the pre-step boundary remains unverified; do not infer billing, permissions or a test regression. Cloudflare's automatic branch-preview check succeeded at that revision; it is not production or test acceptance.

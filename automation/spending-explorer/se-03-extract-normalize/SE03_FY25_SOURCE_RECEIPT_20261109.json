@@ -85,6 +85,19 @@
   "source_catalogue_official_url": "https://www.mof.gov.jm/wp-content/uploads/2025-2026-Estimates-of-Expenditure_AS-PASSED-1.pdf",
   "state": "BLOCKED",
   "validation": {
+    "cloudflare_branch_preview_at_code_revision": "SUCCESS_NOT_PRODUCTION_OR_TEST_ACCEPTANCE",
+    "corrected_workflow_hosted_run": {
+      "annotations_available_through_connector": false,
+      "commit": "24d6bd48fb396ae2ac550976ce01bcba01cfbd3f",
+      "conclusion": "failure",
+      "id": 42716999213,
+      "job_id": 129501003293,
+      "job_logs_available": false,
+      "jobs_created": 1,
+      "root_cause_verified": false,
+      "runner_name": "",
+      "steps_executed": 0
+    },
     "final_collision_fix_independently_retested": true,
     "hosted_ci_verified": false,
     "independent_final_fy25_tests_passed": 24,
