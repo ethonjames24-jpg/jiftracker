@@ -90,3 +90,5 @@ The net-new regression tests were added to `test_se03_pdf_source_fy25.py` and
 unexecuted test is presented as passing. Native scanner/archive, full queue
 membership closure and browser/mobile tests still require their own artifacts,
 runtime contracts and execution receipts.
+
+Hosted run42716822286 at the first FY25 commit823b610 failed with zero jobs. Local PyYAML parsing reproduced a pre-existing unquoted YAML scalar error in the no-production-effects echo line; converted that run entry to a literal block. Local YAML parsing now passes. Hosted acceptance remains pending the corrected revision's actual run; the zero-job failure is not a test failure or a PASS.

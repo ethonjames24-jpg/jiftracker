@@ -90,12 +90,20 @@
     "independent_final_fy25_tests_passed": 24,
     "independent_final_real_comparison_exit_code": 2,
     "independent_scoped_reviews": 2,
+    "initial_current_head_ci_run": {
+      "commit": "823b610b69a9476dcda8ec4fb49dddfdc836c18e",
+      "conclusion": "failure",
+      "id": 42716822286,
+      "jobs_created": 0,
+      "locally_reproduced_workflow_yaml_syntax_error": true
+    },
     "local_se03_tests_passed": 187,
     "local_se04_tests_passed": 59,
     "review_findings_repaired": [
       "BIND_BASELINE_HASH_TO_ACTUALLY_PARSED_BYTES",
       "REJECT_DUPLICATE_SOURCE_FINANCIAL_IDENTITIES_AND_BLOCK_BASELINE_COLLISION_ACCEPTANCE"
     ],
-    "unique_local_tests_passed": 246
+    "unique_local_tests_passed": 246,
+    "workflow_yaml_syntax_repaired_and_locally_parsed": true
   }
 }
